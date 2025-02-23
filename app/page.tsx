@@ -1,10 +1,12 @@
 import { TechniqueGrid } from "@/components/technique-grid"
 import { BreathingGuide } from "@/components/breathing-guide"
 import { Card, CardContent } from "@/components/ui/card"
+import { PWAInstall } from "./pwa"
 
 export default function Home() {
   return (
     <main className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100 dark:from-slate-950 dark:to-slate-900 p-4 md:p-8">
+      <PWAInstall />
       <div className="max-w-7xl mx-auto space-y-8">
         <div className="text-center space-y-4">
           <h1 className="text-4xl font-bold tracking-tight lg:text-5xl lg:leading-[3.5rem]">Breathscape</h1>
