@@ -1,6 +1,7 @@
 # Breathscape
 
-![Breathscape](https://github.com/yourusername/breathscape/raw/main/public/preview.png)
+![Screenshot 2025-02-23 at 16 01 20](https://github.com/user-attachments/assets/9de5e5b8-1c25-4505-910f-06f6860dc568)
+
 
 Breathscape is an interactive breathing exercise application designed to help users practice various mindful breathing techniques. With a collection of beautifully animated breathing patterns, Breathscape offers a calming and intuitive interface for stress relief and relaxation.
 
