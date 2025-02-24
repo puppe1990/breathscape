@@ -130,7 +130,7 @@ export function TechniqueGrid() {
       </div>
 
       <Dialog open={!!selectedTechnique} onOpenChange={() => setSelectedTechnique(null)}>
-        <DialogContent className="max-w-2xl">
+        <DialogContent className="max-h-[90vh] overflow-y-auto flex flex-col items-center justify-center p-0">
           {selectedTechnique && (
             <BreathingExercise technique={selectedTechnique} onClose={() => setSelectedTechnique(null)} />
           )}

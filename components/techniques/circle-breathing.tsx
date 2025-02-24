@@ -333,7 +333,7 @@ export function CircleBreathing({
       {/* Breathing instruction */}
       <div className="absolute inset-0 flex flex-col items-center justify-center gap-2">
         <motion.div
-          className="text-lg font-medium"
+          className="text-2xl sm:text-3xl md:text-4xl font-medium"
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{
             opacity: 1,
@@ -358,14 +358,18 @@ export function CircleBreathing({
           </AnimatePresence>
         </motion.div>
 
-        <motion.div className="text-sm text-muted-foreground" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+        <motion.div
+          className="text-base sm:text-lg md:text-xl text-muted-foreground"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+        >
           {breathingPresets[selectedPreset].name}
         </motion.div>
       </div>
 
       {/* Duration display */}
-      <div className="absolute inset-x-0 bottom-4 flex justify-center gap-2 text-sm">
-        <div className="flex items-center gap-1 opacity-60">
+      <div className="mt-4 flex justify-center gap-2 text-sm">
+        <div className="flex items-center gap-1 opacity-60 bg-background/50 px-3 py-1 rounded-full backdrop-blur-sm">
           <span>{breatheInDuration}s</span>
           <span>•</span>
           <span>{holdDuration}s</span>

@@ -14,6 +14,8 @@ import { InfinityBreathing } from "@/components/techniques/infinity-breathing"
 import { HeartBreathing } from "@/components/techniques/heart-breathing"
 import { FlowerBreathing } from "@/components/techniques/flower-breathing"
 import { CircleBreathing } from "@/components/techniques/circle-breathing"
+import { LungBreathing } from "@/components/techniques/lung-breathing"
+import { StopBreathing } from "@/components/techniques/stop-breathing"
 import { motion } from "framer-motion"
 
 interface BreathingExerciseProps {
@@ -142,6 +144,24 @@ export function BreathingExercise({ technique, onClose }: BreathingExerciseProps
             onUpdateDurations={handleUpdateDurations}
           />
         )
+      case "lungs":
+        return (
+          <LungBreathing
+            isPlaying={isPlaying}
+            currentStep={currentStep}
+            progress={progress}
+            className={technique.textColor}
+          />
+        )
+      case "stop":
+        return (
+          <StopBreathing
+            isPlaying={isPlaying}
+            currentStep={currentStep}
+            progress={progress}
+            className={technique.textColor}
+          />
+        )
       default:
         return (
           <>
@@ -162,27 +182,29 @@ export function BreathingExercise({ technique, onClose }: BreathingExerciseProps
   }
 
   return (
-    <div className="space-y-6 py-4">
-      <DialogHeader>
-        <DialogTitle>{technique.name}</DialogTitle>
+    <div className="flex flex-col items-center justify-center min-h-[60vh] p-4 sm:p-6 md:p-8">
+      <DialogHeader className="space-y-1">
+        <DialogTitle className="text-3xl font-light tracking-wider text-left pl-4">{technique.name}</DialogTitle>
       </DialogHeader>
 
-      <div className="flex flex-col items-center justify-center gap-8">
-        <div className="relative w-64 h-64">{renderBreathingAnimation()}</div>
+      <div className="flex flex-col items-center justify-center gap-6 sm:gap-8 md:gap-10 w-full">
+        <div className="relative w-64 h-64 sm:w-72 sm:h-72 md:w-96 md:h-96 flex items-center justify-center">
+          {renderBreathingAnimation()}
+        </div>
 
         <div className="text-center">
-          <h3 className="text-2xl font-semibold mb-2">{technique.steps[currentStep]}</h3>
-          <p className="text-muted-foreground">
+          <h3 className="text-xl sm:text-2xl md:text-3xl font-semibold mb-2">{technique.steps[currentStep]}</h3>
+          <p className="text-muted-foreground text-base sm:text-lg">
             {Math.ceil(getCurrentDuration() - (progress / 100) * getCurrentDuration())}s
           </p>
         </div>
 
-        <div className="flex gap-4">
-          <Button variant="outline" size="icon" onClick={() => setIsPlaying(!isPlaying)}>
-            {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
+        <div className="flex gap-6 w-full justify-center">
+          <Button variant="outline" size="lg" onClick={() => setIsPlaying(!isPlaying)}>
+            {isPlaying ? <Pause className="h-5 w-5" /> : <Play className="h-5 w-5" />}
           </Button>
-          <Button variant="outline" size="icon" onClick={resetExercise}>
-            <RotateCcw className="h-4 w-4" />
+          <Button variant="outline" size="lg" onClick={resetExercise}>
+            <RotateCcw className="h-5 w-5" />
           </Button>
         </div>
       </div>
