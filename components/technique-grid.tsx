@@ -111,17 +111,31 @@ const techniques = [
 ]
 
 export function TechniqueGrid() {
-  const [selectedTechnique, setSelectedTechnique] = useState<(typeof techniques)[0] | null>(null)
+  const [selectedTechniqueIndex, setSelectedTechniqueIndex] = useState<number | null>(null)
+
+  const handlePrevious = () => {
+    setSelectedTechniqueIndex((current) => {
+      if (current === null) return null
+      return current === 0 ? techniques.length - 1 : current - 1
+    })
+  }
+
+  const handleNext = () => {
+    setSelectedTechniqueIndex((current) => {
+      if (current === null) return null
+      return current === techniques.length - 1 ? 0 : current + 1
+    })
+  }
 
   return (
     <>
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-        {techniques.map((technique) => (
+        {techniques.map((technique, index) => (
           <Button
             key={technique.id}
             variant="ghost"
             className={`h-32 flex flex-col items-center justify-center gap-2 ${technique.color}`}
-            onClick={() => setSelectedTechnique(technique)}
+            onClick={() => setSelectedTechniqueIndex(index)}
           >
             <technique.icon className={`w-8 h-8 ${technique.textColor}`} />
             <span className={`text-sm font-medium ${technique.textColor}`}>{technique.name}</span>
@@ -129,10 +143,15 @@ export function TechniqueGrid() {
         ))}
       </div>
 
-      <Dialog open={!!selectedTechnique} onOpenChange={() => setSelectedTechnique(null)}>
+      <Dialog open={selectedTechniqueIndex !== null} onOpenChange={() => setSelectedTechniqueIndex(null)}>
         <DialogContent className="max-h-[90vh] overflow-y-auto flex flex-col items-center justify-center p-0">
-          {selectedTechnique && (
-            <BreathingExercise technique={selectedTechnique} onClose={() => setSelectedTechnique(null)} />
+          {selectedTechniqueIndex !== null && (
+            <BreathingExercise
+              technique={techniques[selectedTechniqueIndex]}
+              onClose={() => setSelectedTechniqueIndex(null)}
+              onPrevious={handlePrevious}
+              onNext={handleNext}
+            />
           )}
         </DialogContent>
       </Dialog>

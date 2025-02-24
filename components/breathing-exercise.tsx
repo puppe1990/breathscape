@@ -5,7 +5,7 @@ import type React from "react"
 import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { Play, Pause, RotateCcw } from "lucide-react"
+import { Play, Pause, RotateCcw, ChevronLeft, ChevronRight } from "lucide-react"
 import { SquareBreathing } from "@/components/techniques/square-breathing"
 import { HexagonBreathing } from "@/components/techniques/hexagon-breathing"
 import { TriangleBreathing } from "@/components/techniques/triangle-breathing"
@@ -28,9 +28,11 @@ interface BreathingExerciseProps {
     id: string
   }
   onClose: () => void
+  onPrevious: () => void
+  onNext: () => void
 }
 
-export function BreathingExercise({ technique, onClose }: BreathingExerciseProps) {
+export function BreathingExercise({ technique, onClose, onPrevious, onNext }: BreathingExerciseProps) {
   const [isPlaying, setIsPlaying] = useState(false)
   const [currentStep, setCurrentStep] = useState(0)
   const [progress, setProgress] = useState(0)
@@ -182,7 +184,25 @@ export function BreathingExercise({ technique, onClose }: BreathingExerciseProps
   }
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-[60vh] p-4 sm:p-6 md:p-8">
+    <div className="flex flex-col items-center justify-center min-h-[60vh] p-4 sm:p-6 md:p-8 relative w-full">
+      {/* Navigation arrows */}
+      <Button
+        variant="ghost"
+        size="icon"
+        className="absolute left-4 top-1/2 -translate-y-1/2 h-12 w-12 rounded-full opacity-70 hover:opacity-100"
+        onClick={onPrevious}
+      >
+        <ChevronLeft className="h-8 w-8" />
+      </Button>
+      <Button
+        variant="ghost"
+        size="icon"
+        className="absolute right-4 top-1/2 -translate-y-1/2 h-12 w-12 rounded-full opacity-70 hover:opacity-100"
+        onClick={onNext}
+      >
+        <ChevronRight className="h-8 w-8" />
+      </Button>
+
       <DialogHeader className="space-y-1">
         <DialogTitle className="text-3xl font-light tracking-wider text-left pl-4">{technique.name}</DialogTitle>
       </DialogHeader>
