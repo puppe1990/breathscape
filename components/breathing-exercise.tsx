@@ -5,7 +5,7 @@ import type React from "react"
 import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { Play, Pause, RotateCcw, ChevronLeft, ChevronRight } from "lucide-react"
+import { Play, Pause, RotateCcw, ChevronLeft, ChevronRight, Timer, RotateCw } from "lucide-react"
 import { SquareBreathing } from "@/components/techniques/square-breathing"
 import { HexagonBreathing } from "@/components/techniques/hexagon-breathing"
 import { TriangleBreathing } from "@/components/techniques/triangle-breathing"
@@ -37,7 +37,21 @@ export function BreathingExercise({ technique, onClose, onPrevious, onNext }: Br
   const [currentStep, setCurrentStep] = useState(0)
   const [progress, setProgress] = useState(0)
   const [customDurations, setCustomDurations] = useState<number[]>([])
+  const [sessionTime, setSessionTime] = useState(0)
+  const [cyclesCompleted, setCyclesCompleted] = useState(0)
 
+  // Session timer
+  useEffect(() => {
+    let interval: NodeJS.Timeout
+    if (isPlaying) {
+      interval = setInterval(() => {
+        setSessionTime((prev) => prev + 1)
+      }, 1000)
+    }
+    return () => clearInterval(interval)
+  }, [isPlaying])
+
+  // Breathing cycle progress
   useEffect(() => {
     let interval: NodeJS.Timeout
 
@@ -49,7 +63,12 @@ export function BreathingExercise({ technique, onClose, onPrevious, onNext }: Br
       interval = setInterval(() => {
         setProgress((prev) => {
           if (prev >= 100) {
-            setCurrentStep((prevStep) => (prevStep + 1) % technique.steps.length)
+            const nextStep = (currentStep + 1) % technique.steps.length
+            setCurrentStep(nextStep)
+            // Increment cycle counter when completing a full cycle
+            if (nextStep === 0) {
+              setCyclesCompleted((prev) => prev + 1)
+            }
             return 0
           }
           return prev + increment
@@ -64,11 +83,19 @@ export function BreathingExercise({ technique, onClose, onPrevious, onNext }: Br
     setIsPlaying(false)
     setCurrentStep(0)
     setProgress(0)
+    setSessionTime(0)
+    setCyclesCompleted(0)
   }
 
   const handleUpdateDurations = (durations: number[]) => {
     setCustomDurations(durations)
     resetExercise()
+  }
+
+  const formatTime = (seconds: number) => {
+    const minutes = Math.floor(seconds / 60)
+    const remainingSeconds = seconds % 60
+    return `${minutes}:${remainingSeconds.toString().padStart(2, "0")}`
   }
 
   const renderBreathingAnimation = () => {
@@ -206,6 +233,28 @@ export function BreathingExercise({ technique, onClose, onPrevious, onNext }: Br
       <DialogHeader className="space-y-1">
         <DialogTitle className="text-3xl font-light tracking-wider text-left pl-4">{technique.name}</DialogTitle>
       </DialogHeader>
+
+      {/* Session stats */}
+      <div className="w-full max-w-md mx-auto mb-6 flex items-center justify-center gap-8">
+        <div className="flex flex-col items-center gap-2">
+          <div className="flex items-center justify-center w-16 h-16 rounded-full bg-background/50 backdrop-blur-sm shadow-sm">
+            <Timer className="h-6 w-6 text-muted-foreground" />
+          </div>
+          <div className="text-center">
+            <div className="text-2xl font-semibold">{formatTime(sessionTime)}</div>
+            <div className="text-sm text-muted-foreground">Session Time</div>
+          </div>
+        </div>
+        <div className="flex flex-col items-center gap-2">
+          <div className="flex items-center justify-center w-16 h-16 rounded-full bg-background/50 backdrop-blur-sm shadow-sm">
+            <RotateCw className="h-6 w-6 text-muted-foreground" />
+          </div>
+          <div className="text-center">
+            <div className="text-2xl font-semibold">{cyclesCompleted}</div>
+            <div className="text-sm text-muted-foreground">Cycles</div>
+          </div>
+        </div>
+      </div>
 
       <div className="flex flex-col items-center justify-center gap-6 sm:gap-8 md:gap-10 w-full">
         <div className="relative w-64 h-64 sm:w-72 sm:h-72 md:w-96 md:h-96 flex items-center justify-center">
