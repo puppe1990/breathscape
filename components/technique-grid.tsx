@@ -16,101 +16,108 @@ import {
   TreesIcon as Lungs,
   Octagon,
 } from "lucide-react"
+import { translations } from "@/lib/translations/index"
 
-const techniques = [
-  {
-    id: "circle",
-    name: "Circle Breathing",
-    icon: Circle,
-    color: "bg-rose-100 hover:bg-rose-200 dark:bg-rose-900 dark:hover:bg-rose-800",
-    textColor: "text-rose-600 dark:text-rose-300",
-    steps: ["Breathe In", "Hold", "Breathe Out"],
-    duration: 4,
-  },
-  {
-    id: "square",
-    name: "Square Breathing",
-    icon: Square,
-    color: "bg-blue-100 hover:bg-blue-200 dark:bg-blue-900 dark:hover:bg-blue-800",
-    textColor: "text-blue-600 dark:text-blue-300",
-    steps: ["Breathe in", "Hold", "Breathe out", "Hold"],
-    duration: 4,
-  },
-  {
-    id: "hexagon",
-    name: "Hexagon Breathing",
-    icon: Hexagon,
-    color: "bg-emerald-100 hover:bg-emerald-200 dark:bg-emerald-900 dark:hover:bg-emerald-800",
-    textColor: "text-emerald-600 dark:text-emerald-300",
-    steps: ["Breathe in", "Hold", "Breathe out", "Hold", "Breathe in", "Hold"],
-    duration: 4,
-  },
-  {
-    id: "triangle",
-    name: "Triangle Breathing",
-    icon: Triangle,
-    color: "bg-purple-100 hover:bg-purple-200 dark:bg-purple-900 dark:hover:bg-purple-800",
-    textColor: "text-purple-600 dark:text-purple-300",
-    steps: ["Breathe in", "Hold", "Breathe out"],
-    duration: 5,
-  },
-  {
-    id: "star",
-    name: "Star Breathing",
-    icon: Star,
-    color: "bg-amber-100 hover:bg-amber-200 dark:bg-amber-900 dark:hover:bg-amber-800",
-    textColor: "text-amber-600 dark:text-amber-300",
-    steps: ["Breathe in", "Hold", "Breathe out", "Hold", "Breathe in"],
-    duration: 4,
-  },
-  {
-    id: "infinity",
-    name: "Infinity Breathing",
-    icon: Infinity,
-    color: "bg-cyan-100 hover:bg-cyan-200 dark:bg-cyan-900 dark:hover:bg-cyan-800",
-    textColor: "text-cyan-600 dark:text-cyan-300",
-    steps: ["Breathe in", "Breathe out"],
-    duration: 6,
-  },
-  {
-    id: "heart",
-    name: "Heart Breathing",
-    icon: Heart,
-    color: "bg-rose-100 hover:bg-rose-200 dark:bg-rose-900 dark:hover:bg-rose-800",
-    textColor: "text-rose-600 dark:text-rose-300",
-    steps: ["Breathe in", "Hold", "Breathe out"],
-    duration: 5,
-  },
-  {
-    id: "flower",
-    name: "Flower Breathing",
-    icon: Flower,
-    color: "bg-pink-100 hover:bg-pink-200 dark:bg-pink-900 dark:hover:bg-pink-800",
-    textColor: "text-pink-600 dark:text-pink-300",
-    steps: ["Breathe in", "Hold", "Breathe out", "Hold", "Breathe in"],
-    duration: 4,
-  },
-  {
-    id: "lungs",
-    name: "Lung Breathing",
-    icon: Lungs,
-    color: "bg-red-100 hover:bg-red-200 dark:bg-red-900 dark:hover:bg-red-800",
-    textColor: "text-red-600 dark:text-red-300",
-    steps: ["Breathe in", "Hold", "Breathe out"],
-    duration: 6,
-  },
-  {
-    id: "stop",
-    name: "Stop Sign Breathing",
-    icon: Octagon,
-    color: "bg-red-100 hover:bg-red-200 dark:bg-red-900 dark:hover:bg-red-800",
-    textColor: "text-red-600 dark:text-red-300",
-    steps: ["Breathe in", "Hold", "Breathe out", "Hold", "Breathe in", "Hold", "Breathe out", "Hold"],
-    duration: 4,
-  },
-]
+interface TechniqueGridProps {
+  language: string
+}
 
-export function TechniqueGrid() {
+export function TechniqueGrid({ language }: TechniqueGridProps) {
+  const t = translations[language] || translations["en"]
+
+  const techniques = [
+    {
+      id: "circle",
+      name: t.breathingTechniques.circle.name,
+      icon: Circle,
+      color: "bg-rose-100 hover:bg-rose-200 dark:bg-rose-900 dark:hover:bg-rose-800",
+      textColor: "text-rose-600 dark:text-rose-300",
+      steps: t.breathingTechniques.circle.steps,
+      duration: 4,
+    },
+    {
+      id: "square",
+      name: t.breathingTechniques.square.name,
+      icon: Square,
+      color: "bg-blue-100 hover:bg-blue-200 dark:bg-blue-900 dark:hover:bg-blue-800",
+      textColor: "text-blue-600 dark:text-blue-300",
+      steps: t.breathingTechniques.square.steps,
+      duration: 4,
+    },
+    {
+      id: "hexagon",
+      name: t.breathingTechniques.hexagon.name,
+      icon: Hexagon,
+      color: "bg-emerald-100 hover:bg-emerald-200 dark:bg-emerald-900 dark:hover:bg-emerald-800",
+      textColor: "text-emerald-600 dark:text-emerald-300",
+      steps: t.breathingTechniques.hexagon.steps,
+      duration: 4,
+    },
+    {
+      id: "triangle",
+      name: t.breathingTechniques.triangle.name,
+      icon: Triangle,
+      color: "bg-purple-100 hover:bg-purple-200 dark:bg-purple-900 dark:hover:bg-purple-800",
+      textColor: "text-purple-600 dark:text-purple-300",
+      steps: t.breathingTechniques.triangle.steps,
+      duration: 5,
+    },
+    {
+      id: "star",
+      name: t.breathingTechniques.star.name,
+      icon: Star,
+      color: "bg-amber-100 hover:bg-amber-200 dark:bg-amber-900 dark:hover:bg-amber-800",
+      textColor: "text-amber-600 dark:text-amber-300",
+      steps: t.breathingTechniques.star.steps,
+      duration: 4,
+    },
+    {
+      id: "infinity",
+      name: t.breathingTechniques.infinity.name,
+      icon: Infinity,
+      color: "bg-cyan-100 hover:bg-cyan-200 dark:bg-cyan-900 dark:hover:bg-cyan-800",
+      textColor: "text-cyan-600 dark:text-cyan-300",
+      steps: t.breathingTechniques.infinity.steps,
+      duration: 6,
+    },
+    {
+      id: "heart",
+      name: t.breathingTechniques.heart.name,
+      icon: Heart,
+      color: "bg-rose-100 hover:bg-rose-200 dark:bg-rose-900 dark:hover:bg-rose-800",
+      textColor: "text-rose-600 dark:text-rose-300",
+      steps: t.breathingTechniques.heart.steps,
+      duration: 5,
+    },
+    {
+      id: "flower",
+      name: t.breathingTechniques.flower.name,
+      icon: Flower,
+      color: "bg-pink-100 hover:bg-pink-200 dark:bg-pink-900 dark:hover:bg-pink-800",
+      textColor: "text-pink-600 dark:text-pink-300",
+      steps: t.breathingTechniques.flower.steps,
+      duration: 4,
+    },
+    {
+      id: "lungs",
+      name: t.breathingTechniques.lungs.name,
+      icon: Lungs,
+      color: "bg-red-100 hover:bg-red-200 dark:bg-red-900 dark:hover:bg-red-800",
+      textColor: "text-red-600 dark:text-red-300",
+      steps: t.breathingTechniques.lungs.steps,
+      duration: 6,
+    },
+    {
+      id: "stop",
+      name: t.breathingTechniques.stop.name,
+      icon: Octagon,
+      color: "bg-red-100 hover:bg-red-200 dark:bg-red-900 dark:hover:bg-red-800",
+      textColor: "text-red-600 dark:text-red-300",
+      steps: t.breathingTechniques.stop.steps,
+      duration: 4,
+    },
+  ]
+
   const [selectedTechniqueIndex, setSelectedTechniqueIndex] = useState<number | null>(null)
 
   const handlePrevious = () => {

@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { motion, AnimatePresence } from "framer-motion"
+import { motion } from "framer-motion"
 import { cn } from "@/lib/utils"
 import { Slider } from "@/components/ui/slider"
 import { Button } from "@/components/ui/button"
@@ -10,6 +10,7 @@ import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTr
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
+import { translations } from "@/lib/translations/index"
 
 // Predefined breathing patterns
 const breathingPresets = {
@@ -30,6 +31,7 @@ interface CircleBreathingProps {
   currentStep: number
   progress: number
   className?: string
+  language: string
   onUpdateDurations?: (durations: number[]) => void
 }
 
@@ -39,6 +41,7 @@ export function CircleBreathing({
   currentStep,
   progress,
   className,
+  language,
   onUpdateDurations,
 }: CircleBreathingProps) {
   const [selectedPreset, setSelectedPreset] = useState<PresetKey>("4-7-8")
@@ -46,10 +49,46 @@ export function CircleBreathing({
   const [holdDuration, setHoldDuration] = useState(7)
   const [breatheOutDuration, setBreatheOutDuration] = useState(8)
 
+  const t = translations[language] || translations["en"]
+
   const padding = size * 0.1
   const radius = (size - padding * 2) / 2
   const center = size / 2
   const circumference = 2 * Math.PI * radius
+
+  // Calculate position along the circle path
+  const getPosition = () => {
+    const angle = (currentStep * 120 + (progress / 100) * 120) * (Math.PI / 180)
+    return {
+      x: center + radius * Math.cos(angle - Math.PI / 2),
+      y: center + radius * Math.sin(angle - Math.PI / 2),
+    }
+  }
+
+  // Get breathing instruction based on current step
+  const getInstruction = (step: number) => {
+    switch (step) {
+      case 0:
+        return t.ui.breatheIn
+      case 1:
+        return t.ui.hold
+      case 2:
+        return t.ui.breatheOut
+      default:
+        return ""
+    }
+  }
+
+  // Calculate label positions
+  const getLabelPosition = (index: number) => {
+    const angle = (index * 120 - 90) * (Math.PI / 180)
+    const labelRadius = radius + 40
+    return {
+      x: center + labelRadius * Math.cos(angle),
+      y: center + labelRadius * Math.sin(angle),
+      rotate: angle * (180 / Math.PI) + 90,
+    }
+  }
 
   // Handle preset selection
   const handlePresetChange = (value: PresetKey) => {
@@ -64,36 +103,13 @@ export function CircleBreathing({
     }
   }
 
-  // Calculate circle scale based on breathing phase
-  const getCircleScale = () => {
-    const baseScale = 0.6
-    const maxScale = 1
-
-    if (currentStep === 0) {
-      // Breathing in
-      return baseScale + (maxScale - baseScale) * (progress / 100)
-    } else if (currentStep === 2) {
-      // Breathing out
-      return maxScale - (maxScale - baseScale) * (progress / 100)
-    }
-    return currentStep === 1 ? maxScale : baseScale // Hold phases
-  }
-
   const handleUpdateDurations = () => {
     if (onUpdateDurations) {
       onUpdateDurations([breatheInDuration, holdDuration, breatheOutDuration])
     }
   }
 
-  // Generate particles for visual effect
-  const particles = Array.from({ length: 12 }).map((_, i) => {
-    const angle = i * 30 * (Math.PI / 180)
-    return {
-      x: Math.cos(angle) * radius,
-      y: Math.sin(angle) * radius,
-      delay: i * 0.1,
-    }
-  })
+  const position = getPosition()
 
   return (
     <div className={cn("relative", className)} style={{ width: size, height: size }}>
@@ -107,7 +123,7 @@ export function CircleBreathing({
           </SheetTrigger>
           <SheetContent>
             <SheetHeader>
-              <SheetTitle>Breathing Settings</SheetTitle>
+              <SheetTitle>{t.ui.settings}</SheetTitle>
               <SheetDescription>Choose a preset or customize your breathing pattern</SheetDescription>
             </SheetHeader>
             <div className="py-6 space-y-6">
@@ -121,7 +137,7 @@ export function CircleBreathing({
                   <SelectContent>
                     {Object.entries(breathingPresets).map(([key, preset]) => (
                       <SelectItem key={key} value={key}>
-                        {preset.name}
+                        {t.ui.presets[key as PresetKey] || preset.name}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -133,12 +149,13 @@ export function CircleBreathing({
               <div className="space-y-1">
                 <Label>Current Pattern:</Label>
                 <p className="text-sm text-muted-foreground">
-                  Inhale ({breatheInDuration}s) - Hold ({holdDuration}s) - Exhale ({breatheOutDuration}s)
+                  {t.ui.breatheIn} ({breatheInDuration}s) - {t.ui.hold} ({holdDuration}s) - {t.ui.breatheOut} (
+                  {breatheOutDuration}s)
                 </p>
               </div>
 
               <div className="space-y-2">
-                <Label>Breathe In Duration</Label>
+                <Label>{t.ui.duration.breatheIn}</Label>
                 <Slider
                   min={2}
                   max={10}
@@ -149,11 +166,13 @@ export function CircleBreathing({
                     setSelectedPreset("custom")
                   }}
                 />
-                <span className="text-sm text-muted-foreground">{breatheInDuration} seconds</span>
+                <span className="text-sm text-muted-foreground">
+                  {breatheInDuration} {t.ui.duration.seconds}
+                </span>
               </div>
 
               <div className="space-y-2">
-                <Label>Hold Duration</Label>
+                <Label>{t.ui.duration.hold}</Label>
                 <Slider
                   min={0}
                   max={10}
@@ -164,11 +183,13 @@ export function CircleBreathing({
                     setSelectedPreset("custom")
                   }}
                 />
-                <span className="text-sm text-muted-foreground">{holdDuration} seconds</span>
+                <span className="text-sm text-muted-foreground">
+                  {holdDuration} {t.ui.duration.seconds}
+                </span>
               </div>
 
               <div className="space-y-2">
-                <Label>Breathe Out Duration</Label>
+                <Label>{t.ui.duration.breatheOut}</Label>
                 <Slider
                   min={2}
                   max={10}
@@ -179,41 +200,45 @@ export function CircleBreathing({
                     setSelectedPreset("custom")
                   }}
                 />
-                <span className="text-sm text-muted-foreground">{breatheOutDuration} seconds</span>
+                <span className="text-sm text-muted-foreground">
+                  {breatheOutDuration} {t.ui.duration.seconds}
+                </span>
               </div>
 
               <Button onClick={handleUpdateDurations} className="w-full">
-                Apply Changes
+                {t.ui.apply}
               </Button>
             </div>
           </SheetContent>
         </Sheet>
       </div>
 
-      {/* Main container with gradient background */}
-      <div className="absolute inset-0 rounded-full overflow-hidden">
+      {/* Background glow effect */}
+      <div className={cn("absolute inset-0 transition-opacity duration-500", isPlaying ? "opacity-30" : "opacity-0")}>
         <div
-          className="absolute inset-0 transition-opacity duration-500"
+          className="absolute inset-0 rounded-full blur-3xl"
           style={{
-            background: `radial-gradient(circle at center, 
-              rgba(244,114,182,0.2) 0%, 
-              rgba(244,114,182,0.1) 50%, 
-              rgba(244,114,182,0) 100%
-            )`,
-            opacity: isPlaying ? 1 : 0,
+            background: "radial-gradient(circle, rgba(244,114,182,0.4) 0%, rgba(244,114,182,0) 70%)",
           }}
         />
       </div>
 
-      {/* SVG container for circles and effects */}
-      <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} className="absolute">
+      {/* Circle outline */}
+      <svg
+        width={size}
+        height={size}
+        viewBox={`0 0 ${size} ${size}`}
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        className="absolute"
+      >
         <defs>
-          <radialGradient id="circleGradient" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stopColor="currentColor" stopOpacity="0.2" />
-            <stop offset="100%" stopColor="currentColor" stopOpacity="0" />
-          </radialGradient>
-
-          <filter id="glow">
+          <linearGradient id="circleGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#ec4899" />
+            <stop offset="50%" stopColor="#f472b6" />
+            <stop offset="100%" stopColor="#fb7185" />
+          </linearGradient>
+          <filter id="circleGlow">
             <feGaussianBlur stdDeviation="3" result="coloredBlur" />
             <feMerge>
               <feMergeNode in="coloredBlur" />
@@ -222,160 +247,119 @@ export function CircleBreathing({
           </filter>
         </defs>
 
-        {/* Ripple effect circles */}
-        <AnimatePresence>
-          {isPlaying && currentStep === 0 && (
-            <>
-              {[0, 1, 2].map((i) => (
-                <motion.circle
-                  key={`ripple-${i}`}
-                  cx={center}
-                  cy={center}
-                  r={radius}
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1"
-                  initial={{ strokeOpacity: 0.3, scale: 0.8 }}
-                  animate={{
-                    strokeOpacity: 0,
-                    scale: 1.2,
-                  }}
-                  transition={{
-                    duration: 3,
-                    delay: i * 1,
-                    repeat: Number.POSITIVE_INFINITY,
-                    ease: "easeOut",
-                  }}
-                />
-              ))}
-            </>
-          )}
-        </AnimatePresence>
-
-        {/* Base circle */}
-        <circle cx={center} cy={center} r={radius} fill="url(#circleGradient)" className="opacity-30" />
-
-        {/* Progress circle */}
+        {/* Background circle */}
         <circle
           cx={center}
           cy={center}
           r={radius}
-          fill="none"
           stroke="currentColor"
-          strokeWidth={3}
           strokeOpacity={0.2}
-          filter="url(#glow)"
-        />
-
-        <motion.circle
-          cx={center}
-          cy={center}
-          r={radius}
+          strokeWidth={2}
           fill="none"
-          stroke="currentColor"
-          strokeWidth={3}
-          strokeDasharray={circumference}
-          strokeDashoffset={circumference * (1 - progress / 100)}
-          className="origin-center"
-          style={{ rotate: -90 }}
-          filter="url(#glow)"
         />
 
-        {/* Breathing circle */}
-        <motion.circle
-          cx={center}
-          cy={center}
-          r={radius * 0.8}
-          fill="currentColor"
-          fillOpacity={0.15}
-          animate={{
-            scale: getCircleScale(),
-          }}
-          transition={{
-            type: "spring",
-            stiffness: 60,
-            damping: 12,
-          }}
-          style={{
-            originX: center,
-            originY: center,
-          }}
-          filter="url(#glow)"
+        {/* Active segment highlight */}
+        <motion.path
+          d={(() => {
+            const startAngle = currentStep * 120 - 90
+            const endAngle = startAngle + (progress / 100) * 120
+            const start = {
+              x: center + radius * Math.cos((startAngle * Math.PI) / 180),
+              y: center + radius * Math.sin((startAngle * Math.PI) / 180),
+            }
+            const end = {
+              x: center + radius * Math.cos((endAngle * Math.PI) / 180),
+              y: center + radius * Math.sin((endAngle * Math.PI) / 180),
+            }
+            const largeArcFlag = progress > 50 ? 1 : 0
+            return `M ${start.x} ${start.y} A ${radius} ${radius} 0 ${largeArcFlag} 1 ${end.x} ${end.y}`
+          })()}
+          stroke="url(#circleGradient)"
+          strokeWidth={4}
+          strokeLinecap="round"
+          filter="url(#circleGlow)"
+          fill="none"
         />
-
-        {/* Particle effects */}
-        {isPlaying && currentStep === 0 && (
-          <>
-            {particles.map((particle, i) => (
-              <motion.circle
-                key={i}
-                cx={center + particle.x}
-                cy={center + particle.y}
-                r={2}
-                fill="currentColor"
-                initial={{ scale: 0, opacity: 0 }}
-                animate={{
-                  scale: [0, 1, 0],
-                  opacity: [0, 0.5, 0],
-                }}
-                transition={{
-                  duration: 2,
-                  delay: particle.delay,
-                  repeat: Number.POSITIVE_INFINITY,
-                  ease: "easeOut",
-                }}
-              />
-            ))}
-          </>
-        )}
       </svg>
 
-      {/* Breathing instruction */}
-      <div className="absolute inset-0 flex flex-col items-center justify-center gap-2">
+      {/* Moving dot with glow effects */}
+      <div className="absolute">
+        {/* Outer glow */}
         <motion.div
-          className="text-2xl sm:text-3xl md:text-4xl font-medium"
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{
-            opacity: 1,
-            scale: getCircleScale(),
+          className="absolute w-16 h-16 rounded-full -translate-x-8 -translate-y-8"
+          style={{
+            background: "radial-gradient(circle, rgba(236,72,153,0.15) 0%, rgba(236,72,153,0) 70%)",
           }}
-          transition={{
-            type: "spring",
-            stiffness: 60,
-            damping: 12,
-          }}
-        >
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={currentStep}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.2 }}
-            >
-              {currentStep === 0 ? "Breathe In" : currentStep === 1 ? "Hold" : "Breathe Out"}
-            </motion.div>
-          </AnimatePresence>
-        </motion.div>
+          animate={position}
+          transition={{ type: "linear", duration: 0.1 }}
+        />
 
+        {/* Medium glow */}
         <motion.div
-          className="text-base sm:text-lg md:text-xl text-muted-foreground"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-        >
-          {breathingPresets[selectedPreset].name}
-        </motion.div>
+          className="absolute w-12 h-12 rounded-full -translate-x-6 -translate-y-6"
+          style={{
+            background: "radial-gradient(circle, rgba(236,72,153,0.2) 0%, rgba(236,72,153,0) 70%)",
+          }}
+          animate={position}
+          transition={{ type: "linear", duration: 0.1 }}
+        />
+
+        {/* Inner glow */}
+        <motion.div
+          className="absolute w-8 h-8 bg-pink-500/20 rounded-full -translate-x-4 -translate-y-4 blur-sm"
+          animate={position}
+          transition={{ type: "linear", duration: 0.1 }}
+        />
+
+        {/* Main dot */}
+        <motion.div
+          className="absolute w-4 h-4 rounded-full -translate-x-2 -translate-y-2"
+          style={{
+            background: "linear-gradient(45deg, #ec4899, #f472b6)",
+            boxShadow: "0 0 20px rgba(236,72,153,0.5)",
+          }}
+          animate={position}
+          transition={{ type: "linear", duration: 0.1 }}
+        />
       </div>
 
-      {/* Duration display */}
-      <div className="mt-4 flex justify-center gap-2 text-sm">
-        <div className="flex items-center gap-1 opacity-60 bg-background/50 px-3 py-1 rounded-full backdrop-blur-sm">
-          <span>{breatheInDuration}s</span>
-          <span>•</span>
-          <span>{holdDuration}s</span>
-          <span>•</span>
-          <span>{breatheOutDuration}s</span>
-        </div>
+      {/* Step labels */}
+      {[0, 1, 2].map((index) => {
+        const instruction = getInstruction(index)
+        const labelPosition = getLabelPosition(index)
+
+        return (
+          <div
+            key={index}
+            className={cn(
+              "absolute transform -translate-x-1/2 -translate-y-1/2 transition-all duration-300 px-3 py-1.5 rounded-full",
+              currentStep === index
+                ? "bg-pink-500/10 text-pink-700 dark:text-pink-300 scale-110"
+                : "opacity-40 scale-100",
+            )}
+            style={{
+              left: labelPosition.x,
+              top: labelPosition.y,
+              transform: `translate(-50%, -50%) rotate(${labelPosition.rotate}deg)`,
+            }}
+          >
+            <span style={{ transform: `rotate(${-labelPosition.rotate}deg)`, display: "block" }}>{instruction}</span>
+          </div>
+        )
+      })}
+
+      {/* Progress indicators */}
+      <div className="absolute inset-x-0 -bottom-8 flex justify-center gap-2">
+        {[0, 1, 2].map((step) => (
+          <div key={step} className="h-1 w-12 rounded-full overflow-hidden bg-pink-100 dark:bg-pink-950">
+            <div
+              className="h-full bg-gradient-to-r from-pink-500 to-pink-400 transition-all duration-100"
+              style={{
+                width: currentStep === step ? `${progress}%` : "0%",
+              }}
+            />
+          </div>
+        ))}
       </div>
     </div>
   )

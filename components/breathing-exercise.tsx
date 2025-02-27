@@ -1,7 +1,6 @@
 "use client"
 
 import type React from "react"
-
 import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { DialogHeader, DialogTitle } from "@/components/ui/dialog"
@@ -17,6 +16,7 @@ import { CircleBreathing } from "@/components/techniques/circle-breathing"
 import { LungBreathing } from "@/components/techniques/lung-breathing"
 import { StopBreathing } from "@/components/techniques/stop-breathing"
 import { motion } from "framer-motion"
+import { translations } from "@/lib/translations/index"
 
 interface BreathingExerciseProps {
   technique: {
@@ -30,15 +30,24 @@ interface BreathingExerciseProps {
   onClose: () => void
   onPrevious: () => void
   onNext: () => void
+  language: string
 }
 
-export function BreathingExercise({ technique, onClose, onPrevious, onNext }: BreathingExerciseProps) {
+export function BreathingExercise({ technique, onClose, onPrevious, onNext, language }: BreathingExerciseProps) {
   const [isPlaying, setIsPlaying] = useState(false)
   const [currentStep, setCurrentStep] = useState(0)
   const [progress, setProgress] = useState(0)
   const [customDurations, setCustomDurations] = useState<number[]>([])
   const [sessionTime, setSessionTime] = useState(0)
   const [cyclesCompleted, setCyclesCompleted] = useState(0)
+
+  const t = translations[language] || translations["en"]
+
+  const getStepText = (step: number) => {
+    if (step === 0) return t?.ui?.breatheIn || "Breathe In"
+    if (step === 1) return t?.ui?.hold || "Hold"
+    return t?.ui?.breatheOut || "Breathe Out"
+  }
 
   // Session timer
   useEffect(() => {
@@ -99,98 +108,35 @@ export function BreathingExercise({ technique, onClose, onPrevious, onNext }: Br
   }
 
   const renderBreathingAnimation = () => {
+    const commonProps = {
+      isPlaying,
+      currentStep,
+      progress,
+      className: technique.textColor,
+      language,
+    }
+
     switch (technique.id) {
       case "square":
-        return (
-          <SquareBreathing
-            isPlaying={isPlaying}
-            currentStep={currentStep}
-            progress={progress}
-            className={technique.textColor}
-          />
-        )
+        return <SquareBreathing {...commonProps} />
       case "hexagon":
-        return (
-          <HexagonBreathing
-            isPlaying={isPlaying}
-            currentStep={currentStep}
-            progress={progress}
-            className={technique.textColor}
-          />
-        )
+        return <HexagonBreathing {...commonProps} />
       case "triangle":
-        return (
-          <TriangleBreathing
-            isPlaying={isPlaying}
-            currentStep={currentStep}
-            progress={progress}
-            className={technique.textColor}
-          />
-        )
+        return <TriangleBreathing {...commonProps} />
       case "star":
-        return (
-          <StarBreathing
-            isPlaying={isPlaying}
-            currentStep={currentStep}
-            progress={progress}
-            className={technique.textColor}
-          />
-        )
+        return <StarBreathing {...commonProps} />
       case "infinity":
-        return (
-          <InfinityBreathing
-            isPlaying={isPlaying}
-            currentStep={currentStep}
-            progress={progress}
-            className={technique.textColor}
-          />
-        )
+        return <InfinityBreathing {...commonProps} />
       case "heart":
-        return (
-          <HeartBreathing
-            isPlaying={isPlaying}
-            currentStep={currentStep}
-            progress={progress}
-            className={technique.textColor}
-          />
-        )
+        return <HeartBreathing {...commonProps} />
       case "flower":
-        return (
-          <FlowerBreathing
-            isPlaying={isPlaying}
-            currentStep={currentStep}
-            progress={progress}
-            className={technique.textColor}
-          />
-        )
+        return <FlowerBreathing {...commonProps} />
       case "circle":
-        return (
-          <CircleBreathing
-            isPlaying={isPlaying}
-            currentStep={currentStep}
-            progress={progress}
-            className={technique.textColor}
-            onUpdateDurations={handleUpdateDurations}
-          />
-        )
+        return <CircleBreathing {...commonProps} onUpdateDurations={handleUpdateDurations} />
       case "lungs":
-        return (
-          <LungBreathing
-            isPlaying={isPlaying}
-            currentStep={currentStep}
-            progress={progress}
-            className={technique.textColor}
-          />
-        )
+        return <LungBreathing {...commonProps} />
       case "stop":
-        return (
-          <StopBreathing
-            isPlaying={isPlaying}
-            currentStep={currentStep}
-            progress={progress}
-            className={technique.textColor}
-          />
-        )
+        return <StopBreathing {...commonProps} />
       default:
         return (
           <>
@@ -211,7 +157,7 @@ export function BreathingExercise({ technique, onClose, onPrevious, onNext }: Br
   }
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-[60vh] p-4 sm:p-6 md:p-8 relative w-full">
+    <div className="flex flex-col items-center justify-center p-2 sm:p-4 md:p-6 relative w-full">
       {/* Navigation arrows */}
       <Button
         variant="ghost"
@@ -230,50 +176,54 @@ export function BreathingExercise({ technique, onClose, onPrevious, onNext }: Br
         <ChevronRight className="h-8 w-8" />
       </Button>
 
-      <DialogHeader className="space-y-1">
-        <DialogTitle className="text-3xl font-light tracking-wider text-left pl-4">{technique.name}</DialogTitle>
+      <DialogHeader className="space-y-0.5">
+        <DialogTitle className="text-xl sm:text-2xl md:text-3xl font-light tracking-wider text-left pl-2 sm:pl-4">
+          {technique.name}
+        </DialogTitle>
       </DialogHeader>
 
       {/* Session stats */}
-      <div className="w-full max-w-md mx-auto mb-6 flex items-center justify-center gap-8">
-        <div className="flex flex-col items-center gap-2">
-          <div className="flex items-center justify-center w-16 h-16 rounded-full bg-background/50 backdrop-blur-sm shadow-sm">
-            <Timer className="h-6 w-6 text-muted-foreground" />
+      <div className="w-full max-w-md mx-auto mb-2 sm:mb-4 flex items-center justify-center gap-4 sm:gap-6">
+        <div className="flex flex-col items-center gap-1 sm:gap-2">
+          <div className="flex items-center justify-center w-10 h-10 sm:w-14 sm:h-14 rounded-full bg-background/50 backdrop-blur-sm shadow-sm">
+            <Timer className="h-4 w-4 sm:h-5 sm:w-5 text-muted-foreground" />
           </div>
           <div className="text-center">
-            <div className="text-2xl font-semibold">{formatTime(sessionTime)}</div>
-            <div className="text-sm text-muted-foreground">Session Time</div>
+            <div className="text-base sm:text-xl font-semibold">{formatTime(sessionTime)}</div>
+            <div className="text-xs sm:text-sm text-muted-foreground">{t?.ui?.sessionTime || "Session Time"}</div>
           </div>
         </div>
-        <div className="flex flex-col items-center gap-2">
-          <div className="flex items-center justify-center w-16 h-16 rounded-full bg-background/50 backdrop-blur-sm shadow-sm">
-            <RotateCw className="h-6 w-6 text-muted-foreground" />
+        <div className="flex flex-col items-center gap-1 sm:gap-2">
+          <div className="flex items-center justify-center w-10 h-10 sm:w-14 sm:h-14 rounded-full bg-background/50 backdrop-blur-sm shadow-sm">
+            <RotateCw className="h-4 w-4 sm:h-5 sm:w-5 text-muted-foreground" />
           </div>
           <div className="text-center">
-            <div className="text-2xl font-semibold">{cyclesCompleted}</div>
-            <div className="text-sm text-muted-foreground">Cycles</div>
+            <div className="text-base sm:text-xl font-semibold">{cyclesCompleted}</div>
+            <div className="text-xs sm:text-sm text-muted-foreground">{t?.ui?.cycles || "Cycles"}</div>
           </div>
         </div>
       </div>
 
-      <div className="flex flex-col items-center justify-center gap-6 sm:gap-8 md:gap-10 w-full">
-        <div className="relative w-64 h-64 sm:w-72 sm:h-72 md:w-96 md:h-96 flex items-center justify-center">
+      <div className="flex flex-col items-center justify-center gap-2 sm:gap-4 w-full">
+        <div className="relative w-48 h-48 sm:w-56 sm:h-56 md:w-72 md:h-72 flex items-center justify-center">
           {renderBreathingAnimation()}
         </div>
 
-        <div className="text-center">
-          <h3 className="text-xl sm:text-2xl md:text-3xl font-semibold mb-2">{technique.steps[currentStep]}</h3>
-          <p className="text-muted-foreground text-base sm:text-lg">
+        <div className="text-center mt-1 sm:mt-2">
+          <h3 className="text-base sm:text-xl md:text-2xl font-semibold mb-0.5 sm:mb-1">
+            {technique.steps[currentStep]}
+          </h3>
+          <p className="text-muted-foreground text-sm sm:text-base">
             {Math.ceil(getCurrentDuration() - (progress / 100) * getCurrentDuration())}s
           </p>
         </div>
 
-        <div className="flex gap-6 w-full justify-center">
-          <Button variant="outline" size="lg" onClick={() => setIsPlaying(!isPlaying)}>
-            {isPlaying ? <Pause className="h-5 w-5" /> : <Play className="h-5 w-5" />}
+        <div className="flex gap-3 sm:gap-4 w-full justify-center mt-2 sm:mt-4">
+          <Button variant="outline" size="default" onClick={() => setIsPlaying(!isPlaying)}>
+            {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
           </Button>
-          <Button variant="outline" size="lg" onClick={resetExercise}>
-            <RotateCcw className="h-5 w-5" />
+          <Button variant="outline" size="default" onClick={resetExercise}>
+            <RotateCcw className="h-4 w-4" />
           </Button>
         </div>
       </div>
