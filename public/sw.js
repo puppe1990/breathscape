@@ -1,7 +1,16 @@
 const CACHE_NAME = "breathscape-v1"
 
 // Add all the files you want to cache
-const urlsToCache = ["/", "/icons/icon-192x192.png", "/icons/icon-384x384.png", "/icons/icon-512x512.png"]
+const urlsToCache = [
+  "/",
+  "/about",
+  "/privacy",
+  "/terms",
+  "/contact",
+  "/icons/icon-192x192.png",
+  "/icons/icon-384x384.png",
+  "/icons/icon-512x512.png",
+]
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
