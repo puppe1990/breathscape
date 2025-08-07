@@ -135,7 +135,7 @@ export function HexagonBreathing({
           filter="url(#hexagonGlow)"
           initial={{ pathLength: 0 }}
           animate={{ pathLength: progress / 100 }}
-          transition={{ duration: 0.1, ease: "linear" }}
+          transition={{ type: "tween", duration: 0.1, ease: "linear" }}
         />
       </svg>
 
@@ -148,7 +148,7 @@ export function HexagonBreathing({
             background: "radial-gradient(circle, rgba(16,185,129,0.15) 0%, rgba(16,185,129,0) 70%)",
           }}
           animate={position}
-          transition={{ type: "linear", duration: 0.1 }}
+          transition={{ type: "spring", stiffness: 120, damping: 20, mass: 0.6 }}
         />
 
         {/* Medium glow */}
@@ -158,14 +158,14 @@ export function HexagonBreathing({
             background: "radial-gradient(circle, rgba(16,185,129,0.2) 0%, rgba(16,185,129,0) 70%)",
           }}
           animate={position}
-          transition={{ type: "linear", duration: 0.1 }}
+          transition={{ type: "spring", stiffness: 140, damping: 22, mass: 0.6 }}
         />
 
         {/* Inner glow */}
         <motion.div
           className="absolute w-8 h-8 bg-emerald-500/20 rounded-full -translate-x-4 -translate-y-4 blur-sm"
           animate={position}
-          transition={{ type: "linear", duration: 0.1 }}
+          transition={{ type: "spring", stiffness: 160, damping: 24, mass: 0.55 }}
         />
 
         {/* Main dot */}
@@ -176,7 +176,7 @@ export function HexagonBreathing({
             boxShadow: "0 0 20px rgba(16,185,129,0.5)",
           }}
           animate={position}
-          transition={{ type: "linear", duration: 0.1 }}
+          transition={{ type: "spring", stiffness: 200, damping: 26, mass: 0.5 }}
         />
       </div>
 
@@ -189,10 +189,10 @@ export function HexagonBreathing({
           <div
             key={index}
             className={cn(
-              "absolute transform -translate-x-1/2 -translate-y-1/2 transition-all duration-300 px-3 py-1.5 rounded-full",
+              "absolute transform -translate-x-1/2 -translate-y-1/2 transition-all duration-400 px-3 py-1.5 rounded-full",
               currentStep === index
-                ? "bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 scale-110"
-                : "opacity-40 scale-100",
+                ? "bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 scale-110 shadow-sm"
+                : "opacity-50 scale-95",
             )}
             style={{
               left: labelPosition.x,
@@ -200,7 +200,13 @@ export function HexagonBreathing({
               transform: `translate(-50%, -50%) rotate(${labelPosition.rotate}deg)`,
             }}
           >
-            <span style={{ transform: `rotate(${-labelPosition.rotate}deg)`, display: "block" }}>{instruction}</span>
+            <motion.span
+              style={{ display: "block" }}
+              animate={{ transform: `rotate(${-labelPosition.rotate}deg)`, opacity: currentStep === index ? 1 : 0.7 }}
+              transition={{ duration: 0.25 }}
+            >
+              {instruction}
+            </motion.span>
           </div>
         )
       })}

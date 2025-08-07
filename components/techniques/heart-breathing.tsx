@@ -118,7 +118,7 @@ export function HeartBreathing({ size = 200, isPlaying, currentStep, progress, c
             background: "radial-gradient(circle, rgba(236,72,153,0.15) 0%, rgba(236,72,153,0) 70%)",
           }}
           animate={position}
-          transition={{ type: "linear", duration: 0.1 }}
+          transition={{ type: "spring", stiffness: 120, damping: 20, mass: 0.6 }}
         />
 
         {/* Medium glow */}
@@ -128,14 +128,14 @@ export function HeartBreathing({ size = 200, isPlaying, currentStep, progress, c
             background: "radial-gradient(circle, rgba(236,72,153,0.2) 0%, rgba(236,72,153,0) 70%)",
           }}
           animate={position}
-          transition={{ type: "linear", duration: 0.1 }}
+          transition={{ type: "spring", stiffness: 140, damping: 22, mass: 0.6 }}
         />
 
         {/* Inner glow */}
         <motion.div
           className="absolute w-8 h-8 bg-pink-500/20 rounded-full -translate-x-4 -translate-y-4 blur-sm"
           animate={position}
-          transition={{ type: "linear", duration: 0.1 }}
+          transition={{ type: "spring", stiffness: 160, damping: 24, mass: 0.55 }}
         />
 
         {/* Main dot */}
@@ -146,7 +146,7 @@ export function HeartBreathing({ size = 200, isPlaying, currentStep, progress, c
             boxShadow: "0 0 20px rgba(236,72,153,0.5)",
           }}
           animate={position}
-          transition={{ type: "linear", duration: 0.1 }}
+          transition={{ type: "spring", stiffness: 200, damping: 26, mass: 0.5 }}
         />
       </div>
 
@@ -155,8 +155,8 @@ export function HeartBreathing({ size = 200, isPlaying, currentStep, progress, c
         <div className="absolute inset-x-0 top-0 flex justify-center">
           <div
             className={cn(
-              "px-4 py-2 rounded-full transition-all duration-300",
-              currentStep === 0 ? "bg-pink-500/10 text-pink-700 dark:text-pink-300 scale-110" : "opacity-40 scale-100",
+              "px-4 py-2 rounded-full transition-all duration-400",
+              currentStep === 0 ? "bg-pink-500/10 text-pink-700 dark:text-pink-300 scale-110 shadow-sm" : "opacity-50 scale-95",
             )}
           >
             {t.ui.breatheIn}
@@ -165,8 +165,8 @@ export function HeartBreathing({ size = 200, isPlaying, currentStep, progress, c
         <div className="absolute inset-x-0 bottom-0 flex justify-center">
           <div
             className={cn(
-              "px-4 py-2 rounded-full transition-all duration-300",
-              currentStep === 2 ? "bg-pink-500/10 text-pink-700 dark:text-pink-300 scale-110" : "opacity-40 scale-100",
+              "px-4 py-2 rounded-full transition-all duration-400",
+              currentStep === 2 ? "bg-pink-500/10 text-pink-700 dark:text-pink-300 scale-110 shadow-sm" : "opacity-50 scale-95",
             )}
           >
             {t.ui.breatheOut}

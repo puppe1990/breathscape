@@ -108,7 +108,7 @@ export function InfinityBreathing({ size = 200, isPlaying, currentStep, progress
             background: "radial-gradient(circle, rgba(6,182,212,0.15) 0%, rgba(6,182,212,0) 70%)",
           }}
           animate={position}
-          transition={{ type: "linear", duration: 0.1 }}
+          transition={{ type: "spring", stiffness: 120, damping: 20, mass: 0.6 }}
         />
 
         {/* Medium glow */}
@@ -118,14 +118,14 @@ export function InfinityBreathing({ size = 200, isPlaying, currentStep, progress
             background: "radial-gradient(circle, rgba(6,182,212,0.2) 0%, rgba(6,182,212,0) 70%)",
           }}
           animate={position}
-          transition={{ type: "linear", duration: 0.1 }}
+          transition={{ type: "spring", stiffness: 140, damping: 22, mass: 0.6 }}
         />
 
         {/* Inner glow */}
         <motion.div
           className="absolute w-8 h-8 bg-cyan-500/20 rounded-full -translate-x-4 -translate-y-4 blur-sm"
           animate={position}
-          transition={{ type: "linear", duration: 0.1 }}
+          transition={{ type: "spring", stiffness: 160, damping: 24, mass: 0.55 }}
         />
 
         {/* Main dot */}
@@ -136,18 +136,18 @@ export function InfinityBreathing({ size = 200, isPlaying, currentStep, progress
             boxShadow: "0 0 20px rgba(6,182,212,0.5)",
           }}
           animate={position}
-          transition={{ type: "linear", duration: 0.1 }}
+          transition={{ type: "spring", stiffness: 200, damping: 26, mass: 0.5 }}
         />
       </div>
 
       {/* Breathing phase indicators */}
       <div className="absolute inset-0">
         {/* Left loop - Breathe Out */}
-        <div
+          <div
           className={cn(
-            "absolute left-[20%] top-1/2 -translate-x-1/2 -translate-y-1/2 transition-all duration-300",
+              "absolute left-[20%] top-1/2 -translate-x-1/2 -translate-y-1/2 transition-all duration-400",
             "flex flex-col items-center gap-2",
-            currentStep === 1 ? "opacity-100 scale-110" : "opacity-40 scale-100",
+              currentStep === 1 ? "opacity-100 scale-110 shadow-sm" : "opacity-50 scale-95",
           )}
         >
           <div className="text-cyan-600 dark:text-cyan-400 font-medium">{t.ui.breatheOut}</div>
@@ -162,11 +162,11 @@ export function InfinityBreathing({ size = 200, isPlaying, currentStep, progress
         </div>
 
         {/* Right loop - Breathe In */}
-        <div
+          <div
           className={cn(
-            "absolute left-[80%] top-1/2 -translate-x-1/2 -translate-y-1/2 transition-all duration-300",
+              "absolute left-[80%] top-1/2 -translate-x-1/2 -translate-y-1/2 transition-all duration-400",
             "flex flex-col items-center gap-2",
-            currentStep === 0 ? "opacity-100 scale-110" : "opacity-40 scale-100",
+              currentStep === 0 ? "opacity-100 scale-110 shadow-sm" : "opacity-50 scale-95",
           )}
         >
           <div className="text-cyan-600 dark:text-cyan-400 font-medium">{t.ui.breatheIn}</div>

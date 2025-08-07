@@ -209,12 +209,7 @@ export function LungBreathing({ size = 200, isPlaying, currentStep, progress, cl
                     scale: [0, 1, 0],
                     opacity: [0, 0.5, 0],
                   }}
-                  transition={{
-                    duration: 2,
-                    delay: i * 0.1,
-                    repeat: Number.POSITIVE_INFINITY,
-                    ease: "easeOut",
-                  }}
+                  transition={{ duration: 2, delay: i * 0.1, repeat: Number.POSITIVE_INFINITY, ease: "easeOut" }}
                 />
               )
             })}
@@ -227,8 +222,8 @@ export function LungBreathing({ size = 200, isPlaying, currentStep, progress, cl
         <div className="absolute inset-x-0 top-0 flex justify-center">
           <div
             className={cn(
-              "px-4 py-2 rounded-full transition-all duration-300",
-              currentStep === 0 ? "bg-red-500/10 text-red-700 dark:text-red-300 scale-110" : "opacity-40 scale-100",
+              "px-4 py-2 rounded-full transition-all duration-400",
+              currentStep === 0 ? "bg-red-500/10 text-red-700 dark:text-red-300 scale-110 shadow-sm" : "opacity-50 scale-95",
             )}
           >
             {t.ui.breatheIn}
@@ -237,8 +232,8 @@ export function LungBreathing({ size = 200, isPlaying, currentStep, progress, cl
         <div className="absolute inset-x-0 bottom-0 flex justify-center">
           <div
             className={cn(
-              "px-4 py-2 rounded-full transition-all duration-300",
-              currentStep === 2 ? "bg-red-500/10 text-red-700 dark:text-red-300 scale-110" : "opacity-40 scale-100",
+              "px-4 py-2 rounded-full transition-all duration-400",
+              currentStep === 2 ? "bg-red-500/10 text-red-700 dark:text-red-300 scale-110 shadow-sm" : "opacity-50 scale-95",
             )}
           >
             {t.ui.breatheOut}

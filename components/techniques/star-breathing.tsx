@@ -128,28 +128,19 @@ export function StarBreathing({ size = 200, isPlaying, currentStep, progress, cl
         <motion.div
           className="absolute w-12 h-12 bg-amber-500/20 rounded-full -translate-x-6 -translate-y-6 blur-md"
           animate={position}
-          transition={{
-            type: "linear",
-            duration: 0.1,
-          }}
+          transition={{ type: "spring", stiffness: 120, damping: 20, mass: 0.6 }}
         />
         {/* Inner glow */}
         <motion.div
           className="absolute w-8 h-8 bg-amber-500/30 rounded-full -translate-x-4 -translate-y-4 blur-sm"
           animate={position}
-          transition={{
-            type: "linear",
-            duration: 0.1,
-          }}
+          transition={{ type: "spring", stiffness: 140, damping: 22, mass: 0.6 }}
         />
         {/* Main dot */}
         <motion.div
           className="absolute w-4 h-4 bg-amber-500 rounded-full -translate-x-2 -translate-y-2 shadow-lg shadow-amber-500/50"
           animate={position}
-          transition={{
-            type: "linear",
-            duration: 0.1,
-          }}
+          transition={{ type: "spring", stiffness: 200, damping: 26, mass: 0.5 }}
         />
       </div>
 
@@ -176,8 +167,10 @@ export function StarBreathing({ size = 200, isPlaying, currentStep, progress, cl
           <div
             key={index}
             className={cn(
-              "absolute transform -translate-x-1/2 -translate-y-1/2 transition-all duration-300 px-2 py-1 rounded-full",
-              currentStep === index ? "opacity-100 bg-amber-500/10 text-amber-700 dark:text-amber-300" : "opacity-40",
+              "absolute transform -translate-x-1/2 -translate-y-1/2 transition-all duration-400 px-2 py-1 rounded-full",
+              currentStep === index
+                ? "opacity-100 bg-amber-500/10 text-amber-700 dark:text-amber-300 scale-110 shadow-sm"
+                : "opacity-50 scale-95",
             )}
             style={{
               left: labelPosition.x,
@@ -185,7 +178,13 @@ export function StarBreathing({ size = 200, isPlaying, currentStep, progress, cl
               transform: `translate(-50%, -50%) rotate(${labelPosition.rotate}deg)`,
             }}
           >
-            <span style={{ transform: `rotate(${-labelPosition.rotate}deg)`, display: "block" }}>{instruction}</span>
+            <motion.span
+              style={{ display: "block" }}
+              animate={{ transform: `rotate(${-labelPosition.rotate}deg)`, opacity: currentStep === index ? 1 : 0.7 }}
+              transition={{ duration: 0.25 }}
+            >
+              {instruction}
+            </motion.span>
           </div>
         )
       })}
