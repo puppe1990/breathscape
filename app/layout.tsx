@@ -2,6 +2,7 @@ import type React from "react"
 import type { Metadata, Viewport } from "next"
 import { Inter } from "next/font/google"
 import "./globals.css"
+import Footer from "@/components/footer"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -36,7 +37,12 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         <link rel="apple-touch-startup-image" href="/icons/apple-splash-2048-2732.png" />
       </head>
-      <body className={inter.className}>{children}</body>
+      <body className={`${inter.className} min-h-screen flex flex-col`}>
+        <div className="flex-1 flex flex-col">
+          {children}
+        </div>
+        <Footer />
+      </body>
     </html>
   )
 }
