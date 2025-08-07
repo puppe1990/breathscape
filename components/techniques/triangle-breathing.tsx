@@ -143,7 +143,7 @@ export function TriangleBreathing({
           filter="url(#triangleGlow)"
           initial={{ pathLength: 0 }}
           animate={{ pathLength: progress / 100 }}
-          transition={{ duration: 0.1, ease: "linear" }}
+          transition={{ type: "tween", duration: 0.1, ease: "linear" }}
         />
       </svg>
 
@@ -156,7 +156,7 @@ export function TriangleBreathing({
             background: "radial-gradient(circle, rgba(168,85,247,0.15) 0%, rgba(168,85,247,0) 70%)",
           }}
           animate={position}
-          transition={{ type: "linear", duration: 0.1 }}
+          transition={{ type: "spring", stiffness: 120, damping: 20, mass: 0.6 }}
         />
 
         {/* Medium glow */}
@@ -166,14 +166,14 @@ export function TriangleBreathing({
             background: "radial-gradient(circle, rgba(168,85,247,0.2) 0%, rgba(168,85,247,0) 70%)",
           }}
           animate={position}
-          transition={{ type: "linear", duration: 0.1 }}
+          transition={{ type: "spring", stiffness: 140, damping: 22, mass: 0.6 }}
         />
 
         {/* Inner glow */}
         <motion.div
           className="absolute w-8 h-8 bg-purple-500/20 rounded-full -translate-x-4 -translate-y-4 blur-sm"
           animate={position}
-          transition={{ type: "linear", duration: 0.1 }}
+          transition={{ type: "spring", stiffness: 160, damping: 24, mass: 0.55 }}
         />
 
         {/* Main dot */}
@@ -184,7 +184,7 @@ export function TriangleBreathing({
             boxShadow: "0 0 20px rgba(168,85,247,0.5)",
           }}
           animate={position}
-          transition={{ type: "linear", duration: 0.1 }}
+          transition={{ type: "spring", stiffness: 200, damping: 26, mass: 0.5 }}
         />
       </div>
 
@@ -197,10 +197,10 @@ export function TriangleBreathing({
           <div
             key={index}
             className={cn(
-              "absolute transform -translate-y-1/2 transition-all duration-300 px-3 py-1.5 rounded-full",
+              "absolute transform -translate-y-1/2 transition-all duration-400 px-3 py-1.5 rounded-full",
               currentStep === index
-                ? "bg-purple-500/10 text-purple-700 dark:text-purple-300 scale-110"
-                : "opacity-40 scale-100",
+                ? "bg-purple-500/10 text-purple-700 dark:text-purple-300 scale-110 shadow-sm"
+                : "opacity-50 scale-95",
             )}
             style={{
               left: labelPosition?.x,
@@ -211,7 +211,9 @@ export function TriangleBreathing({
               }, -50%)`,
             }}
           >
-            {instruction}
+            <motion.span animate={{ opacity: currentStep === index ? 1 : 0.7 }} transition={{ duration: 0.25 }}>
+              {instruction}
+            </motion.span>
           </div>
         )
       })}

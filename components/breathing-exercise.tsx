@@ -156,6 +156,23 @@ export function BreathingExercise({ technique, onClose, onPrevious, onNext, lang
     return customDurations[currentStep] || technique.duration
   }
 
+  // Compute a smooth scale for a subtle in/hold/out pulse synced with the step
+  const getBreathScale = () => {
+    const progress01 = Math.min(Math.max(progress / 100, 0), 1)
+    // Common patterns: index 0=in, 1=hold, 2=out, and for 4-step: 0=in, 1=hold, 2=out, 3=hold
+    const inhaleIndex = 0
+    const exhaleIndex = technique.steps.length === 4 ? 2 : 2
+
+    if (currentStep === inhaleIndex) {
+      return 1 + 0.12 * progress01
+    }
+    if (currentStep === exhaleIndex) {
+      return 1.12 - 0.12 * progress01
+    }
+    // Hold
+    return 1.12
+  }
+
   return (
     <div className="flex flex-col items-center justify-center p-2 sm:p-4 md:p-6 relative w-full">
       {/* Navigation arrows */}
@@ -205,9 +222,24 @@ export function BreathingExercise({ technique, onClose, onPrevious, onNext, lang
       </div>
 
       <div className="flex flex-col items-center justify-center gap-2 sm:gap-4 w-full">
-        <div className="relative w-48 h-48 sm:w-56 sm:h-56 md:w-72 md:h-72 flex items-center justify-center">
+        <motion.div
+          className="relative w-48 h-48 sm:w-56 sm:h-56 md:w-72 md:h-72 flex items-center justify-center"
+          animate={{ scale: isPlaying ? getBreathScale() : 1 }}
+          transition={{ type: "spring", stiffness: 120, damping: 20, mass: 0.6 }}
+        >
+          {/* Pulsing background aura synced with breath */}
+          <motion.div
+            className="absolute inset-0 rounded-full"
+            style={{
+              background:
+                "radial-gradient(circle, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0) 60%)",
+              filter: "blur(10px)",
+            }}
+            animate={{ opacity: isPlaying ? 0.6 : 0 }}
+            transition={{ type: "tween", duration: 0.4, ease: "easeInOut" }}
+          />
           {renderBreathingAnimation()}
-        </div>
+        </motion.div>
 
         <div className="text-center mt-1 sm:mt-2">
           <h3 className="text-base sm:text-xl md:text-2xl font-semibold mb-0.5 sm:mb-1">
