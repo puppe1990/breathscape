@@ -12,9 +12,9 @@ export function Header() {
         </div>
 
         <nav className="flex items-center gap-4 text-sm text-muted-foreground">
-          <a href="#" className="hover:text-foreground hover:underline underline-offset-4">
+          <Link href="/about" className="hover:text-foreground hover:underline underline-offset-4">
             About
-          </a>
+          </Link>
           <a href="#" className="hover:text-foreground hover:underline underline-offset-4">
             Contact
           </a>

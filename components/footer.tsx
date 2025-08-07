@@ -1,4 +1,5 @@
 import React from "react"
+import Link from "next/link"
 
 export function Footer() {
   const year = new Date().getFullYear()
@@ -15,12 +16,12 @@ export function Footer() {
         </div>
 
         <nav className="flex items-center gap-4">
-          <a
-            href="#"
+          <Link
+            href="/about"
             className="hover:text-foreground hover:underline underline-offset-4"
           >
             About
-          </a>
+          </Link>
           <a
             href="#"
             className="hover:text-foreground hover:underline underline-offset-4"
