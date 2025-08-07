@@ -159,18 +159,26 @@ export function BreathingExercise({ technique, onClose, onPrevious, onNext, lang
   // Compute a smooth scale for a subtle in/hold/out pulse synced with the step
   const getBreathScale = () => {
     const progress01 = Math.min(Math.max(progress / 100, 0), 1)
-    // Common patterns: index 0=in, 1=hold, 2=out, and for 4-step: 0=in, 1=hold, 2=out, 3=hold
+    // Index 0=in, 1=hold, 2=out, and for 4-step: 3=hold
     const inhaleIndex = 0
-    const exhaleIndex = technique.steps.length === 4 ? 2 : 2
+    const exhaleIndex = 2
 
     if (currentStep === inhaleIndex) {
-      return 1 + 0.12 * progress01
+      // Gentle expansion up to 1.08x
+      return 1 + 0.08 * progress01
     }
     if (currentStep === exhaleIndex) {
-      return 1.12 - 0.12 * progress01
+      // Smooth contraction from 1.08x back to 1.00x
+      return 1.08 - 0.08 * progress01
     }
-    // Hold
-    return 1.12
+    // Hold: maintain a soft expanded state
+    return 1.06
+  }
+
+  const getAuraOpacity = () => {
+    const scaleNow = getBreathScale()
+    const normalized = Math.min(Math.max((scaleNow - 1) / 0.08, 0), 1) // 0..1 based on pulse
+    return 0.15 + 0.35 * normalized
   }
 
   return (
@@ -225,7 +233,7 @@ export function BreathingExercise({ technique, onClose, onPrevious, onNext, lang
         <motion.div
           className="relative w-48 h-48 sm:w-56 sm:h-56 md:w-72 md:h-72 flex items-center justify-center"
           animate={{ scale: isPlaying ? getBreathScale() : 1 }}
-          transition={{ type: "spring", stiffness: 120, damping: 20, mass: 0.6 }}
+          transition={{ type: "spring", stiffness: 90, damping: 18, mass: 0.7 }}
         >
           {/* Pulsing background aura synced with breath */}
           <motion.div
@@ -235,8 +243,8 @@ export function BreathingExercise({ technique, onClose, onPrevious, onNext, lang
                 "radial-gradient(circle, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0) 60%)",
               filter: "blur(10px)",
             }}
-            animate={{ opacity: isPlaying ? 0.6 : 0 }}
-            transition={{ type: "tween", duration: 0.4, ease: "easeInOut" }}
+            animate={{ opacity: isPlaying ? getAuraOpacity() : 0, scale: isPlaying ? getBreathScale() : 1 }}
+            transition={{ type: "tween", duration: 0.3, ease: "easeInOut" }}
           />
           {renderBreathingAnimation()}
         </motion.div>
