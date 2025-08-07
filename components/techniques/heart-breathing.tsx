@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion"
 import { cn } from "@/lib/utils"
+import { translations } from "@/lib/translations/index"
 
 interface HeartBreathingProps {
   size?: number
@@ -9,9 +10,11 @@ interface HeartBreathingProps {
   currentStep: number
   progress: number
   className?: string
+  language: string
 }
 
-export function HeartBreathing({ size = 200, isPlaying, currentStep, progress, className }: HeartBreathingProps) {
+export function HeartBreathing({ size = 200, isPlaying, currentStep, progress, className, language }: HeartBreathingProps) {
+  const t = translations[language] || translations["en"]
   const padding = size * 0.15
   const width = size - padding * 2
   const height = width * 0.9
@@ -156,7 +159,7 @@ export function HeartBreathing({ size = 200, isPlaying, currentStep, progress, c
               currentStep === 0 ? "bg-pink-500/10 text-pink-700 dark:text-pink-300 scale-110" : "opacity-40 scale-100",
             )}
           >
-            Breathe In
+            {t.ui.breatheIn}
           </div>
         </div>
         <div className="absolute inset-x-0 bottom-0 flex justify-center">
@@ -166,7 +169,7 @@ export function HeartBreathing({ size = 200, isPlaying, currentStep, progress, c
               currentStep === 2 ? "bg-pink-500/10 text-pink-700 dark:text-pink-300 scale-110" : "opacity-40 scale-100",
             )}
           >
-            Breathe Out
+            {t.ui.breatheOut}
           </div>
         </div>
       </div>

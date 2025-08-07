@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion"
 import { cn } from "@/lib/utils"
+import { translations } from "@/lib/translations/index"
 
 interface LungBreathingProps {
   size?: number
@@ -9,9 +10,11 @@ interface LungBreathingProps {
   currentStep: number
   progress: number
   className?: string
+  language: string
 }
 
-export function LungBreathing({ size = 200, isPlaying, currentStep, progress, className }: LungBreathingProps) {
+export function LungBreathing({ size = 200, isPlaying, currentStep, progress, className, language }: LungBreathingProps) {
+  const t = translations[language] || translations["en"]
   const padding = size * 0.1
   const width = size - padding * 2
   const height = width * 0.8
@@ -228,7 +231,7 @@ export function LungBreathing({ size = 200, isPlaying, currentStep, progress, cl
               currentStep === 0 ? "bg-red-500/10 text-red-700 dark:text-red-300 scale-110" : "opacity-40 scale-100",
             )}
           >
-            Breathe In
+            {t.ui.breatheIn}
           </div>
         </div>
         <div className="absolute inset-x-0 bottom-0 flex justify-center">
@@ -238,7 +241,7 @@ export function LungBreathing({ size = 200, isPlaying, currentStep, progress, cl
               currentStep === 2 ? "bg-red-500/10 text-red-700 dark:text-red-300 scale-110" : "opacity-40 scale-100",
             )}
           >
-            Breathe Out
+            {t.ui.breatheOut}
           </div>
         </div>
       </div>

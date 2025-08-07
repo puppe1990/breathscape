@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion"
 import { cn } from "@/lib/utils"
+import { translations } from "@/lib/translations/index"
 
 interface InfinityBreathingProps {
   size?: number
@@ -9,9 +10,11 @@ interface InfinityBreathingProps {
   currentStep: number
   progress: number
   className?: string
+  language: string
 }
 
-export function InfinityBreathing({ size = 200, isPlaying, currentStep, progress, className }: InfinityBreathingProps) {
+export function InfinityBreathing({ size = 200, isPlaying, currentStep, progress, className, language }: InfinityBreathingProps) {
+  const t = translations[language] || translations["en"]
   const padding = size * 0.15
   const width = size - padding * 2
   const height = width * 0.4
@@ -147,7 +150,7 @@ export function InfinityBreathing({ size = 200, isPlaying, currentStep, progress
             currentStep === 1 ? "opacity-100 scale-110" : "opacity-40 scale-100",
           )}
         >
-          <div className="text-cyan-600 dark:text-cyan-400 font-medium">Breathe Out</div>
+          <div className="text-cyan-600 dark:text-cyan-400 font-medium">{t.ui.breatheOut}</div>
           <div className="h-1 w-16 rounded-full overflow-hidden bg-cyan-100 dark:bg-cyan-950">
             <div
               className="h-full bg-gradient-to-r from-cyan-500 to-cyan-400 transition-all duration-100"
@@ -166,7 +169,7 @@ export function InfinityBreathing({ size = 200, isPlaying, currentStep, progress
             currentStep === 0 ? "opacity-100 scale-110" : "opacity-40 scale-100",
           )}
         >
-          <div className="text-cyan-600 dark:text-cyan-400 font-medium">Breathe In</div>
+          <div className="text-cyan-600 dark:text-cyan-400 font-medium">{t.ui.breatheIn}</div>
           <div className="h-1 w-16 rounded-full overflow-hidden bg-cyan-100 dark:bg-cyan-950">
             <div
               className="h-full bg-gradient-to-r from-cyan-500 to-cyan-400 transition-all duration-100"

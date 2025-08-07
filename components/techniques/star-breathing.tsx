@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion"
 import { cn } from "@/lib/utils"
+import { translations } from "@/lib/translations/index"
 
 interface StarBreathingProps {
   size?: number
@@ -9,9 +10,11 @@ interface StarBreathingProps {
   currentStep: number
   progress: number
   className?: string
+  language: string
 }
 
-export function StarBreathing({ size = 200, isPlaying, currentStep, progress, className }: StarBreathingProps) {
+export function StarBreathing({ size = 200, isPlaying, currentStep, progress, className, language }: StarBreathingProps) {
+  const t = translations[language] || translations["en"]
   // Calculate star points
   const padding = size * 0.1
   const starSize = size - padding * 2
@@ -70,12 +73,12 @@ export function StarBreathing({ size = 200, isPlaying, currentStep, progress, cl
     switch (step) {
       case 0:
       case 4:
-        return "Breathe In"
+        return t.ui.breatheIn
       case 1:
       case 3:
-        return "Hold"
+        return t.ui.hold
       case 2:
-        return "Breathe Out"
+        return t.ui.breatheOut
       default:
         return ""
     }

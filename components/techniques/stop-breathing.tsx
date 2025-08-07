@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion"
 import { cn } from "@/lib/utils"
+import { translations } from "@/lib/translations/index"
 
 interface StopBreathingProps {
   size?: number
@@ -9,9 +10,11 @@ interface StopBreathingProps {
   currentStep: number
   progress: number
   className?: string
+  language: string
 }
 
-export function StopBreathing({ size = 200, isPlaying, currentStep, progress, className }: StopBreathingProps) {
+export function StopBreathing({ size = 200, isPlaying, currentStep, progress, className, language }: StopBreathingProps) {
+  const t = translations[language] || translations["en"]
   const padding = size * 0.1
   const stopSize = size - padding * 2
   const center = size / 2
@@ -46,15 +49,15 @@ export function StopBreathing({ size = 200, isPlaying, currentStep, progress, cl
     switch (step) {
       case 0:
       case 4:
-        return "Breathe In"
+        return t.ui.breatheIn
       case 1:
       case 3:
       case 5:
       case 7:
-        return "Hold"
+        return t.ui.hold
       case 2:
       case 6:
-        return "Breathe Out"
+        return t.ui.breatheOut
       default:
         return ""
     }
