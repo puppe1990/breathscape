@@ -22,12 +22,12 @@ export function Footer() {
           >
             About
           </Link>
-          <a
-            href="#"
+          <Link
+            href="/privacy"
             className="hover:text-foreground hover:underline underline-offset-4"
           >
             Privacy
-          </a>
+          </Link>
           <a
             href="#"
             className="hover:text-foreground hover:underline underline-offset-4"
