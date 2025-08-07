@@ -28,12 +28,12 @@ export function Footer() {
           >
             Privacy
           </Link>
-          <a
-            href="#"
+          <Link
+            href="/terms"
             className="hover:text-foreground hover:underline underline-offset-4"
           >
             Terms
-          </a>
+          </Link>
           <a
             href="#"
             aria-label="GitHub"

@@ -15,9 +15,9 @@ export function Header() {
           <Link href="/about" className="hover:text-foreground hover:underline underline-offset-4">
             About
           </Link>
-          <a href="#" className="hover:text-foreground hover:underline underline-offset-4">
+          <Link href="/contact" className="hover:text-foreground hover:underline underline-offset-4">
             Contact
-          </a>
+          </Link>
           <a href="#" aria-label="GitHub" className="hover:text-foreground">
             <svg
               xmlns="http://www.w3.org/2000/svg"
