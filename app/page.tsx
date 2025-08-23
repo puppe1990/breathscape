@@ -67,7 +67,7 @@ export default function Home() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 pb-8 sm:pb-16">
         <div className="grid gap-6 sm:gap-8 grid-cols-1 lg:grid-cols-2">
           {/* Techniques Grid */}
-          <Card className="glass-effect card-hover border-0 shadow-2xl order-2 lg:order-1">
+          <Card className="glass-effect card-hover border-0 shadow-2xl order-1">
             <CardContent className="p-4 sm:p-6 md:p-8">
               <div className="mb-4 sm:mb-6">
                 <h2 className="text-xl sm:text-2xl font-bold mb-2 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
@@ -82,7 +82,7 @@ export default function Home() {
           </Card>
 
           {/* Breathing Guide */}
-          <div className="order-1 lg:order-2">
+          <div className="order-2">
             <BreathingGuide language={language} />
           </div>
         </div>
