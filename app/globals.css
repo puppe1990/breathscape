@@ -57,9 +57,33 @@
   * {
     @apply border-border;
   }
+  
+  html {
+    overflow-x: hidden;
+  }
+  
   body {
     @apply bg-background text-foreground;
     font-feature-settings: "rlig" 1, "calt" 1;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  /* Mobile-specific improvements */
+  @media (max-width: 768px) {
+    body {
+      font-size: 14px;
+    }
+    
+    /* Prevent horizontal scrolling on mobile */
+    .overflow-x-auto {
+      overflow-x: hidden;
+    }
+    
+    /* Ensure proper touch scrolling */
+    .overflow-y-auto {
+      -webkit-overflow-scrolling: touch;
+    }
   }
 }
 
@@ -78,6 +102,32 @@
   
   .breathing-animation {
     animation: breathe 4s ease-in-out infinite;
+  }
+  
+  /* Mobile-optimized card styles */
+  .mobile-card {
+    @apply rounded-lg border-0 shadow-lg;
+  }
+  
+  /* Responsive text sizing */
+  .mobile-text-sm {
+    @apply text-xs sm:text-sm;
+  }
+  
+  .mobile-text-base {
+    @apply text-sm sm:text-base;
+  }
+  
+  .mobile-text-lg {
+    @apply text-base sm:text-lg;
+  }
+  
+  .mobile-text-xl {
+    @apply text-lg sm:text-xl;
+  }
+  
+  .mobile-text-2xl {
+    @apply text-xl sm:text-2xl;
   }
 }
 

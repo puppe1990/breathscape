@@ -156,18 +156,18 @@ export function TechniqueGrid({ language }: TechniqueGridProps) {
 
   return (
     <>
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
         {techniques.map((technique, index) => (
           <Button
             key={technique.id}
             variant="ghost"
-            className={`h-32 flex flex-col items-center justify-center gap-3 p-4 ${technique.bgColor} border ${technique.borderColor} hover:scale-105 transition-all duration-300 hover:shadow-lg group`}
+            className={`h-24 sm:h-28 md:h-32 flex flex-col items-center justify-center gap-2 sm:gap-3 p-2 sm:p-4 ${technique.bgColor} border ${technique.borderColor} hover:scale-105 transition-all duration-300 hover:shadow-lg group`}
             onClick={() => setSelectedTechniqueIndex(index)}
           >
-            <div className={`w-12 h-12 bg-gradient-to-br ${technique.color} rounded-xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300`}>
-              <technique.icon className="w-6 h-6 text-white" />
+            <div className={`w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 bg-gradient-to-br ${technique.color} rounded-xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300`}>
+              <technique.icon className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 text-white" />
             </div>
-            <span className={`text-sm font-semibold ${technique.textColor} text-center leading-tight`}>
+            <span className={`text-xs sm:text-sm font-semibold ${technique.textColor} text-center leading-tight`}>
               {technique.name}
             </span>
           </Button>
