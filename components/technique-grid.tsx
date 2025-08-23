@@ -30,8 +30,10 @@ export function TechniqueGrid({ language }: TechniqueGridProps) {
       id: "circle",
       name: t.breathingTechniques.circle.name,
       icon: Circle,
-      color: "bg-rose-100 hover:bg-rose-200 dark:bg-rose-900 dark:hover:bg-rose-800",
-      textColor: "text-rose-600 dark:text-rose-300",
+      color: "from-rose-400 to-pink-500",
+      bgColor: "bg-gradient-to-br from-rose-50 to-pink-50 dark:from-rose-950/50 dark:to-pink-950/50",
+      textColor: "text-rose-700 dark:text-rose-300",
+      borderColor: "border-rose-200 dark:border-rose-800",
       steps: t.breathingTechniques.circle.steps,
       duration: 4,
     },
@@ -39,8 +41,10 @@ export function TechniqueGrid({ language }: TechniqueGridProps) {
       id: "square",
       name: t.breathingTechniques.square.name,
       icon: Square,
-      color: "bg-blue-100 hover:bg-blue-200 dark:bg-blue-900 dark:hover:bg-blue-800",
-      textColor: "text-blue-600 dark:text-blue-300",
+      color: "from-blue-400 to-indigo-500",
+      bgColor: "bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950/50 dark:to-indigo-950/50",
+      textColor: "text-blue-700 dark:text-blue-300",
+      borderColor: "border-blue-200 dark:border-blue-800",
       steps: t.breathingTechniques.square.steps,
       duration: 4,
     },
@@ -48,8 +52,10 @@ export function TechniqueGrid({ language }: TechniqueGridProps) {
       id: "hexagon",
       name: t.breathingTechniques.hexagon.name,
       icon: Hexagon,
-      color: "bg-emerald-100 hover:bg-emerald-200 dark:bg-emerald-900 dark:hover:bg-emerald-800",
-      textColor: "text-emerald-600 dark:text-emerald-300",
+      color: "from-emerald-400 to-teal-500",
+      bgColor: "bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-950/50 dark:to-teal-950/50",
+      textColor: "text-emerald-700 dark:text-emerald-300",
+      borderColor: "border-emerald-200 dark:border-emerald-800",
       steps: t.breathingTechniques.hexagon.steps,
       duration: 4,
     },
@@ -57,8 +63,10 @@ export function TechniqueGrid({ language }: TechniqueGridProps) {
       id: "triangle",
       name: t.breathingTechniques.triangle.name,
       icon: Triangle,
-      color: "bg-purple-100 hover:bg-purple-200 dark:bg-purple-900 dark:hover:bg-purple-800",
-      textColor: "text-purple-600 dark:text-purple-300",
+      color: "from-purple-400 to-violet-500",
+      bgColor: "bg-gradient-to-br from-purple-50 to-violet-50 dark:from-purple-950/50 dark:to-violet-950/50",
+      textColor: "text-purple-700 dark:text-purple-300",
+      borderColor: "border-purple-200 dark:border-purple-800",
       steps: t.breathingTechniques.triangle.steps,
       duration: 5,
     },
@@ -66,8 +74,10 @@ export function TechniqueGrid({ language }: TechniqueGridProps) {
       id: "star",
       name: t.breathingTechniques.star.name,
       icon: Star,
-      color: "bg-amber-100 hover:bg-amber-200 dark:bg-amber-900 dark:hover:bg-amber-800",
-      textColor: "text-amber-600 dark:text-amber-300",
+      color: "from-amber-400 to-orange-500",
+      bgColor: "bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-950/50 dark:to-orange-950/50",
+      textColor: "text-amber-700 dark:text-amber-300",
+      borderColor: "border-amber-200 dark:border-amber-800",
       steps: t.breathingTechniques.star.steps,
       duration: 4,
     },
@@ -75,8 +85,10 @@ export function TechniqueGrid({ language }: TechniqueGridProps) {
       id: "infinity",
       name: t.breathingTechniques.infinity.name,
       icon: Infinity,
-      color: "bg-cyan-100 hover:bg-cyan-200 dark:bg-cyan-900 dark:hover:bg-cyan-800",
-      textColor: "text-cyan-600 dark:text-cyan-300",
+      color: "from-cyan-400 to-blue-500",
+      bgColor: "bg-gradient-to-br from-cyan-50 to-blue-50 dark:from-cyan-950/50 dark:to-blue-950/50",
+      textColor: "text-cyan-700 dark:text-cyan-300",
+      borderColor: "border-cyan-200 dark:border-cyan-800",
       steps: t.breathingTechniques.infinity.steps,
       duration: 6,
     },
@@ -84,8 +96,10 @@ export function TechniqueGrid({ language }: TechniqueGridProps) {
       id: "heart",
       name: t.breathingTechniques.heart.name,
       icon: Heart,
-      color: "bg-rose-100 hover:bg-rose-200 dark:bg-rose-900 dark:hover:bg-rose-800",
-      textColor: "text-rose-600 dark:text-rose-300",
+      color: "from-rose-400 to-red-500",
+      bgColor: "bg-gradient-to-br from-rose-50 to-red-50 dark:from-rose-950/50 dark:to-red-950/50",
+      textColor: "text-rose-700 dark:text-rose-300",
+      borderColor: "border-rose-200 dark:border-rose-800",
       steps: t.breathingTechniques.heart.steps,
       duration: 5,
     },
@@ -93,8 +107,10 @@ export function TechniqueGrid({ language }: TechniqueGridProps) {
       id: "flower",
       name: t.breathingTechniques.flower.name,
       icon: Flower,
-      color: "bg-pink-100 hover:bg-pink-200 dark:bg-pink-900 dark:hover:bg-pink-800",
-      textColor: "text-pink-600 dark:text-pink-300",
+      color: "from-pink-400 to-rose-500",
+      bgColor: "bg-gradient-to-br from-pink-50 to-rose-50 dark:from-pink-950/50 dark:to-rose-950/50",
+      textColor: "text-pink-700 dark:text-pink-300",
+      borderColor: "border-pink-200 dark:border-pink-800",
       steps: t.breathingTechniques.flower.steps,
       duration: 4,
     },
@@ -102,8 +118,10 @@ export function TechniqueGrid({ language }: TechniqueGridProps) {
       id: "lungs",
       name: t.breathingTechniques.lungs.name,
       icon: Lungs,
-      color: "bg-red-100 hover:bg-red-200 dark:bg-red-900 dark:hover:bg-red-800",
-      textColor: "text-red-600 dark:text-red-300",
+      color: "from-red-400 to-orange-500",
+      bgColor: "bg-gradient-to-br from-red-50 to-orange-50 dark:from-red-950/50 dark:to-orange-950/50",
+      textColor: "text-red-700 dark:text-red-300",
+      borderColor: "border-red-200 dark:border-red-800",
       steps: t.breathingTechniques.lungs.steps,
       duration: 6,
     },
@@ -111,8 +129,10 @@ export function TechniqueGrid({ language }: TechniqueGridProps) {
       id: "stop",
       name: t.breathingTechniques.stop.name,
       icon: Octagon,
-      color: "bg-red-100 hover:bg-red-200 dark:bg-red-900 dark:hover:bg-red-800",
-      textColor: "text-red-600 dark:text-red-300",
+      color: "from-gray-400 to-slate-500",
+      bgColor: "bg-gradient-to-br from-gray-50 to-slate-50 dark:from-gray-950/50 dark:to-slate-950/50",
+      textColor: "text-gray-700 dark:text-gray-300",
+      borderColor: "border-gray-200 dark:border-gray-800",
       steps: t.breathingTechniques.stop.steps,
       duration: 4,
     },
@@ -141,20 +161,25 @@ export function TechniqueGrid({ language }: TechniqueGridProps) {
           <Button
             key={technique.id}
             variant="ghost"
-            className={`h-32 flex flex-col items-center justify-center gap-2 ${technique.color}`}
+            className={`h-32 flex flex-col items-center justify-center gap-3 p-4 ${technique.bgColor} border ${technique.borderColor} hover:scale-105 transition-all duration-300 hover:shadow-lg group`}
             onClick={() => setSelectedTechniqueIndex(index)}
           >
-            <technique.icon className={`w-8 h-8 ${technique.textColor}`} />
-            <span className={`text-sm font-medium ${technique.textColor}`}>{technique.name}</span>
+            <div className={`w-12 h-12 bg-gradient-to-br ${technique.color} rounded-xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300`}>
+              <technique.icon className="w-6 h-6 text-white" />
+            </div>
+            <span className={`text-sm font-semibold ${technique.textColor} text-center leading-tight`}>
+              {technique.name}
+            </span>
           </Button>
         ))}
       </div>
 
       <Dialog open={selectedTechniqueIndex !== null} onOpenChange={() => setSelectedTechniqueIndex(null)}>
-        <DialogContent className="max-h-[90vh] overflow-y-auto flex flex-col items-center justify-center p-0">
+        <DialogContent className="max-h-[90vh] overflow-y-auto flex flex-col items-center justify-center p-0 border-0 shadow-2xl">
           {selectedTechniqueIndex !== null && (
             <BreathingExercise
               technique={techniques[selectedTechniqueIndex]}
+              language={language}
               onClose={() => setSelectedTechniqueIndex(null)}
               onPrevious={handlePrevious}
               onNext={handleNext}

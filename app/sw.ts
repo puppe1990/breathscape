@@ -1,6 +1,6 @@
 /// <reference lib="webworker" />
 
-declare let self: ServiceWorkerGlobalScope
+declare const self: ServiceWorkerGlobalScope
 
 const CACHE_NAME = "breathscape-v1"
 
@@ -12,7 +12,6 @@ const urlsToCache = [
   "/terms",
   "/contact",
   "/icons/icon-192x192.png",
-  "/icons/icon-384x384.png",
   "/icons/icon-512x512.png",
 ]
 
@@ -36,7 +35,11 @@ self.addEventListener("fetch", (event: FetchEvent) => {
 self.addEventListener("activate", (event: ExtendableEvent) => {
   event.waitUntil(
     caches.keys().then((cacheNames) => {
-      return Promise.all(cacheNames.filter((name) => name !== CACHE_NAME).map((name) => caches.delete(name)))
+      return Promise.all(
+        cacheNames
+          .filter((name) => name !== CACHE_NAME)
+          .map((name) => caches.delete(name))
+      )
     }),
   )
 })
@@ -44,18 +47,25 @@ self.addEventListener("activate", (event: ExtendableEvent) => {
 // Handle push notifications
 self.addEventListener("push", (event: PushEvent) => {
   const options: NotificationOptions = {
-    body: event.data?.text() ?? "New notification",
+    body: "Time for your breathing exercise!",
     icon: "/icons/icon-192x192.png",
-    badge: "/icons/badge-72x72.png",
-    vibrate: [100, 50, 100],
+    badge: "/icons/icon-192x192.png",
+    data: {
+      url: "/",
+    },
   }
 
-  event.waitUntil(self.registration.showNotification("Breathscape", options))
+  event.waitUntil(
+    self.registration.showNotification("Breathscape", options)
+  )
 })
 
+// Handle notification clicks
 self.addEventListener("notificationclick", (event: NotificationEvent) => {
   event.notification.close()
-  event.waitUntil(clients.openWindow("/"))
+  event.waitUntil(
+    self.clients.openWindow("/")
+  )
 })
 
 export {}

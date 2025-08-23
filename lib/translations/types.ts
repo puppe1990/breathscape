@@ -35,11 +35,11 @@ export type Translation = {
       [key: string]: {
         title: string
         description: string
-        howItWorks: {
+        howItWorks?: {
           title: string
           steps: string[]
         }
-        benefits: {
+        benefits?: {
           title: string
           items: string[]
         }
