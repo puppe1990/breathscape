@@ -13,9 +13,16 @@ export const metadata: Metadata = {
     "Discover peace and balance with Breathscape's collection of interactive breathing exercises for relaxation and mindfulness",
   manifest: "/manifest.json",
   icons: {
-    apple: [{ url: "/icons/apple-icon-180.png", sizes: "180x180", type: "image/png" }],
+    icon: [
+      { url: "/favicon.png", sizes: "32x32", type: "image/png" },
+      { url: "/icons/favicon-16x16.png", sizes: "16x16", type: "image/png" },
+      { url: "/icons/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+    ],
+    apple: [
+      { url: "/icons/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
+    ],
   },
-    generator: 'v0.dev'
+  generator: 'v0.dev'
 }
 
 export const viewport: Viewport = {
@@ -36,7 +43,10 @@ export default function RootLayout({
       <head>
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-        <link rel="apple-touch-startup-image" href="/icons/apple-splash-2048-2732.png" />
+        <link rel="apple-touch-startup-image" href="/icons/apple-touch-icon.png" />
+        <link rel="icon" type="image/png" href="/favicon.png" />
+        <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16x16.png" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32x32.png" />
       </head>
       <body className={`${inter.className} min-h-screen flex flex-col`}>
         <Header />
@@ -46,7 +56,3 @@ export default function RootLayout({
     </html>
   )
 }
-
-
-
-import './globals.css'
