@@ -287,12 +287,6 @@ export function SquareBreathing({
             className="drop-shadow-lg"
           />
           
-          {/* Corner markers for debugging */}
-          <circle cx={padding} cy={padding} r="3" fill="red" />
-          <circle cx={padding + squareSize} cy={padding} r="3" fill="green" />
-          <circle cx={padding + squareSize} cy={padding + squareSize} r="3" fill="blue" />
-          <circle cx={padding} cy={padding + squareSize} r="3" fill="orange" />
-          
           <defs>
             <linearGradient id="progressGradient" x1="0%" y1="0%" x2="100%" y2="0%">
               <stop offset="0%" stopColor="#10b981" />
@@ -353,12 +347,6 @@ export function SquareBreathing({
           }}
           transition={{ type: "spring", stiffness: 150, damping: 20, mass: 0.8 }}
         >
-          {/* Debug info */}
-          <div className="absolute -top-8 left-0 text-xs text-red-500 bg-white px-2 py-1 rounded border">
-            Step: {currentStep}, Progress: {progress}%, Pos: ({Math.round(position.x)}, {Math.round(position.y)})
-            <br />
-            Square: ({padding}, {padding}) to ({padding + squareSize}, {padding + squareSize})
-          </div>
           {/* Outer glow */}
           <div className="absolute w-16 h-16 rounded-full -translate-x-8 -translate-y-8 bg-blue-400/20 blur-sm" />
           
