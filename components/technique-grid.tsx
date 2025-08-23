@@ -175,7 +175,7 @@ export function TechniqueGrid({ language }: TechniqueGridProps) {
       </div>
 
       <Dialog open={selectedTechniqueIndex !== null} onOpenChange={() => setSelectedTechniqueIndex(null)}>
-        <DialogContent className="max-h-[90vh] overflow-y-auto flex flex-col items-center justify-center p-0 border-0 shadow-2xl">
+        <DialogContent className="max-h-[95vh] sm:max-h-[90vh] w-[95vw] sm:w-auto max-w-4xl overflow-y-auto flex flex-col items-center justify-center p-0 border-0 shadow-2xl">
           {selectedTechniqueIndex !== null && (
             <BreathingExercise
               technique={techniques[selectedTechniqueIndex]}

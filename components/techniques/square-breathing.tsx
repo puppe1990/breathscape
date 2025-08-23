@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import { motion } from "framer-motion"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -41,12 +41,26 @@ export function SquareBreathing({
 }: SquareBreathingProps) {
   const [selectedPreset, setSelectedPreset] = useState<PresetKey>("4-4-4-4")
   const [durations, setDurations] = useState({ in: 4, hold1: 4, out: 4, hold2: 4 })
+  const [isMobile, setIsMobile] = useState(false)
 
   const t = translations[language] || translations["en"]
 
-  const padding = size * 0.15
-  const squareSize = size - padding * 2
-  const center = size / 2
+  // Detect mobile screen size
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768)
+    }
+    
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
+
+  // Adjust size for mobile
+  const adjustedSize = isMobile ? Math.min(size, 240) : size
+  const padding = adjustedSize * 0.15
+  const squareSize = adjustedSize - padding * 2
+  const center = adjustedSize / 2
 
   // Define the path points for the square
   const topLeft = { x: padding, y: padding }
@@ -141,7 +155,7 @@ export function SquareBreathing({
   const progressPath = getProgressPath()
 
   return (
-    <div className={cn("relative", className)} style={{ width: size, height: size }}>
+    <div className={cn("relative", className)} style={{ width: adjustedSize, height: adjustedSize }}>
       {/* Settings Button */}
       <div className="absolute top-3 right-3 z-10">
         <Sheet>
@@ -260,9 +274,9 @@ export function SquareBreathing({
         
         {/* Square Outline */}
         <svg
-          width={size}
-          height={size}
-          viewBox={`0 0 ${size} ${size}`}
+          width={adjustedSize}
+          height={adjustedSize}
+          viewBox={`0 0 ${adjustedSize} ${adjustedSize}`}
           className="absolute"
         >
           {/* Square outline */}
@@ -301,7 +315,10 @@ export function SquareBreathing({
         {/* Central Indicator */}
         <div className="relative z-10">
           <motion.div
-            className="w-20 h-20 rounded-full bg-white dark:bg-gray-800 shadow-lg border border-gray-200 dark:border-gray-600 flex items-center justify-center"
+            className={cn(
+              "rounded-full bg-white dark:bg-gray-800 shadow-lg border border-gray-200 dark:border-gray-600 flex items-center justify-center",
+              isMobile ? "w-16 h-16" : "w-20 h-20"
+            )}
             animate={{
               scale: isPlaying ? [1, 1.05, 1] : 1,
             }}
@@ -313,7 +330,10 @@ export function SquareBreathing({
           >
             <div className="text-center">
               <motion.div
-                className="w-6 h-6 mx-auto mb-1"
+                className={cn(
+                  "mx-auto mb-1",
+                  isMobile ? "w-5 h-5" : "w-6 h-6"
+                )}
                 animate={{
                   scale: isPlaying ? [1, 1.1, 1] : 1,
                 }}
@@ -324,10 +344,16 @@ export function SquareBreathing({
                 }}
               >
                 {React.createElement(currentStepInfo.icon, {
-                  className: `w-6 h-6 ${currentStepInfo.color}`,
+                  className: cn(
+                    currentStepInfo.color,
+                    isMobile ? "w-5 h-5" : "w-6 h-6"
+                  ),
                 })}
               </motion.div>
-              <span className="text-xs font-medium text-gray-600 dark:text-gray-400">
+              <span className={cn(
+                "font-medium text-gray-600 dark:text-gray-400",
+                isMobile ? "text-xs" : "text-xs"
+              )}>
                 {currentStepInfo.name}
               </span>
             </div>
@@ -348,7 +374,10 @@ export function SquareBreathing({
           transition={{ type: "spring", stiffness: 150, damping: 20, mass: 0.8 }}
         >
           {/* Outer glow */}
-          <div className="absolute w-16 h-16 rounded-full -translate-x-8 -translate-y-8 bg-blue-400/20 blur-sm" />
+          <div className={cn(
+            "absolute rounded-full -translate-x-8 -translate-y-8 bg-blue-400/20 blur-sm",
+            isMobile ? "w-12 h-12" : "w-16 h-16"
+          )} />
           
           {/* Main dot */}
           <div className="absolute w-4 h-4 rounded-full -translate-x-2 -translate-y-2 bg-gradient-to-r from-blue-500 to-indigo-500 shadow-lg border-2 border-white" />
@@ -362,19 +391,23 @@ export function SquareBreathing({
           const stepInfo = getStepInfo(step)
           const isActive = currentStep === step
           
+          // Adjust positioning for mobile to prevent overflow
+          const indicatorSize = isMobile ? 40 : 48
+          const offset = isMobile ? 25 : 35
+          
           let position
           switch (step) {
             case 0: // Left (breathe in)
-              position = { left: padding - 35, top: center, transform: "translateY(-50%)" }
+              position = { left: padding - offset, top: center, transform: "translateY(-50%)" }
               break
             case 1: // Top (hold 1)
-              position = { left: center, top: padding - 35, transform: "translateX(-50%)" }
+              position = { left: center, top: padding - offset, transform: "translateX(-50%)" }
               break
             case 2: // Right (breathe out)
-              position = { left: padding + squareSize + 35, top: center, transform: "translateY(-50%)" }
+              position = { left: padding + squareSize + offset, top: center, transform: "translateY(-50%)" }
               break
             case 3: // Bottom (hold 2)
-              position = { left: center, top: padding + squareSize + 35, transform: "translateX(-50%)" }
+              position = { left: center, top: padding + squareSize + offset, transform: "translateX(-50%)" }
               break
           }
 
@@ -391,16 +424,18 @@ export function SquareBreathing({
             >
               <div
                 className={cn(
-                  "w-12 h-12 rounded-full flex items-center justify-center border-2 transition-all duration-200",
+                  "rounded-full flex items-center justify-center border-2 transition-all duration-200",
                   isActive
                     ? "bg-gradient-to-r from-blue-500 to-indigo-500 border-white shadow-lg"
-                    : "bg-white/80 dark:bg-gray-800/80 border-gray-300 dark:border-gray-600"
+                    : "bg-white/80 dark:bg-gray-800/80 border-gray-300 dark:border-gray-600",
+                  isMobile ? "w-10 h-10" : "w-12 h-12"
                 )}
               >
                 {React.createElement(stepInfo.icon, {
-                  className: `w-4 h-4 ${
-                    isActive ? "text-white" : "text-gray-500 dark:text-gray-400"
-                  }`,
+                  className: cn(
+                    isActive ? "text-white" : "text-gray-500 dark:text-gray-400",
+                    isMobile ? "w-3 h-3" : "w-4 h-4"
+                  ),
                 })}
               </div>
             </motion.div>
@@ -414,7 +449,10 @@ export function SquareBreathing({
           {[0, 1, 2, 3].map((step) => (
             <motion.div
               key={step}
-              className="h-1.5 w-10 rounded-full bg-gray-200 dark:bg-gray-700 overflow-hidden"
+              className={cn(
+                "h-1.5 rounded-full bg-gray-200 dark:bg-gray-700 overflow-hidden",
+                isMobile ? "w-8" : "w-10"
+              )}
               animate={{
                 scale: currentStep === step ? 1.1 : 1,
               }}

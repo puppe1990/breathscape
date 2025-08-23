@@ -182,56 +182,56 @@ export function BreathingExercise({ technique, onClose, onPrevious, onNext, lang
   }
 
   return (
-    <div className="flex flex-col items-center justify-center p-2 sm:p-4 md:p-6 relative w-full">
+    <div className="flex flex-col items-center justify-center p-2 sm:p-4 md:p-6 relative w-full min-h-[80vh] sm:min-h-[70vh]">
       {/* Navigation arrows */}
       <Button
         variant="ghost"
         size="icon"
-        className="absolute left-4 top-1/2 -translate-y-1/2 h-12 w-12 rounded-full opacity-70 hover:opacity-100"
+        className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 h-10 w-10 sm:h-12 sm:w-12 rounded-full opacity-70 hover:opacity-100 z-20"
         onClick={onPrevious}
       >
-        <ChevronLeft className="h-8 w-8" />
+        <ChevronLeft className="h-6 w-6 sm:h-8 sm:w-8" />
       </Button>
       <Button
         variant="ghost"
         size="icon"
-        className="absolute right-4 top-1/2 -translate-y-1/2 h-12 w-12 rounded-full opacity-70 hover:opacity-100"
+        className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 h-10 w-10 sm:h-12 sm:w-12 rounded-full opacity-70 hover:opacity-100 z-20"
         onClick={onNext}
       >
-        <ChevronRight className="h-8 w-8" />
+        <ChevronRight className="h-6 w-6 sm:h-8 sm:w-8" />
       </Button>
 
-      <DialogHeader className="space-y-0.5">
-        <DialogTitle className="text-xl sm:text-2xl md:text-3xl font-light tracking-wider text-left pl-2 sm:pl-4">
+      <DialogHeader className="space-y-0.5 mb-4 sm:mb-6">
+        <DialogTitle className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-light tracking-wider text-center">
           {technique.name}
         </DialogTitle>
       </DialogHeader>
 
       {/* Session stats */}
-      <div className="w-full max-w-md mx-auto mb-2 sm:mb-4 flex items-center justify-center gap-4 sm:gap-6">
+      <div className="w-full max-w-md mx-auto mb-4 sm:mb-6 flex items-center justify-center gap-3 sm:gap-4 md:gap-6">
         <div className="flex flex-col items-center gap-1 sm:gap-2">
-          <div className="flex items-center justify-center w-10 h-10 sm:w-14 sm:h-14 rounded-full bg-background/50 backdrop-blur-sm shadow-sm">
-            <Timer className="h-4 w-4 sm:h-5 sm:w-5 text-muted-foreground" />
+          <div className="flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 md:w-14 md:h-14 rounded-full bg-background/50 backdrop-blur-sm shadow-sm">
+            <Timer className="h-3 w-3 sm:h-4 sm:w-4 md:h-5 md:w-5 text-muted-foreground" />
           </div>
           <div className="text-center">
-            <div className="text-base sm:text-xl font-semibold">{formatTime(sessionTime)}</div>
+            <div className="text-sm sm:text-base md:text-xl font-semibold">{formatTime(sessionTime)}</div>
             <div className="text-xs sm:text-sm text-muted-foreground">{t?.ui?.sessionTime || "Session Time"}</div>
           </div>
         </div>
         <div className="flex flex-col items-center gap-1 sm:gap-2">
-          <div className="flex items-center justify-center w-10 h-10 sm:w-14 sm:h-14 rounded-full bg-background/50 backdrop-blur-sm shadow-sm">
-            <RotateCw className="h-4 w-4 sm:h-5 sm:w-5 text-muted-foreground" />
+          <div className="flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 md:w-14 md:h-14 rounded-full bg-background/50 backdrop-blur-sm shadow-sm">
+            <RotateCw className="h-3 w-3 sm:h-4 sm:w-4 md:h-5 md:w-5 text-muted-foreground" />
           </div>
           <div className="text-center">
-            <div className="text-base sm:text-xl font-semibold">{cyclesCompleted}</div>
+            <div className="text-sm sm:text-base md:text-xl font-semibold">{cyclesCompleted}</div>
             <div className="text-xs sm:text-sm text-muted-foreground">{t?.ui?.cycles || "Cycles"}</div>
           </div>
         </div>
       </div>
 
-      <div className="flex flex-col items-center justify-center gap-2 sm:gap-4 w-full">
+      <div className="flex flex-col items-center justify-center gap-2 sm:gap-4 w-full flex-1">
         <motion.div
-          className="relative w-48 h-48 sm:w-56 sm:h-56 md:w-72 md:h-72 flex items-center justify-center"
+          className="relative w-40 h-40 sm:w-48 sm:h-48 md:w-56 md:h-56 lg:w-72 lg:h-72 flex items-center justify-center"
           animate={{ scale: isPlaying ? getBreathScale() : 1 }}
           transition={{ type: "spring", stiffness: 90, damping: 18, mass: 0.7 }}
         >
@@ -249,20 +249,20 @@ export function BreathingExercise({ technique, onClose, onPrevious, onNext, lang
           {renderBreathingAnimation()}
         </motion.div>
 
-        <div className="text-center mt-1 sm:mt-2">
-          <h3 className="text-base sm:text-xl md:text-2xl font-semibold mb-0.5 sm:mb-1">
+        <div className="text-center mt-2 sm:mt-4">
+          <h3 className="text-sm sm:text-base md:text-xl lg:text-2xl font-semibold mb-1 sm:mb-2">
             {technique.steps[currentStep]}
           </h3>
-          <p className="text-muted-foreground text-sm sm:text-base">
+          <p className="text-muted-foreground text-xs sm:text-sm md:text-base">
             {Math.ceil(getCurrentDuration() - (progress / 100) * getCurrentDuration())}s
           </p>
         </div>
 
-        <div className="flex gap-3 sm:gap-4 w-full justify-center mt-2 sm:mt-4">
-          <Button variant="outline" size="default" onClick={() => setIsPlaying(!isPlaying)}>
+        <div className="flex gap-2 sm:gap-3 md:gap-4 w-full justify-center mt-2 sm:mt-4">
+          <Button variant="outline" size="sm" className="sm:h-10 px-4 sm:px-6" onClick={() => setIsPlaying(!isPlaying)}>
             {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
           </Button>
-          <Button variant="outline" size="default" onClick={resetExercise}>
+          <Button variant="outline" size="sm" className="sm:h-10 px-4 sm:px-6" onClick={resetExercise}>
             <RotateCcw className="h-4 w-4" />
           </Button>
         </div>
