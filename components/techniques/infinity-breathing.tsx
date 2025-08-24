@@ -80,33 +80,22 @@ export function InfinityBreathing({
   const curveWidth = width * 0.4
   const curveHeight = height * 0.8
 
-  // Create a smooth infinity path using cubic bezier curves
+  // Create a cleaner infinity path using simplified curves
   const infinityPath = `
     M ${center - curveWidth} ${center}
-    C ${center - curveWidth} ${center - curveHeight},
-      ${center - curveWidth / 2} ${center - curveHeight},
-      ${center} ${center}
-    C ${center + curveWidth / 2} ${center + curveHeight},
-      ${center + curveWidth} ${center + curveHeight},
-      ${center + curveWidth} ${center}
-    C ${center + curveWidth} ${center - curveHeight},
-      ${center + curveWidth / 2} ${center - curveHeight},
-      ${center} ${center}
-    C ${center - curveWidth / 2} ${center + curveHeight},
-      ${center - curveWidth} ${center + curveHeight},
-      ${center - curveWidth} ${center}
+    Q ${center - curveWidth / 2} ${center - curveHeight}, ${center} ${center}
+    Q ${center + curveWidth / 2} ${center + curveHeight}, ${center + curveWidth} ${center}
+    Q ${center + curveWidth / 2} ${center - curveHeight}, ${center} ${center}
+    Q ${center - curveWidth / 2} ${center + curveHeight}, ${center - curveWidth} ${center}
   `
 
-  // Calculate position along the infinity path using parametric equations
+  // Calculate position along the infinity path using simplified parametric equations
   const getPosition = () => {
     const t = (progress / 100) * Math.PI * 2
-    const a = curveWidth // Scale factor
-    const b = curveHeight / 2 // Height factor
-
-    // Use lemniscate formula with adjustments for smoother motion
-    const denominator = 1 + Math.sin(t) * Math.sin(t)
-    const x = center + (a * Math.cos(t)) / denominator
-    const y = center + (b * Math.sin(t) * Math.cos(t)) / denominator
+    
+    // Simplified infinity curve for smoother animation
+    const x = center + curveWidth * Math.cos(t)
+    const y = center + curveHeight * Math.sin(t) * Math.cos(t)
 
     return { x, y }
   }
@@ -141,10 +130,7 @@ export function InfinityBreathing({
     }
   }
 
-  // Calculate gradient rotation based on current position
-  const getGradientRotation = () => {
-    return (currentStep * 180 + (progress / 100) * 180) % 360
-  }
+
 
   const position = getPosition()
   const currentStepInfo = getStepInfo(currentStep)
@@ -246,12 +232,11 @@ export function InfinityBreathing({
 
       {/* Main Infinity Container */}
       <div className="relative w-full h-full flex items-center justify-center">
-        {/* Animated gradient background */}
+        {/* Subtle gradient background */}
         <div
-          className="absolute inset-0 opacity-10 rounded-full blur-2xl transition-opacity duration-500"
+          className="absolute inset-0 opacity-5 rounded-full blur-3xl"
           style={{
-            background: `linear-gradient(${getGradientRotation()}deg, #0ea5e9, #22d3ee, #06b6d4)`,
-            transform: `rotate(${getGradientRotation()}deg)`,
+            background: "radial-gradient(circle, rgba(6,182,212,0.3) 0%, rgba(6,182,212,0) 70%)",
           }}
         />
 
@@ -336,7 +321,7 @@ export function InfinityBreathing({
           </motion.div>
         </div>
 
-        {/* Moving Dot - Responsive sizing */}
+        {/* Moving Dot - Simplified and cleaner */}
         <motion.div
           className="absolute z-20"
           style={{
@@ -347,24 +332,12 @@ export function InfinityBreathing({
             left: `${(position.x / adjustedSize) * 100}%`,
             top: `${(position.y / adjustedSize) * 100}%`,
           }}
-          transition={{ type: "spring", stiffness: 150, damping: 20, mass: 0.8 }}
+          transition={{ type: "tween", duration: 0.3, ease: "easeInOut" }}
         >
-          {/* Outer glow */}
-          <div className={cn(
-            "absolute rounded-full -translate-x-1/2 -translate-y-1/2 bg-cyan-400/20 blur-sm",
-            isSmallScreen ? "w-8 h-8" : isMobile ? "w-12 h-12" : "w-16 h-16"
-          )} />
-          
-          {/* Main dot */}
+          {/* Simple dot with subtle glow */}
           <div className={cn(
             "absolute rounded-full -translate-x-1/2 -translate-y-1/2 bg-gradient-to-r from-cyan-500 to-blue-500 shadow-lg border-2 border-white",
-            isSmallScreen ? "w-3 h-3" : "w-4 h-4"
-          )} />
-          
-          {/* Inner highlight */}
-          <div className={cn(
-            "absolute rounded-full -translate-x-1/2 -translate-y-1/2 bg-white/80",
-            isSmallScreen ? "w-1.5 h-1.5" : "w-2 h-2"
+            isSmallScreen ? "w-4 h-4" : isMobile ? "w-5 h-5" : "w-6 h-6"
           )} />
         </motion.div>
       </div>
