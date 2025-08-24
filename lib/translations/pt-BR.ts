@@ -87,57 +87,9 @@ export const ptBR = {
         "Transições suaves entre inspiração e expiração",
       ],
     },
-    heart: {
-      name: "Respiração do Coração",
-      steps: ["Inspire", "Segure", "Expire"],
-      description: "Uma técnica focada na compaixão para bem-estar emocional.",
-      benefits: [
-        "Aumenta a consciência emocional",
-        "Promove sentimentos de compaixão",
-        "Reduz o estresse emocional",
-        "Melhora a variabilidade da frequência cardíaca",
-        "Ajuda na cura emocional",
-      ],
-      howItWorks: [
-        "Foque na área do coração enquanto respira",
-        "Padrão de respiração suave e rítmico",
-        "Combina visualização com respiração",
-      ],
-    },
-    flower: {
-      name: "Respiração da Flor",
-      steps: ["Inspire", "Segure", "Expire", "Segure", "Inspire"],
-      description: "Uma técnica suave perfeita para iniciantes e crianças.",
-      benefits: [
-        "Perfeito para iniciantes",
-        "Aumenta criatividade e imaginação",
-        "Reduz ansiedade em crianças",
-        "Promove pensamentos pacíficos",
-        "Ajuda na prática de mindfulness",
-      ],
-      howItWorks: [
-        "Imagine uma flor desabrochando enquanto respira",
-        "Inspiração e expiração suaves",
-        "Foque no movimento de expansão e contração",
-      ],
-    },
-    lungs: {
-      name: "Respiração Pulmonar",
-      steps: ["Inspire", "Segure", "Expire"],
-      description: "Uma técnica focada na capacidade pulmonar total e fluxo de oxigênio.",
-      benefits: [
-        "Melhora a capacidade pulmonar",
-        "Aumenta a ingestão de oxigênio",
-        "Melhora a função respiratória",
-        "Promove relaxamento",
-        "Melhora a saúde geral",
-      ],
-      howItWorks: [
-        "Inspire profundamente, enchendo seus pulmões completamente",
-        "Segure a respiração brevemente",
-        "Expire lenta e completamente",
-      ],
-    },
+
+
+
     stop: {
       name: "Respiração do Pare",
       steps: ["Inspire", "Segure", "Expire", "Segure", "Inspire", "Segure", "Expire", "Segure"],
@@ -291,52 +243,7 @@ export const ptBR = {
           ],
         },
       },
-      heart: {
-        title: "Respiração do Coração",
-        description:
-          "A respiração do coração combina consciência respiratória com meditação centrada no coração, promovendo bem-estar emocional e compaixão.",
-        howItWorks: {
-          title: "Como funciona:",
-          steps: [
-            "Foque na área do coração enquanto respira",
-            "Padrão de respiração suave e rítmico",
-            "Combina visualização com respiração",
-          ],
-        },
-        benefits: {
-          title: "Benefícios:",
-          items: [
-            "Aumenta a consciência emocional",
-            "Promove sentimentos de compaixão",
-            "Reduz o estresse emocional",
-            "Melhora a variabilidade da frequência cardíaca",
-            "Ajuda na cura emocional",
-          ],
-        },
-      },
-      flower: {
-        title: "Respiração da Flor",
-        description:
-          "A respiração da flor é uma técnica suave que usa a visualização de uma flor desabrochando para guiar a respiração, sendo especialmente adequada para iniciantes e crianças.",
-        howItWorks: {
-          title: "Como funciona:",
-          steps: [
-            "Imagine uma flor desabrochando enquanto respira",
-            "Inspiração e expiração suaves",
-            "Foque no movimento de expansão e contração",
-          ],
-        },
-        benefits: {
-          title: "Benefícios:",
-          items: [
-            "Perfeito para iniciantes",
-            "Aumenta criatividade e imaginação",
-            "Reduz ansiedade em crianças",
-            "Promove pensamentos pacíficos",
-            "Ajuda na prática de mindfulness",
-          ],
-        },
-      },
+
       general: {
         title: "Benefícios Gerais dos Exercícios Respiratórios",
         description:

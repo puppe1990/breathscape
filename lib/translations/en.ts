@@ -83,57 +83,9 @@ export const en = {
       ],
       howItWorks: ["Continuous breathing pattern", "No holding phases", "Smooth transitions between inhale and exhale"],
     },
-    heart: {
-      name: "Heart Breathing",
-      steps: ["Breathe In", "Hold", "Breathe Out"],
-      description: "A compassion-focused technique for emotional well-being.",
-      benefits: [
-        "Enhances emotional awareness",
-        "Promotes feelings of compassion",
-        "Reduces emotional stress",
-        "Improves heart rate variability",
-        "Helps with emotional healing",
-      ],
-      howItWorks: [
-        "Focus on the heart area while breathing",
-        "Gentle, rhythmic breathing pattern",
-        "Combines visualization with breath",
-      ],
-    },
-    flower: {
-      name: "Flower Breathing",
-      steps: ["Breathe In", "Hold", "Breathe Out", "Hold", "Breathe In"],
-      description: "A gentle technique perfect for beginners and children.",
-      benefits: [
-        "Perfect for beginners",
-        "Enhances creativity and imagination",
-        "Reduces anxiety in children",
-        "Promotes peaceful thoughts",
-        "Helps with mindfulness practice",
-      ],
-      howItWorks: [
-        "Imagine a flower blooming as you breathe",
-        "Gentle inhalation and exhalation",
-        "Focus on the expanding and contracting movement",
-      ],
-    },
-    lungs: {
-      name: "Lung Breathing",
-      steps: ["Breathe In", "Hold", "Breathe Out"],
-      description: "A technique focused on full lung capacity and oxygen flow.",
-      benefits: [
-        "Improves lung capacity",
-        "Increases oxygen intake",
-        "Enhances respiratory function",
-        "Promotes relaxation",
-        "Improves overall health",
-      ],
-      howItWorks: [
-        "Breathe in deeply, filling your lungs completely",
-        "Hold your breath briefly",
-        "Exhale slowly and completely",
-      ],
-    },
+
+
+
     stop: {
       name: "Stop Sign Breathing",
       steps: ["Breathe In", "Hold", "Breathe Out", "Hold", "Breathe In", "Hold", "Breathe Out", "Hold"],
@@ -283,52 +235,7 @@ export const en = {
           ],
         },
       },
-      heart: {
-        title: "Heart Breathing",
-        description:
-          "Heart breathing combines breath awareness with heart-centered meditation, promoting emotional well-being and compassion.",
-        howItWorks: {
-          title: "How it works:",
-          steps: [
-            "Focus on the heart area while breathing",
-            "Gentle, rhythmic breathing pattern",
-            "Combines visualization with breath",
-          ],
-        },
-        benefits: {
-          title: "Benefits:",
-          items: [
-            "Enhances emotional awareness",
-            "Promotes feelings of compassion",
-            "Reduces emotional stress",
-            "Improves heart rate variability",
-            "Helps with emotional healing",
-          ],
-        },
-      },
-      flower: {
-        title: "Flower Breathing",
-        description:
-          "Flower breathing is a gentle technique that uses the visualization of a blooming flower to guide the breath, making it especially suitable for beginners and children.",
-        howItWorks: {
-          title: "How it works:",
-          steps: [
-            "Imagine a flower blooming as you breathe",
-            "Gentle inhalation and exhalation",
-            "Focus on the expanding and contracting movement",
-          ],
-        },
-        benefits: {
-          title: "Benefits:",
-          items: [
-            "Perfect for beginners",
-            "Enhances creativity and imagination",
-            "Reduces anxiety in children",
-            "Promotes peaceful thoughts",
-            "Helps with mindfulness practice",
-          ],
-        },
-      },
+
       general: {
         title: "General Benefits of Breathing Exercises",
         description:

@@ -10,10 +10,10 @@ import { HexagonBreathing } from "@/components/techniques/hexagon-breathing"
 import { TriangleBreathing } from "@/components/techniques/triangle-breathing"
 import { StarBreathing } from "@/components/techniques/star-breathing"
 import { InfinityBreathing } from "@/components/techniques/infinity-breathing"
-import { HeartBreathing } from "@/components/techniques/heart-breathing"
-import { FlowerBreathing } from "@/components/techniques/flower-breathing"
+
+
 import { CircleBreathing } from "@/components/techniques/circle-breathing"
-import { LungBreathing } from "@/components/techniques/lung-breathing"
+
 import { StopBreathing } from "@/components/techniques/stop-breathing"
 import { motion } from "framer-motion"
 import { translations } from "@/lib/translations/index"
@@ -128,14 +128,8 @@ export function BreathingExercise({ technique, onClose, onPrevious, onNext, lang
         return <StarBreathing {...commonProps} onUpdateDurations={handleUpdateDurations} />
       case "infinity":
         return <InfinityBreathing {...commonProps} onUpdateDurations={handleUpdateDurations} />
-      case "heart":
-        return <HeartBreathing {...commonProps} />
-      case "flower":
-        return <FlowerBreathing {...commonProps} />
       case "circle":
         return <CircleBreathing {...commonProps} onUpdateDurations={handleUpdateDurations} />
-      case "lungs":
-        return <LungBreathing {...commonProps} />
       case "stop":
         return <StopBreathing {...commonProps} />
       default:
