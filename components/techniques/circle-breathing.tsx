@@ -8,7 +8,7 @@ import { Settings2, Heart, Zap, Sparkles } from "lucide-react"
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
 import { Slider } from "@/components/ui/slider"
 import { Label } from "@/components/ui/label"
-import { translations } from "@/lib/translations/index"
+import { useLanguage } from "@/components/language-provider"
 
 interface CircleBreathingProps {
   size?: number
@@ -16,7 +16,6 @@ interface CircleBreathingProps {
   currentStep: number
   progress: number
   className?: string
-  language: string
   onUpdateDurations?: (durations: number[]) => void
 }
 
@@ -36,13 +35,11 @@ export function CircleBreathing({
   currentStep,
   progress,
   className,
-  language,
   onUpdateDurations,
 }: CircleBreathingProps) {
+  const { t } = useLanguage()
   const [selectedPreset, setSelectedPreset] = useState<PresetKey>("4-7-8")
   const [durations, setDurations] = useState({ in: 4, hold: 7, out: 8 })
-
-  const t = translations[language] || translations["en"]
 
   const center = size / 2
   const radius = size * 0.35

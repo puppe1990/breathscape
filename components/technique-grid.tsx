@@ -121,18 +121,23 @@ export function TechniqueGrid({ language }: TechniqueGridProps) {
 
   return (
     <>
-      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 sm:gap-6">
         {techniques.map((technique, index) => (
           <Button
             key={technique.id}
             variant="ghost"
-            className={`h-24 sm:h-28 md:h-32 flex flex-col items-center justify-center gap-2 sm:gap-3 p-2 sm:p-4 ${technique.bgColor} border ${technique.borderColor} hover:scale-105 transition-all duration-300 hover:shadow-lg group`}
+            className={`h-32 sm:h-36 md:h-40 flex flex-col items-center justify-center gap-4 p-4 ${technique.bgColor} border-2 ${technique.borderColor} hover:scale-105 transition-all duration-300 hover:shadow-xl group rounded-2xl relative overflow-hidden`}
             onClick={() => setSelectedTechniqueIndex(index)}
           >
-            <div className={`w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 bg-gradient-to-br ${technique.color} rounded-xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300`}>
-              <technique.icon className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 text-white" />
+            {/* Background pattern for visual interest */}
+            <div className="absolute inset-0 opacity-5 group-hover:opacity-10 transition-opacity duration-300">
+              <div className="absolute inset-0 bg-gradient-to-br from-current to-transparent"></div>
             </div>
-            <span className={`text-xs sm:text-sm font-semibold ${technique.textColor} text-center leading-tight`}>
+            
+            <div className={`w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 bg-gradient-to-br ${technique.color} rounded-2xl flex items-center justify-center shadow-lg group-hover:shadow-2xl transition-all duration-300 relative z-10`}>
+              <technique.icon className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 text-white" />
+            </div>
+            <span className={`text-sm sm:text-base font-semibold ${technique.textColor} text-center leading-tight px-2 relative z-10`}>
               {technique.name}
             </span>
           </Button>

@@ -10,10 +10,7 @@ import { HexagonBreathing } from "@/components/techniques/hexagon-breathing"
 import { TriangleBreathing } from "@/components/techniques/triangle-breathing"
 import { StarBreathing } from "@/components/techniques/star-breathing"
 import { InfinityBreathing } from "@/components/techniques/infinity-breathing"
-
-
 import { CircleBreathing } from "@/components/techniques/circle-breathing"
-
 import { StopBreathing } from "@/components/techniques/stop-breathing"
 import { motion } from "framer-motion"
 import { translations } from "@/lib/translations/index"
@@ -35,14 +32,13 @@ interface BreathingExerciseProps {
 }
 
 export function BreathingExercise({ technique, onClose, onPrevious, onNext, language }: BreathingExerciseProps) {
+  const t = translations[language] || translations["en"]
   const [isPlaying, setIsPlaying] = useState(false)
   const [currentStep, setCurrentStep] = useState(0)
   const [progress, setProgress] = useState(0)
   const [customDurations, setCustomDurations] = useState<number[]>([])
   const [sessionTime, setSessionTime] = useState(0)
   const [cyclesCompleted, setCyclesCompleted] = useState(0)
-
-  const t = translations[language] || translations["en"]
 
   const getStepText = (step: number) => {
     if (step === 0) return t?.ui?.breatheIn || "Breathe In"
