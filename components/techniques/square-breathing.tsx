@@ -76,14 +76,7 @@ export function SquareBreathing({
   const actualPadding = Math.max(padding, minPadding)
   const actualSquareSize = Math.max(squareSize, adjustedSize - (minPadding * 2))
 
-  // Responsive offsets for step indicators
-  const getStepIndicatorOffset = () => {
-    if (isSmallScreen) return Math.min(20, actualPadding * 0.8)
-    if (isMobile) return Math.min(25, actualPadding * 0.9)
-    return Math.min(35, actualPadding * 1.2)
-  }
 
-  const stepIndicatorOffset = getStepIndicatorOffset()
 
   // Define the path points for the square
   const topLeft = { x: actualPadding, y: actualPadding }
@@ -98,26 +91,26 @@ export function SquareBreathing({
     switch (currentStep) {
       case 0: // Breathe in (bottom-left to top-left) - VERTICAL movement
         return {
-          x: padding,
-          y: padding + squareSize - (squareSize * percent),
+          x: actualPadding,
+          y: actualPadding + actualSquareSize - (actualSquareSize * percent),
         }
       case 1: // Hold 1 (top-left to top-right) - HORIZONTAL movement
         return {
-          x: padding + (squareSize * percent),
-          y: padding,
+          x: actualPadding + (actualSquareSize * percent),
+          y: actualPadding,
         }
       case 2: // Breathe out (top-right to bottom-right) - VERTICAL movement
         return {
-          x: padding + squareSize,
-          y: padding + (squareSize * percent),
+          x: actualPadding + actualSquareSize,
+          y: actualPadding + (actualSquareSize * percent),
         }
       case 3: // Hold 2 (bottom-right to bottom-left) - HORIZONTAL movement
         return {
-          x: padding + squareSize - (squareSize * percent),
-          y: padding + squareSize,
+          x: actualPadding + actualSquareSize - (actualSquareSize * percent),
+          y: actualPadding + actualSquareSize,
         }
       default:
-        return { x: padding, y: padding + squareSize }
+        return { x: actualPadding, y: actualPadding + actualSquareSize }
     }
   }
 
@@ -127,13 +120,13 @@ export function SquareBreathing({
     
     switch (currentStep) {
       case 0: // Breathe in (bottom-left to top-left) - VERTICAL
-        return `M ${bottomLeft.x} ${bottomLeft.y} L ${bottomLeft.x} ${bottomLeft.y - (squareSize * percent)}`
+        return `M ${bottomLeft.x} ${bottomLeft.y} L ${bottomLeft.x} ${bottomLeft.y - (actualSquareSize * percent)}`
       case 1: // Hold 1 (top-left to top-right) - HORIZONTAL
-        return `M ${topLeft.x} ${topLeft.y} L ${topLeft.x + (squareSize * percent)} ${topLeft.y}`
+        return `M ${topLeft.x} ${topLeft.y} L ${topLeft.x + (actualSquareSize * percent)} ${topLeft.y}`
       case 2: // Breathe out (top-right to bottom-right) - VERTICAL
-        return `M ${topRight.x} ${topRight.y} L ${topRight.x} ${topRight.y + (squareSize * percent)}`
+        return `M ${topRight.x} ${topRight.y} L ${topRight.x} ${topRight.y + (actualSquareSize * percent)}`
       case 3: // Hold 2 (bottom-right to bottom-left) - HORIZONTAL
-        return `M ${bottomRight.x} ${bottomRight.y} L ${bottomRight.x - (squareSize * percent)} ${bottomRight.y}`
+        return `M ${bottomRight.x} ${bottomRight.y} L ${bottomRight.x - (actualSquareSize * percent)} ${bottomRight.y}`
       default:
         return ""
     }
@@ -304,9 +297,6 @@ export function SquareBreathing({
 
       {/* Main Square Container - Responsive sizing with better overflow handling */}
       <div className="relative w-full h-full flex items-center justify-center">
-        {/* Background Square */}
-        <div className="absolute w-full h-full rounded-lg border-2 border-blue-200 dark:border-blue-700 bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-blue-900/20 dark:to-indigo-900/20" />
-        
         {/* Square Outline */}
         <svg
           width="100%"
@@ -322,9 +312,9 @@ export function SquareBreathing({
             width={actualSquareSize}
             height={actualSquareSize}
             fill="none"
-            stroke="rgba(59, 130, 246, 0.3)"
-            strokeWidth="2"
-            rx="8"
+            stroke="rgba(59, 130, 246, 0.6)"
+            strokeWidth="3"
+            rx="12"
           />
           
           {/* Progress Path */}
@@ -332,7 +322,7 @@ export function SquareBreathing({
             d={progressPath}
             fill="none"
             stroke="url(#progressGradient)"
-            strokeWidth="4"
+            strokeWidth="6"
             strokeLinecap="round"
             className="drop-shadow-lg"
           />
@@ -428,60 +418,7 @@ export function SquareBreathing({
           )} />
         </motion.div>
 
-        {/* Step Indicators - Responsive positioning and sizing */}
-        {[0, 1, 2, 3].map((step) => {
-          const stepInfo = getStepInfo(step)
-          const isActive = currentStep === step
-          
-          // Responsive positioning to prevent overflow
-          const indicatorSize = isSmallScreen ? 32 : isMobile ? 40 : 48
-          
-          let position
-          switch (step) {
-            case 0: // Left (breathe in)
-              position = { left: `${(actualPadding - stepIndicatorOffset) / adjustedSize * 100}%`, top: "50%", transform: "translateY(-50%)" }
-              break
-            case 1: // Top (hold 1)
-              position = { left: "50%", top: `${(actualPadding - stepIndicatorOffset) / adjustedSize * 100}%`, transform: "translateX(-50%)" }
-              break
-            case 2: // Right (breathe out)
-              position = { left: `${(actualPadding + actualSquareSize + stepIndicatorOffset) / adjustedSize * 100}%`, top: "50%", transform: "translateY(-50%)" }
-              break
-            case 3: // Bottom (hold 2)
-              position = { left: "50%", top: `${(actualPadding + actualSquareSize + stepIndicatorOffset) / adjustedSize * 100}%`, transform: "translateX(-50%)" }
-              break
-          }
 
-          return (
-            <motion.div
-              key={step}
-              className="absolute z-20"
-              style={position}
-              animate={{
-                scale: isActive ? 1.1 : 1,
-                opacity: isActive ? 1 : 0.6,
-              }}
-              transition={{ duration: 0.2 }}
-            >
-              <div
-                className={cn(
-                  "rounded-full flex items-center justify-center border-2 transition-all duration-200",
-                  isActive
-                    ? "bg-gradient-to-r from-blue-500 to-indigo-500 border-white shadow-lg"
-                    : "bg-white/80 dark:bg-gray-800/80 border-gray-300 dark:border-gray-600",
-                  isSmallScreen ? "w-8 h-8" : isMobile ? "w-10 h-10" : "w-12 h-12"
-                )}
-              >
-                {React.createElement(stepInfo.icon, {
-                  className: cn(
-                    isActive ? "text-white" : "text-gray-500 dark:text-gray-400",
-                    isSmallScreen ? "w-2.5 h-2.5" : isMobile ? "w-3 h-3" : "w-4 h-4"
-                  ),
-                })}
-              </div>
-            </motion.div>
-          )
-        })}
       </div>
 
       {/* Progress Bars - Responsive positioning and sizing */}
