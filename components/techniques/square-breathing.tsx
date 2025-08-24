@@ -67,14 +67,12 @@ export function SquareBreathing({
   }
 
   const adjustedSize = getResponsiveSize()
-  const padding = adjustedSize * 0.12 // Reduced padding for better mobile fit
-  const squareSize = adjustedSize - padding * 2
+  
+  // Calculate centered square dimensions
+  const desiredSquareSize = adjustedSize * 0.7 // Square takes 70% of container
+  const actualSquareSize = Math.max(desiredSquareSize, 120) // Minimum size
+  const actualPadding = (adjustedSize - actualSquareSize) / 2 // Center the square
   const center = adjustedSize / 2
-
-  // Ensure minimum sizes for very small screens
-  const minPadding = isSmallScreen ? 16 : 20
-  const actualPadding = Math.max(padding, minPadding)
-  const actualSquareSize = Math.max(squareSize, adjustedSize - (minPadding * 2))
 
 
 
