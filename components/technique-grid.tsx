@@ -24,17 +24,6 @@ export function TechniqueGrid({ language }: TechniqueGridProps) {
 
   const techniques = [
     {
-      id: "circle",
-      name: t.breathingTechniques.circle.name,
-      icon: Circle,
-      color: "from-rose-400 to-pink-500",
-      bgColor: "bg-gradient-to-br from-rose-50 to-pink-50 dark:from-rose-950/50 dark:to-pink-950/50",
-      textColor: "text-rose-700 dark:text-rose-300",
-      borderColor: "border-rose-200 dark:border-rose-800",
-      steps: t.breathingTechniques.circle.steps,
-      duration: 4,
-    },
-    {
       id: "square",
       name: t.breathingTechniques.square.name,
       icon: Square,
@@ -89,16 +78,26 @@ export function TechniqueGrid({ language }: TechniqueGridProps) {
       steps: t.breathingTechniques.infinity.steps,
       duration: 6,
     },
-
     {
       id: "stop",
       name: t.breathingTechniques.stop.name,
       icon: Octagon,
       color: "from-gray-400 to-slate-500",
-      bgColor: "bg-gradient-to-br from-gray-50 to-slate-50 dark:from-gray-950/50 dark:to-slate-950/50",
+      bgColor: "bg-gradient-to-br from-gray-50 to-slate-50 dark:from-gray-950/50 dark:to-gray-950/50",
       textColor: "text-gray-700 dark:text-gray-300",
       borderColor: "border-gray-200 dark:border-gray-800",
       steps: t.breathingTechniques.stop.steps,
+      duration: 4,
+    },
+    {
+      id: "circle",
+      name: t.breathingTechniques.circle.name,
+      icon: Circle,
+      color: "from-rose-400 to-pink-500",
+      bgColor: "bg-gradient-to-br from-rose-50 to-pink-50 dark:from-rose-950/50 dark:to-pink-950/50",
+      textColor: "text-rose-700 dark:text-rose-300",
+      borderColor: "border-rose-200 dark:border-rose-800",
+      steps: t.breathingTechniques.circle.steps,
       duration: 4,
     },
   ]
