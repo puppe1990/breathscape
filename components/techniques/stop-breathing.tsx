@@ -1,8 +1,10 @@
 "use client"
 
+import React from "react"
 import { motion } from "framer-motion"
 import { cn } from "@/lib/utils"
 import { translations } from "@/lib/translations/index"
+import { Heart, Zap, Sparkles } from "lucide-react"
 
 interface StopBreathingProps {
   size?: number
@@ -15,7 +17,7 @@ interface StopBreathingProps {
 
 export function StopBreathing({ size = 200, isPlaying, currentStep, progress, className, language }: StopBreathingProps) {
   const t = translations[language] || translations["en"]
-  const padding = size * 0.1
+  const padding = size * 0.08
   const stopSize = size - padding * 2
   const center = size / 2
   const radius = stopSize / 2
@@ -63,10 +65,21 @@ export function StopBreathing({ size = 200, isPlaying, currentStep, progress, cl
     }
   }
 
+  // Get step info with icons and colors
+  const getStepInfo = (step: number) => {
+    if (step === 0 || step === 4) {
+      return { name: t.ui.breatheIn, icon: Heart, color: "text-emerald-500" }
+    } else if (step === 2 || step === 6) {
+      return { name: t.ui.breatheOut, icon: Sparkles, color: "text-rose-500" }
+    } else {
+      return { name: t.ui.hold, icon: Zap, color: "text-amber-500" }
+    }
+  }
+
   // Calculate label positions with proper spacing
   const getLabelPosition = (index: number) => {
     const angle = (index * 45 - 22.5) * (Math.PI / 180)
-    const labelRadius = radius + 40
+    const labelRadius = radius + 45
     return {
       x: center + labelRadius * Math.cos(angle),
       y: center + labelRadius * Math.sin(angle),
@@ -75,9 +88,22 @@ export function StopBreathing({ size = 200, isPlaying, currentStep, progress, cl
   }
 
   const position = getPosition()
+  const currentStepInfo = getStepInfo(currentStep)
+
+  // Create progress path for current segment
+  const getProgressPath = () => {
+    const percent = progress / 100
+    const currentPoint = points[currentStep]
+    const nextPoint = points[(currentStep + 1) % 8]
+    
+    const currentX = currentPoint.x + (nextPoint.x - currentPoint.x) * percent
+    const currentY = currentPoint.y + (nextPoint.y - currentPoint.y) * percent
+    
+    return `M ${currentPoint.x} ${currentPoint.y} L ${currentX} ${currentY}`
+  }
 
   return (
-    <div className={cn("relative", className)} style={{ width: size, height: size }}>
+    <div className={cn("relative w-full h-full flex items-center justify-center overflow-hidden", className)} style={{ width: size, height: size }}>
       {/* Background glow effect */}
       <div className={cn("absolute inset-0 transition-opacity duration-500", isPlaying ? "opacity-30" : "opacity-0")}>
         <div
@@ -93,16 +119,11 @@ export function StopBreathing({ size = 200, isPlaying, currentStep, progress, cl
         <defs>
           <linearGradient id="stopGradient" x1="0%" y1="0%" x2="100%" y2="100%">
             <stop offset="0%" stopColor="#ef4444" />
-            <stop offset="50%" stopColor="#f87171" />
-            <stop offset="100%" stopColor="#fca5a5" />
+            <stop offset="25%" stopColor="#f87171" />
+            <stop offset="50%" stopColor="#fca5a5" />
+            <stop offset="75%" stopColor="#f87171" />
+            <stop offset="100%" stopColor="#ef4444" />
           </linearGradient>
-          <filter id="stopGlow">
-            <feGaussianBlur stdDeviation="3" result="coloredBlur" />
-            <feMerge>
-              <feMergeNode in="coloredBlur" />
-              <feMergeNode in="SourceGraphic" />
-            </feMerge>
-          </filter>
         </defs>
 
         {/* Background octagon */}
@@ -110,91 +131,110 @@ export function StopBreathing({ size = 200, isPlaying, currentStep, progress, cl
           d={octagonPath}
           fill="url(#stopGradient)"
           fillOpacity={0.1}
-          stroke="currentColor"
-          strokeOpacity={0.2}
-          strokeWidth={2}
-          filter="url(#stopGlow)"
+          stroke="rgba(239, 68, 68, 0.6)"
+          strokeWidth={3}
         />
 
-        {/* Active segment highlight */}
-        <motion.path
-          d={`
-            M ${points[currentStep].x} ${points[currentStep].y}
-            L ${points[(currentStep + 1) % 8].x} ${points[(currentStep + 1) % 8].y}
-          `}
+        {/* Progress Path */}
+        <path
+          d={getProgressPath()}
+          fill="none"
           stroke="url(#stopGradient)"
-          strokeWidth={4}
+          strokeWidth={6}
           strokeLinecap="round"
-          filter="url(#stopGlow)"
-          initial={{ pathLength: 0 }}
-          animate={{ pathLength: progress / 100 }}
-          transition={{ type: "tween", duration: 0.1, ease: "linear" }}
+          className="drop-shadow-lg"
         />
-
-        {/* Moving dot with glow effects */}
-        <g filter="url(#stopGlow)">
-          {/* Outer glow */}
-          <motion.circle
-            cx={position.x}
-            cy={position.y}
-            r={12}
-            fill="url(#stopGradient)"
-            fillOpacity={0.2}
-            animate={position}
-            transition={{ type: "spring", stiffness: 120, damping: 20, mass: 0.6 }}
-          />
-          {/* Inner glow */}
-          <motion.circle
-            cx={position.x}
-            cy={position.y}
-            r={8}
-            fill="url(#stopGradient)"
-            fillOpacity={0.3}
-            animate={position}
-            transition={{ type: "spring", stiffness: 160, damping: 24, mass: 0.55 }}
-          />
-          {/* Main dot */}
-          <motion.circle
-            cx={position.x}
-            cy={position.y}
-            r={4}
-            fill="url(#stopGradient)"
-            animate={position}
-            transition={{ type: "spring", stiffness: 200, damping: 26, mass: 0.5 }}
-          />
-        </g>
-
-        {/* Particle effects */}
-        {isPlaying && (currentStep === 0 || currentStep === 4) && (
-          <>
-            {Array.from({ length: 8 }).map((_, i) => {
-              const angle = (i * 45 * Math.PI) / 180
-              return (
-                <motion.circle
-                  key={i}
-                  cx={position.x}
-                  cy={position.y}
-                  r={2}
-                  fill="url(#stopGradient)"
-                  initial={{ scale: 0, opacity: 0 }}
-                  animate={{
-                    scale: [0, 1, 0],
-                    opacity: [0, 0.5, 0],
-                    x: [0, Math.cos(angle) * 30],
-                    y: [0, Math.sin(angle) * 30],
-                  }}
-                  transition={{
-                    duration: 1.5,
-                    delay: i * 0.1,
-                    repeat: Number.POSITIVE_INFINITY,
-                    ease: "easeOut",
-                  }}
-                />
-              )
-            })}
-          </>
-        )}
       </svg>
+
+      {/* Central Indicator */}
+      <div className="relative z-10">
+        <motion.div
+          className="w-16 h-16 rounded-full bg-white dark:bg-gray-800 shadow-lg border border-gray-200 dark:border-gray-600 flex items-center justify-center"
+          animate={{
+            scale: isPlaying ? [1, 1.05, 1] : 1,
+          }}
+          transition={{
+            duration: 2,
+            repeat: isPlaying ? Infinity : 0,
+            ease: "easeInOut",
+          }}
+        >
+          <div className="text-center">
+            <motion.div
+              className="mx-auto mb-1 w-5 h-5"
+              animate={{
+                scale: isPlaying ? [1, 1.1, 1] : 1,
+              }}
+              transition={{
+                duration: 2,
+                repeat: isPlaying ? Infinity : 0,
+                ease: "easeInOut",
+              }}
+            >
+              {React.createElement(currentStepInfo.icon, {
+                className: cn(currentStepInfo.color, "w-5 h-5"),
+              })}
+            </motion.div>
+            <span className="font-medium text-xs text-gray-600 dark:text-gray-400">
+              {currentStepInfo.name}
+            </span>
+          </div>
+        </motion.div>
+      </div>
+
+      {/* Moving dot with enhanced glow effects */}
+      <motion.div
+        className="absolute z-20"
+        style={{
+          left: position.x,
+          top: position.y,
+        }}
+        animate={{
+          left: position.x,
+          top: position.y,
+        }}
+        transition={{ type: "spring", stiffness: 150, damping: 20, mass: 0.8 }}
+      >
+        {/* Outer glow */}
+        <div className="absolute w-16 h-16 rounded-full -translate-x-8 -translate-y-8 bg-red-400/20 blur-sm" />
+        
+        {/* Main dot */}
+        <div className="absolute w-4 h-4 rounded-full -translate-x-2 -translate-y-2 bg-gradient-to-r from-red-500 to-red-400 shadow-lg border-2 border-white" />
+        
+        {/* Inner highlight */}
+        <div className="absolute w-2 h-2 rounded-full -translate-x-1 -translate-y-1 bg-white/80" />
+      </motion.div>
+
+      {/* Particle effects */}
+      {isPlaying && (currentStep === 0 || currentStep === 4) && (
+        <>
+          {Array.from({ length: 8 }).map((_, i) => {
+            const angle = (i * 45 * Math.PI) / 180
+            return (
+              <motion.circle
+                key={i}
+                cx={position.x}
+                cy={position.y}
+                r={2}
+                fill="url(#stopGradient)"
+                initial={{ scale: 0, opacity: 0 }}
+                animate={{
+                  scale: [0, 1, 0],
+                  opacity: [0, 0.5, 0],
+                  x: [0, Math.cos(angle) * 30],
+                  y: [0, Math.sin(angle) * 30],
+                }}
+                transition={{
+                  duration: 1.5,
+                  delay: i * 0.1,
+                  repeat: Number.POSITIVE_INFINITY,
+                  ease: "easeOut",
+                }}
+              />
+            )
+          })}
+        </>
+      )}
 
       {/* Step labels */}
       {points.map((_, index) => {
@@ -225,17 +265,26 @@ export function StopBreathing({ size = 200, isPlaying, currentStep, progress, cl
         )
       })}
 
-      {/* Progress indicator */}
-      <div className="absolute inset-x-0 bottom-4 flex justify-center gap-1">
+      {/* Progress indicators */}
+      <div className="absolute inset-x-0 -bottom-6 flex justify-center gap-1">
         {Array.from({ length: 8 }).map((_, step) => (
-          <div key={step} className="h-1 w-6 rounded-full overflow-hidden bg-red-100 dark:bg-red-950">
-            <div
-              className="h-full bg-gradient-to-r from-red-500 to-red-400 transition-all duration-100"
-              style={{
+          <motion.div
+            key={step}
+            className="h-1.5 w-6 rounded-full overflow-hidden bg-gray-200 dark:bg-gray-700"
+            animate={{
+              scale: currentStep === step ? 1.1 : 1,
+            }}
+            transition={{ duration: 0.2 }}
+          >
+            <motion.div
+              className="h-full bg-gradient-to-r from-red-500 to-red-400 rounded-full"
+              initial={{ width: 0 }}
+              animate={{
                 width: currentStep === step ? `${progress}%` : "0%",
               }}
+              transition={{ duration: 0.1 }}
             />
-          </div>
+          </motion.div>
         ))}
       </div>
     </div>
