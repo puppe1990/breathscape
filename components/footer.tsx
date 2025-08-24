@@ -81,7 +81,7 @@ export function Footer() {
             <div className="w-5 h-5 sm:w-6 sm:h-6 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
               <Sparkles className="w-3 h-3 sm:w-4 sm:h-4 text-white" />
             </div>
-            <span className="font-bold text-foreground">Breathscape</span>
+            <span className="font-bold text-foreground">{t.title}</span>
             <span className="hidden md:inline text-muted-foreground" aria-hidden>
               •
             </span>
@@ -93,19 +93,19 @@ export function Footer() {
               href="/about"
               className="text-muted-foreground hover:text-foreground transition-colors duration-200 font-medium hover:underline underline-offset-4 px-2 py-1 rounded hover:bg-white/10 dark:hover:bg-white/5"
             >
-              About
+              {t.footer.about}
             </Link>
             <Link
               href="/privacy"
               className="text-muted-foreground hover:text-foreground transition-colors duration-200 font-medium hover:underline underline-offset-4 px-2 py-1 rounded hover:bg-white/10 dark:hover:bg-white/5"
             >
-              Privacy
+              {t.footer.privacy}
             </Link>
             <Link
               href="/terms"
               className="text-muted-foreground hover:text-foreground transition-colors duration-200 font-medium hover:underline underline-offset-4 px-2 py-1 rounded hover:bg-white/10 dark:hover:bg-white/5"
             >
-              Terms
+              {t.footer.terms}
             </Link>
             <a
               href="#"
@@ -121,7 +121,7 @@ export function Footer() {
         <div className="border-t border-white/20 dark:border-white/10 py-3 sm:py-4">
           <div className="container text-center">
             <p className="text-xs text-muted-foreground flex items-center justify-center gap-2">
-              Made with <Heart className="w-3 h-3 text-rose-500" /> for mindful breathing
+              {t.footer.madeWith} <Heart className="w-3 h-3 text-rose-500" /> {t.footer.forMindfulBreathing}
             </p>
           </div>
         </div>
@@ -153,22 +153,22 @@ export function Footer() {
               <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center">
                 <Heart className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
               </div>
-              <h3 className="text-sm sm:text-base font-semibold text-foreground">Relaxation</h3>
-              <p className="text-xs sm:text-sm text-muted-foreground">Reduce stress and anxiety</p>
+              <h3 className="text-sm sm:text-base font-semibold text-foreground">{t.footer.relaxation}</h3>
+              <p className="text-xs sm:text-sm text-muted-foreground">{t.footer.relaxationDescription}</p>
             </div>
             <div className="flex flex-col items-center text-center space-y-2 sm:space-y-3">
               <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl flex items-center justify-center">
                 <Brain className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
               </div>
-              <h3 className="text-sm sm:text-base font-semibold text-foreground">Focus</h3>
-              <p className="text-xs sm:text-sm text-muted-foreground">Improve concentration</p>
+              <h3 className="text-sm sm:text-base font-semibold text-foreground">{t.footer.focus}</h3>
+              <p className="text-xs sm:text-sm text-muted-foreground">{t.footer.focusDescription}</p>
             </div>
             <div className="flex flex-col items-center text-center space-y-2 sm:space-y-3 sm:col-span-2 md:col-span-1">
               <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-orange-500 to-red-600 rounded-xl flex items-center justify-center">
                 <Leaf className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
               </div>
-              <h3 className="text-sm sm:text-base font-semibold text-foreground">Wellness</h3>
-              <p className="text-xs sm:text-sm text-muted-foreground">Enhance overall health</p>
+              <h3 className="text-sm sm:text-base font-semibold text-foreground">{t.footer.wellness}</h3>
+              <p className="text-xs sm:text-sm text-muted-foreground">{t.footer.wellnessDescription}</p>
             </div>
           </div>
         </div>
@@ -180,7 +180,7 @@ export function Footer() {
           <div className="w-5 h-5 sm:w-6 sm:h-6 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
             <Sparkles className="w-3 h-3 sm:w-4 sm:h-4 text-white" />
           </div>
-          <span className="font-bold text-foreground">Breathscape</span>
+          <span className="font-bold text-foreground">{t.title}</span>
           <span className="hidden md:inline text-muted-foreground" aria-hidden>
             •
           </span>

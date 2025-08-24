@@ -72,10 +72,10 @@ export default function Home() {
             <CardContent className="mobile-padding">
               <div className="mb-4 sm:mb-6">
                 <h2 className="mobile-heading font-bold mb-2 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                  Breathing Techniques
+                  {t.mainPage.breathingTechniques}
                 </h2>
                 <p className="mobile-text text-muted-foreground">
-                  Choose from our collection of proven breathing exercises
+                  {t.mainPage.breathingTechniquesDescription}
                 </p>
               </div>
               <TechniqueGrid language={language} />
@@ -90,10 +90,10 @@ export default function Home() {
             <CardContent className="p-6 md:p-8">
               <div className="mb-6">
                 <h2 className="text-2xl md:text-3xl font-bold mb-2 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                  Breathing Techniques
+                  {t.mainPage.breathingTechniques}
                 </h2>
                 <p className="text-base md:text-lg text-muted-foreground">
-                  Choose from our collection of proven breathing exercises
+                  {t.mainPage.breathingTechniquesDescription}
                 </p>
               </div>
               <TechniqueGrid language={language} />

@@ -2,6 +2,25 @@ export const ptBR = {
   title: "Breathscape",
   description:
     "Selecione uma técnica de respiração para começar seu exercício de respiração consciente. Cada técnica oferece benefícios únicos para relaxamento e alívio do estresse.",
+  footer: {
+    mindfulBreathing: "Respiração Consciente",
+    relaxation: "Relaxamento",
+    relaxationDescription: "Reduz estresse e ansiedade",
+    focus: "Foco",
+    focusDescription: "Melhora a concentração",
+    wellness: "Bem-estar",
+    wellnessDescription: "Melhora a saúde geral",
+    about: "Sobre",
+    privacy: "Privacidade",
+    terms: "Termos",
+    madeWith: "Feito com",
+    forMindfulBreathing: "para respiração consciente",
+  },
+  mainPage: {
+    breathingTechniques: "Técnicas de Respiração",
+    breathingTechniquesDescription: "Escolha de nossa coleção de exercícios respiratórios comprovados",
+    breathingGuideDescription: "Aprenda sobre diferentes técnicas de respiração e seus benefícios",
+  },
   breathingTechniques: {
     circle: {
       name: "Respiração Circular",

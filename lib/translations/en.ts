@@ -2,6 +2,25 @@ export const en = {
   title: "Breathscape",
   description:
     "Select a breathing technique to begin your mindful breathing exercise. Each technique offers unique benefits for relaxation and stress relief.",
+  footer: {
+    mindfulBreathing: "Mindful Breathing",
+    relaxation: "Relaxation",
+    relaxationDescription: "Reduce stress and anxiety",
+    focus: "Focus",
+    focusDescription: "Improve concentration",
+    wellness: "Wellness",
+    wellnessDescription: "Enhance overall health",
+    about: "About",
+    privacy: "Privacy",
+    terms: "Terms",
+    madeWith: "Made with",
+    forMindfulBreathing: "for mindful breathing",
+  },
+  mainPage: {
+    breathingTechniques: "Breathing Techniques",
+    breathingTechniquesDescription: "Choose from our collection of proven breathing exercises",
+    breathingGuideDescription: "Learn about different breathing techniques and their benefits",
+  },
   breathingTechniques: {
     circle: {
       name: "Circle Breathing",

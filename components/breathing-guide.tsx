@@ -11,7 +11,8 @@ interface BreathingGuideProps {
 }
 
 export function BreathingGuide({ language }: BreathingGuideProps) {
-  const t = translations[language]?.guide || translations["en"].guide
+  const t = translations[language] || translations["en"]
+  const guide = t.guide
 
   return (
     <Card className="glass-effect card-hover border-0 shadow-2xl">
@@ -22,17 +23,17 @@ export function BreathingGuide({ language }: BreathingGuideProps) {
               <BookOpen className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
             </div>
             <h2 className="text-lg sm:text-xl md:text-2xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
-              {t.title}
+              {guide.title}
             </h2>
           </div>
           <p className="text-sm sm:text-base md:text-lg text-muted-foreground">
-            Learn about different breathing techniques and their benefits
+            {t.mainPage.breathingGuideDescription}
           </p>
         </div>
         
         <ScrollArea className="h-[300px] sm:h-[400px] md:h-[500px] pr-2 sm:pr-4">
           <Accordion type="single" collapsible className="w-full space-y-2">
-            {Object.entries(t.techniques).map(([key, technique]) => (
+            {Object.entries(guide.techniques).map(([key, technique]) => (
               <AccordionItem key={key} value={key} className="border rounded-lg px-3 sm:px-4 hover:shadow-md transition-all duration-200">
                 <AccordionTrigger className="text-left hover:no-underline py-3 sm:py-4">
                   <div className="flex items-center gap-2 sm:gap-3">

@@ -1,6 +1,25 @@
 export type Translation = {
   title: string
   description: string
+  footer: {
+    mindfulBreathing: string
+    relaxation: string
+    relaxationDescription: string
+    focus: string
+    focusDescription: string
+    wellness: string
+    wellnessDescription: string
+    about: string
+    privacy: string
+    terms: string
+    madeWith: string
+    forMindfulBreathing: string
+  }
+  mainPage: {
+    breathingTechniques: string
+    breathingTechniquesDescription: string
+    breathingGuideDescription: string
+  }
   breathingTechniques: {
     [key: string]: {
       name: string
