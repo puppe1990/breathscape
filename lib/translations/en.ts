@@ -148,6 +148,41 @@ export const en = {
       seconds: "seconds",
     },
   },
+  about: {
+    title: "About Breathscape",
+    description: "Breathscape helps you practice mindful breathing with simple, guided techniques designed for relaxation, focus, and stress relief.",
+    mission: {
+      title: "Our Mission",
+      description: "Make mindfulness accessible to everyone through a calm, distraction‑free experience that works on any device.",
+    },
+    techniques: {
+      title: "Techniques",
+      description: "Explore multiple patterns like box breathing, triangle breathing, and more. Each technique includes timing and visual guidance.",
+    },
+    offline: {
+      title: "Works Offline",
+      description: "Install as a PWA and keep practicing even without an internet connection.",
+    },
+    privacy: {
+      title: "Privacy‑Friendly",
+      description: "We don't require accounts or personal data to use the app.",
+    },
+    feedback: "Have feedback or ideas? We'd love to hear from you.",
+  },
+  contact: {
+    title: "Contact",
+    description: "Questions, feedback, or ideas? We'd love to hear from you.",
+    email: {
+      title: "Email",
+      description: "Send us an email and we'll get back to you as soon as possible.",
+      button: "Email Us",
+    },
+    github: {
+      title: "GitHub",
+      description: "Open an issue or share suggestions.",
+      button: "Visit Repository",
+    },
+  },
   guide: {
     title: "Breathing Techniques Guide",
     techniques: {

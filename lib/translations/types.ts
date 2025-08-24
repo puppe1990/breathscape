@@ -49,6 +49,41 @@ export type Translation = {
       seconds: string
     }
   }
+  about: {
+    title: string
+    description: string
+    mission: {
+      title: string
+      description: string
+    }
+    techniques: {
+      title: string
+      description: string
+    }
+    offline: {
+      title: string
+      description: string
+    }
+    privacy: {
+      title: string
+      description: string
+    }
+    feedback: string
+  }
+  contact: {
+    title: string
+    description: string
+    email: {
+      title: string
+      description: string
+      button: string
+    }
+    github: {
+      title: string
+      description: string
+      button: string
+    }
+  }
   guide: {
     title: string
     techniques: {

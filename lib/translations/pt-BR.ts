@@ -153,6 +153,41 @@ export const ptBR = {
       seconds: "segundos",
     },
   },
+  about: {
+    title: "Sobre o Breathscape",
+    description: "O Breathscape ajuda você a praticar respiração consciente com técnicas simples e guiadas projetadas para relaxamento, foco e alívio do estresse.",
+    mission: {
+      title: "Nossa Missão",
+      description: "Tornar a atenção plena acessível a todos através de uma experiência calma e sem distrações que funciona em qualquer dispositivo.",
+    },
+    techniques: {
+      title: "Técnicas",
+      description: "Explore múltiplos padrões como respiração quadrada, respiração triangular e mais. Cada técnica inclui orientação de tempo e visual.",
+    },
+    offline: {
+      title: "Funciona Offline",
+      description: "Instale como PWA e continue praticando mesmo sem conexão com a internet.",
+    },
+    privacy: {
+      title: "Respeita a Privacidade",
+      description: "Não exigimos contas ou dados pessoais para usar o aplicativo.",
+    },
+    feedback: "Tem feedback ou ideias? Adoraríamos ouvir de você.",
+  },
+  contact: {
+    title: "Contato",
+    description: "Perguntas, feedback ou ideias? Adoraríamos ouvir de você.",
+    email: {
+      title: "Email",
+      description: "Envie-nos um email e responderemos o mais rápido possível.",
+      button: "Enviar Email",
+    },
+    github: {
+      title: "GitHub",
+      description: "Abra uma issue ou compartilhe sugestões.",
+      button: "Visitar Repositório",
+    },
+  },
   guide: {
     title: "Guia de Técnicas de Respiração",
     techniques: {
