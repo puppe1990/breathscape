@@ -79,7 +79,9 @@ export function Header() {
           <LanguageToggle currentLanguage={language} onLanguageChange={setLanguage} />
           
           <a 
-            href="#" 
+            href="https://github.com/puppe1990/breathscape" 
+            target="_blank"
+            rel="noopener noreferrer"
             aria-label="GitHub" 
             className="text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 transition-colors duration-200 p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl"
           >
