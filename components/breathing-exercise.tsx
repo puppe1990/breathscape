@@ -17,6 +17,7 @@ import { LungBreathing } from "@/components/techniques/lung-breathing"
 import { StopBreathing } from "@/components/techniques/stop-breathing"
 import { motion } from "framer-motion"
 import { translations } from "@/lib/translations/index"
+import { cn } from "@/lib/utils"
 
 interface BreathingExerciseProps {
   technique: {
@@ -118,7 +119,7 @@ export function BreathingExercise({ technique, onClose, onPrevious, onNext, lang
 
     switch (technique.id) {
       case "square":
-        return <SquareBreathing {...commonProps} />
+        return <SquareBreathing {...commonProps} onUpdateDurations={handleUpdateDurations} />
       case "hexagon":
         return <HexagonBreathing {...commonProps} />
       case "triangle":
@@ -230,8 +231,15 @@ export function BreathingExercise({ technique, onClose, onPrevious, onNext, lang
       </div>
 
       <div className="flex flex-col items-center justify-center gap-2 sm:gap-4 w-full flex-1">
+        {/* Responsive container for breathing animation */}
         <motion.div
-          className="relative w-40 h-40 sm:w-48 sm:h-48 md:w-56 md:h-56 lg:w-72 lg:h-72 flex items-center justify-center"
+          className={cn(
+            "relative flex items-center justify-center",
+            // Responsive sizing based on technique
+            technique.id === "square" 
+              ? "w-full max-w-[280px] h-[280px] sm:max-w-[320px] sm:h-[320px] md:max-w-[360px] md:h-[360px] lg:max-w-[400px] lg:h-[400px]"
+              : "w-40 h-40 sm:w-48 sm:h-48 md:w-56 md:h-56 lg:w-72 lg:h-72"
+          )}
           animate={{ scale: isPlaying ? getBreathScale() : 1 }}
           transition={{ type: "spring", stiffness: 90, damping: 18, mass: 0.7 }}
         >

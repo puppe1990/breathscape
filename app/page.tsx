@@ -4,7 +4,6 @@ import { useState, useEffect } from "react"
 import { TechniqueGrid } from "@/components/technique-grid"
 import { BreathingGuide } from "@/components/breathing-guide"
 import { Card, CardContent } from "@/components/ui/card"
-import { PWAInstall } from "./pwa"
 import { LanguageToggle } from "@/components/language-toggle"
 import { translations } from "@/lib/translations/index"
 
@@ -43,37 +42,57 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 dark:from-slate-950 dark:via-slate-900 dark:to-slate-800">
-      <PWAInstall />
-      
-      {/* Language Toggle Section */}
+      {/* Language Toggle Section - Mobile First */}
       <div className="relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-blue-600/10 via-purple-600/10 to-pink-600/10"></div>
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-8">
-          <div className="flex justify-between items-center">
-            <div className="flex-1"></div>
-            <div className="hidden lg:block">
-              <LanguageToggle currentLanguage={language} onLanguageChange={setLanguage} />
-            </div>
+        <div className="relative container py-4 sm:py-6 md:py-8">
+          {/* Mobile Language Toggle - Centered */}
+          <div className="flex justify-center lg:hidden">
+            <LanguageToggle currentLanguage={language} onLanguageChange={setLanguage} />
           </div>
           
-          {/* Mobile Language Toggle */}
-          <div className="lg:hidden flex justify-center mt-2 sm:mt-4">
+          {/* Desktop Language Toggle - Right Aligned */}
+          <div className="hidden lg:flex justify-end">
             <LanguageToggle currentLanguage={language} onLanguageChange={setLanguage} />
           </div>
         </div>
       </div>
 
-      {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 pb-8 sm:pb-16">
-        <div className="grid gap-6 sm:gap-8 grid-cols-1 lg:grid-cols-2">
-          {/* Techniques Grid */}
-          <Card className="glass-effect card-hover border-0 shadow-2xl order-1">
-            <CardContent className="p-4 sm:p-6 md:p-8">
+      {/* Main Content - Mobile First Layout */}
+      <div className="container pb-20 sm:pb-8 md:pb-12 lg:pb-16">
+        {/* Mobile: Single Column Stack */}
+        <div className="flex flex-col gap-4 sm:gap-6 md:gap-8 lg:hidden">
+          {/* Breathing Guide - Top on Mobile */}
+          <div className="order-1">
+            <BreathingGuide language={language} />
+          </div>
+          
+          {/* Techniques Grid - Bottom on Mobile */}
+          <Card className="glass-effect card-hover border-0 shadow-xl order-2">
+            <CardContent className="mobile-padding">
               <div className="mb-4 sm:mb-6">
-                <h2 className="text-xl sm:text-2xl font-bold mb-2 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                <h2 className="mobile-heading font-bold mb-2 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                   Breathing Techniques
                 </h2>
-                <p className="text-sm sm:text-base text-muted-foreground">
+                <p className="mobile-text text-muted-foreground">
+                  Choose from our collection of proven breathing exercises
+                </p>
+              </div>
+              <TechniqueGrid language={language} />
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Desktop: Two Column Grid */}
+        <div className="hidden lg:grid gap-6 md:gap-8 grid-cols-1 lg:grid-cols-2">
+          {/* Techniques Grid */}
+          <Card className="glass-effect card-hover border-0 shadow-2xl order-1">
+            <CardContent className="p-6 md:p-8">
+              <div className="mb-6">
+                <h2 className="text-2xl md:text-3xl font-bold mb-2 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                  Breathing Techniques
+                </h2>
+                <p className="text-base md:text-lg text-muted-foreground">
                   Choose from our collection of proven breathing exercises
                 </p>
               </div>

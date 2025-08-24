@@ -42,31 +42,54 @@ export function SquareBreathing({
   const [selectedPreset, setSelectedPreset] = useState<PresetKey>("4-4-4-4")
   const [durations, setDurations] = useState({ in: 4, hold1: 4, out: 4, hold2: 4 })
   const [isMobile, setIsMobile] = useState(false)
+  const [isSmallScreen, setIsSmallScreen] = useState(false)
 
   const t = translations[language] || translations["en"]
 
-  // Detect mobile screen size
+  // Detect screen sizes
   useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768)
+    const checkScreenSize = () => {
+      const width = window.innerWidth
+      setIsMobile(width < 768)
+      setIsSmallScreen(width < 480)
     }
     
-    checkMobile()
-    window.addEventListener('resize', checkMobile)
-    return () => window.removeEventListener('resize', checkMobile)
+    checkScreenSize()
+    window.addEventListener('resize', checkScreenSize)
+    return () => window.removeEventListener('resize', checkScreenSize)
   }, [])
 
-  // Adjust size for mobile
-  const adjustedSize = isMobile ? Math.min(size, 240) : size
-  const padding = adjustedSize * 0.15
+  // Responsive sizing
+  const getResponsiveSize = () => {
+    if (isSmallScreen) return Math.min(size, 200)
+    if (isMobile) return Math.min(size, 240)
+    return size
+  }
+
+  const adjustedSize = getResponsiveSize()
+  const padding = adjustedSize * 0.12 // Reduced padding for better mobile fit
   const squareSize = adjustedSize - padding * 2
   const center = adjustedSize / 2
 
+  // Ensure minimum sizes for very small screens
+  const minPadding = isSmallScreen ? 16 : 20
+  const actualPadding = Math.max(padding, minPadding)
+  const actualSquareSize = Math.max(squareSize, adjustedSize - (minPadding * 2))
+
+  // Responsive offsets for step indicators
+  const getStepIndicatorOffset = () => {
+    if (isSmallScreen) return Math.min(20, actualPadding * 0.8)
+    if (isMobile) return Math.min(25, actualPadding * 0.9)
+    return Math.min(35, actualPadding * 1.2)
+  }
+
+  const stepIndicatorOffset = getStepIndicatorOffset()
+
   // Define the path points for the square
-  const topLeft = { x: padding, y: padding }
-  const topRight = { x: padding + squareSize, y: padding }
-  const bottomRight = { x: padding + squareSize, y: padding + squareSize }
-  const bottomLeft = { x: padding, y: padding + squareSize }
+  const topLeft = { x: actualPadding, y: actualPadding }
+  const topRight = { x: actualPadding + actualSquareSize, y: actualPadding }
+  const bottomRight = { x: actualPadding + actualSquareSize, y: actualPadding + actualSquareSize }
+  const bottomLeft = { x: actualPadding, y: actualPadding + actualSquareSize }
 
   // Calculate current position based on step and progress
   const getPosition = () => {
@@ -155,17 +178,29 @@ export function SquareBreathing({
   const progressPath = getProgressPath()
 
   return (
-    <div className={cn("relative", className)} style={{ width: adjustedSize, height: adjustedSize }}>
-      {/* Settings Button */}
-      <div className="absolute top-3 right-3 z-10">
+    <div className={cn(
+      "relative w-full h-full flex items-center justify-center overflow-hidden",
+      className
+    )}>
+      {/* Settings Button - Responsive positioning */}
+      <div className={cn(
+        "absolute z-10",
+        isSmallScreen ? "top-2 right-2" : "top-3 right-3"
+      )}>
         <Sheet>
           <SheetTrigger asChild>
             <Button
               variant="ghost"
               size="icon"
-              className="h-9 w-9 rounded-full bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm border border-gray-200 dark:border-gray-600 hover:bg-white dark:hover:bg-gray-700 shadow-sm"
+              className={cn(
+                "rounded-full bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm border border-gray-200 dark:border-gray-600 hover:bg-white dark:hover:bg-gray-700 shadow-sm",
+                isSmallScreen ? "h-7 w-7" : "h-9 w-9"
+              )}
             >
-              <Settings2 className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+              <Settings2 className={cn(
+                "text-blue-600 dark:text-blue-400",
+                isSmallScreen ? "h-3 w-3" : "h-4 w-4"
+              )} />
             </Button>
           </SheetTrigger>
           <SheetContent>
@@ -267,24 +302,25 @@ export function SquareBreathing({
         </Sheet>
       </div>
 
-      {/* Main Square */}
+      {/* Main Square Container - Responsive sizing with better overflow handling */}
       <div className="relative w-full h-full flex items-center justify-center">
         {/* Background Square */}
         <div className="absolute w-full h-full rounded-lg border-2 border-blue-200 dark:border-blue-700 bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-blue-900/20 dark:to-indigo-900/20" />
         
         {/* Square Outline */}
         <svg
-          width={adjustedSize}
-          height={adjustedSize}
+          width="100%"
+          height="100%"
           viewBox={`0 0 ${adjustedSize} ${adjustedSize}`}
           className="absolute"
+          preserveAspectRatio="xMidYMid meet"
         >
           {/* Square outline */}
           <rect
-            x={padding}
-            y={padding}
-            width={squareSize}
-            height={squareSize}
+            x={actualPadding}
+            y={actualPadding}
+            width={actualSquareSize}
+            height={actualSquareSize}
             fill="none"
             stroke="rgba(59, 130, 246, 0.3)"
             strokeWidth="2"
@@ -312,12 +348,12 @@ export function SquareBreathing({
           </defs>
         </svg>
 
-        {/* Central Indicator */}
+        {/* Central Indicator - Responsive sizing */}
         <div className="relative z-10">
           <motion.div
             className={cn(
               "rounded-full bg-white dark:bg-gray-800 shadow-lg border border-gray-200 dark:border-gray-600 flex items-center justify-center",
-              isMobile ? "w-16 h-16" : "w-20 h-20"
+              isSmallScreen ? "w-12 h-12" : isMobile ? "w-16 h-16" : "w-20 h-20"
             )}
             animate={{
               scale: isPlaying ? [1, 1.05, 1] : 1,
@@ -332,7 +368,7 @@ export function SquareBreathing({
               <motion.div
                 className={cn(
                   "mx-auto mb-1",
-                  isMobile ? "w-5 h-5" : "w-6 h-6"
+                  isSmallScreen ? "w-4 h-4" : isMobile ? "w-5 h-5" : "w-6 h-6"
                 )}
                 animate={{
                   scale: isPlaying ? [1, 1.1, 1] : 1,
@@ -346,13 +382,13 @@ export function SquareBreathing({
                 {React.createElement(currentStepInfo.icon, {
                   className: cn(
                     currentStepInfo.color,
-                    isMobile ? "w-5 h-5" : "w-6 h-6"
+                    isSmallScreen ? "w-4 h-4" : isMobile ? "w-5 h-5" : "w-6 h-6"
                   ),
                 })}
               </motion.div>
               <span className={cn(
                 "font-medium text-gray-600 dark:text-gray-400",
-                isMobile ? "text-xs" : "text-xs"
+                isSmallScreen ? "text-[10px]" : "text-xs"
               )}>
                 {currentStepInfo.name}
               </span>
@@ -360,54 +396,59 @@ export function SquareBreathing({
           </motion.div>
         </div>
 
-        {/* Moving Dot */}
+        {/* Moving Dot - Responsive sizing */}
         <motion.div
           className="absolute z-20"
           style={{
-            left: position.x,
-            top: position.y,
+            left: `${(position.x / adjustedSize) * 100}%`,
+            top: `${(position.y / adjustedSize) * 100}%`,
           }}
           animate={{
-            left: position.x,
-            top: position.y,
+            left: `${(position.x / adjustedSize) * 100}%`,
+            top: `${(position.y / adjustedSize) * 100}%`,
           }}
           transition={{ type: "spring", stiffness: 150, damping: 20, mass: 0.8 }}
         >
           {/* Outer glow */}
           <div className={cn(
-            "absolute rounded-full -translate-x-8 -translate-y-8 bg-blue-400/20 blur-sm",
-            isMobile ? "w-12 h-12" : "w-16 h-16"
+            "absolute rounded-full -translate-x-1/2 -translate-y-1/2 bg-blue-400/20 blur-sm",
+            isSmallScreen ? "w-8 h-8" : isMobile ? "w-12 h-12" : "w-16 h-16"
           )} />
           
           {/* Main dot */}
-          <div className="absolute w-4 h-4 rounded-full -translate-x-2 -translate-y-2 bg-gradient-to-r from-blue-500 to-indigo-500 shadow-lg border-2 border-white" />
+          <div className={cn(
+            "absolute rounded-full -translate-x-1/2 -translate-y-1/2 bg-gradient-to-r from-blue-500 to-indigo-500 shadow-lg border-2 border-white",
+            isSmallScreen ? "w-3 h-3" : "w-4 h-4"
+          )} />
           
           {/* Inner highlight */}
-          <div className="absolute w-2 h-2 rounded-full -translate-x-1 -translate-y-1 bg-white/80" />
+          <div className={cn(
+            "absolute rounded-full -translate-x-1/2 -translate-y-1/2 bg-white/80",
+            isSmallScreen ? "w-1.5 h-1.5" : "w-2 h-2"
+          )} />
         </motion.div>
 
-        {/* Step Indicators */}
+        {/* Step Indicators - Responsive positioning and sizing */}
         {[0, 1, 2, 3].map((step) => {
           const stepInfo = getStepInfo(step)
           const isActive = currentStep === step
           
-          // Adjust positioning for mobile to prevent overflow
-          const indicatorSize = isMobile ? 40 : 48
-          const offset = isMobile ? 25 : 35
+          // Responsive positioning to prevent overflow
+          const indicatorSize = isSmallScreen ? 32 : isMobile ? 40 : 48
           
           let position
           switch (step) {
             case 0: // Left (breathe in)
-              position = { left: padding - offset, top: center, transform: "translateY(-50%)" }
+              position = { left: `${(actualPadding - stepIndicatorOffset) / adjustedSize * 100}%`, top: "50%", transform: "translateY(-50%)" }
               break
             case 1: // Top (hold 1)
-              position = { left: center, top: padding - offset, transform: "translateX(-50%)" }
+              position = { left: "50%", top: `${(actualPadding - stepIndicatorOffset) / adjustedSize * 100}%`, transform: "translateX(-50%)" }
               break
             case 2: // Right (breathe out)
-              position = { left: padding + squareSize + offset, top: center, transform: "translateY(-50%)" }
+              position = { left: `${(actualPadding + actualSquareSize + stepIndicatorOffset) / adjustedSize * 100}%`, top: "50%", transform: "translateY(-50%)" }
               break
             case 3: // Bottom (hold 2)
-              position = { left: center, top: padding + squareSize + offset, transform: "translateX(-50%)" }
+              position = { left: "50%", top: `${(actualPadding + actualSquareSize + stepIndicatorOffset) / adjustedSize * 100}%`, transform: "translateX(-50%)" }
               break
           }
 
@@ -428,13 +469,13 @@ export function SquareBreathing({
                   isActive
                     ? "bg-gradient-to-r from-blue-500 to-indigo-500 border-white shadow-lg"
                     : "bg-white/80 dark:bg-gray-800/80 border-gray-300 dark:border-gray-600",
-                  isMobile ? "w-10 h-10" : "w-12 h-12"
+                  isSmallScreen ? "w-8 h-8" : isMobile ? "w-10 h-10" : "w-12 h-12"
                 )}
               >
                 {React.createElement(stepInfo.icon, {
                   className: cn(
                     isActive ? "text-white" : "text-gray-500 dark:text-gray-400",
-                    isMobile ? "w-3 h-3" : "w-4 h-4"
+                    isSmallScreen ? "w-2.5 h-2.5" : isMobile ? "w-3 h-3" : "w-4 h-4"
                   ),
                 })}
               </div>
@@ -443,15 +484,18 @@ export function SquareBreathing({
         })}
       </div>
 
-      {/* Progress Bars */}
-      <div className="absolute -bottom-6 left-1/2 transform -translate-x-1/2">
-        <div className="flex gap-2">
+      {/* Progress Bars - Responsive positioning and sizing */}
+      <div className={cn(
+        "absolute left-1/2 transform -translate-x-1/2",
+        isSmallScreen ? "-bottom-4" : "-bottom-6"
+      )}>
+        <div className="flex gap-1 sm:gap-2">
           {[0, 1, 2, 3].map((step) => (
             <motion.div
               key={step}
               className={cn(
                 "h-1.5 rounded-full bg-gray-200 dark:bg-gray-700 overflow-hidden",
-                isMobile ? "w-8" : "w-10"
+                isSmallScreen ? "w-6" : isMobile ? "w-8" : "w-10"
               )}
               animate={{
                 scale: currentStep === step ? 1.1 : 1,
