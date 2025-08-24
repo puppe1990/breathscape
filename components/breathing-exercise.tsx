@@ -125,7 +125,7 @@ export function BreathingExercise({ technique, onClose, onPrevious, onNext, lang
       case "triangle":
         return <TriangleBreathing {...commonProps} />
       case "star":
-        return <StarBreathing {...commonProps} />
+        return <StarBreathing {...commonProps} onUpdateDurations={handleUpdateDurations} />
       case "infinity":
         return <InfinityBreathing {...commonProps} />
       case "heart":
@@ -236,7 +236,7 @@ export function BreathingExercise({ technique, onClose, onPrevious, onNext, lang
           className={cn(
             "relative flex items-center justify-center",
             // Responsive sizing based on technique
-            technique.id === "square" || technique.id === "hexagon"
+            technique.id === "square" || technique.id === "hexagon" || technique.id === "star"
               ? "w-full max-w-[280px] h-[280px] sm:max-w-[320px] sm:h-[320px] md:max-w-[360px] md:h-[360px] lg:max-w-[400px] lg:h-[400px]"
               : "w-40 h-40 sm:w-48 sm:h-48 md:w-56 md:h-56 lg:w-72 lg:h-72"
           )}
