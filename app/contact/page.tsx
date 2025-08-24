@@ -21,7 +21,7 @@ export default function ContactPage() {
               Send us an email and we’ll get back to you as soon as possible.
             </p>
             <a
-              href="mailto:hello@example.com?subject=Breathscape%20Contact"
+              href="mailto:matheus.puppe@gmail.com?subject=Breathscape%20Contact"
               className="inline-flex items-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
             >
               Email Us
@@ -32,7 +32,9 @@ export default function ContactPage() {
             <h2 className="mb-2 text-lg font-semibold">GitHub</h2>
             <p className="text-sm text-muted-foreground mb-4">Open an issue or share suggestions.</p>
             <a
-              href="#"
+              href="https://github.com/puppe1990/breathscape"
+              target="_blank"
+              rel="noopener noreferrer"
               className="inline-flex items-center rounded-md border px-4 py-2 text-sm font-medium transition-colors hover:bg-accent focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
             >
               Visit Repository
