@@ -26,7 +26,7 @@ export function TriangleBreathing({
   const t = translations[language] || translations["en"]
 
   // Calculate triangle points for an equilateral triangle
-  const padding = size * 0.15
+  const padding = size * 0.08
   const triangleSize = size - padding * 2
   const height = triangleSize * Math.sin(Math.PI / 3) // Height of equilateral triangle
   const halfWidth = triangleSize / 2
