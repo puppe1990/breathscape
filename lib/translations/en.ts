@@ -1,5 +1,6 @@
 export const en = {
   title: "Breathscape",
+  description: "Select a breathing technique to start your mindful breathing exercise. Each technique offers unique benefits for relaxation and stress relief.",
   footer: {
     mindfulBreathing: "Mindful Breathing",
     relaxation: "Relaxation",
@@ -9,6 +10,7 @@ export const en = {
     wellness: "Wellness",
     wellnessDescription: "Enhance overall health",
     about: "About",
+    contact: "Contact",
     privacy: "Privacy",
     terms: "Terms",
     madeWith: "Made with",

@@ -11,6 +11,7 @@ export const ptBR = {
     wellness: "Bem-estar",
     wellnessDescription: "Melhora a saúde geral",
     about: "Sobre",
+    contact: "Contato",
     privacy: "Privacidade",
     terms: "Termos",
     madeWith: "Feito com",

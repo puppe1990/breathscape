@@ -10,6 +10,7 @@ export type Translation = {
     wellness: string
     wellnessDescription: string
     about: string
+    contact: string
     privacy: string
     terms: string
     madeWith: string

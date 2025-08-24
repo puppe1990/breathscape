@@ -16,27 +16,36 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
+    console.log("LanguageProvider: Initializing...")
     setMounted(true)
     if (typeof window !== "undefined") {
-      const browserLang = navigator.language
-      // Check if we support the full locale (e.g. pt-BR)
-      if (translations[browserLang]) {
-        setLanguage(browserLang)
-        return
-      }
-      // Check if we support the base language (e.g. pt)
-      const baseLang = browserLang.split("-")[0]
-      if (translations[baseLang]) {
-        setLanguage(baseLang)
+      try {
+        const browserLang = navigator.language
+        console.log("LanguageProvider: Browser language detected:", browserLang)
+        // Check if we support the full locale (e.g. pt-BR)
+        if (translations[browserLang]) {
+          console.log("LanguageProvider: Setting language to:", browserLang)
+          setLanguage(browserLang)
+          return
+        }
+        // Check if we support the base language (e.g. pt)
+        const baseLang = browserLang.split("-")[0]
+        if (translations[baseLang]) {
+          console.log("LanguageProvider: Setting language to base:", baseLang)
+          setLanguage(baseLang)
+        }
+      } catch (error) {
+        console.warn("Error detecting browser language:", error)
+        // Fallback to English
+        setLanguage("en")
       }
     }
+    console.log("LanguageProvider: Initialization complete")
   }, [])
 
-  const t = translations[language] || translations["en"]
-
-  if (!mounted) {
-    return <>{children}</>
-  }
+  // Ensure we always have valid translations
+  const t = translations[language] || translations["en"] || {}
+  console.log("LanguageProvider: Current language:", language, "Translations available:", Object.keys(translations))
 
   return (
     <LanguageContext.Provider value={{ language, setLanguage, t }}>
