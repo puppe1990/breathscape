@@ -4,7 +4,7 @@ A modern, responsive web application for practicing various breathing techniques
 
 ## Features
 
-- **Multiple Breathing Techniques**: Circle, Square, Hexagon, Triangle, Star, Infinity, Heart, Flower, Lung, and Stop Sign breathing
+- **Multiple Breathing Techniques**: Circle, Square, Hexagon, Triangle, Star, Infinity, and Stop Sign breathing
 - **Interactive Exercises**: Visual breathing guides with customizable durations
 - **Multilingual Support**: English and Portuguese (Brazilian)
 - **PWA Ready**: Progressive Web App with offline capabilities
