@@ -69,13 +69,20 @@
 
   body {
     @apply bg-background text-foreground antialiased;
-    font-feature-settings: "rlig" 1, "calt" 1;
+    font-feature-settings:
+      "rlig" 1,
+      "calt" 1;
     overflow-x: hidden;
     -webkit-overflow-scrolling: touch;
     line-height: 1.65;
   }
 
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     @apply font-display tracking-tight;
   }
 
@@ -121,7 +128,7 @@
 
   .technique-card {
     @apply relative flex flex-col items-center justify-center gap-3 rounded-2xl border border-border/70 bg-card p-5 transition-all duration-200;
-    @apply hover:border-primary/30 hover:shadow-md hover:-translate-y-0.5;
+    @apply hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-md;
     @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2;
   }
 
@@ -135,7 +142,8 @@
 }
 
 @keyframes breathe {
-  0%, 100% {
+  0%,
+  100% {
     transform: scale(1);
     opacity: 0.6;
   }
@@ -146,8 +154,13 @@
 }
 
 @keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-8px); }
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
 }
 
 @keyframes dash {
@@ -187,13 +200,17 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  @apply rounded-full bg-border hover:bg-muted-foreground/30 transition-colors;
+  @apply rounded-full bg-border transition-colors hover:bg-muted-foreground/30;
 }
 
 *:focus-visible {
   @apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-background;
 }
 
-button, a, input, textarea, select {
+button,
+a,
+input,
+textarea,
+select {
   @apply transition-colors duration-200;
 }

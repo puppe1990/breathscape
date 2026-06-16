@@ -1,6 +1,7 @@
 export const en = {
   title: "Breathscape",
-  description: "Select a breathing technique to start your mindful breathing exercise. Each technique offers unique benefits for relaxation and stress relief.",
+  description:
+    "Select a breathing technique to start your mindful breathing exercise. Each technique offers unique benefits for relaxation and stress relief.",
   footer: {
     mindfulBreathing: "Mindful Breathing",
     relaxation: "Relaxation",
@@ -40,7 +41,12 @@ export const en = {
         "Can lower blood pressure",
         "Perfect for quick stress relief during work",
       ],
-      howItWorks: ["Breathe in for 4 seconds", "Hold for 4 seconds", "Breathe out for 4 seconds", "Hold for 4 seconds"],
+      howItWorks: [
+        "Breathe in for 4 seconds",
+        "Hold for 4 seconds",
+        "Breathe out for 4 seconds",
+        "Hold for 4 seconds",
+      ],
     },
     hexagon: {
       name: "Hexagon Breathing",
@@ -100,14 +106,25 @@ export const en = {
         "Good for physical exercise preparation",
         "Enhances mind-body connection",
       ],
-      howItWorks: ["Continuous breathing pattern", "No holding phases", "Smooth transitions between inhale and exhale"],
+      howItWorks: [
+        "Continuous breathing pattern",
+        "No holding phases",
+        "Smooth transitions between inhale and exhale",
+      ],
     },
-
-
 
     stop: {
       name: "Stop Sign Breathing",
-      steps: ["Breathe In", "Hold", "Breathe Out", "Hold", "Breathe In", "Hold", "Breathe Out", "Hold"],
+      steps: [
+        "Breathe In",
+        "Hold",
+        "Breathe Out",
+        "Hold",
+        "Breathe In",
+        "Hold",
+        "Breathe Out",
+        "Hold",
+      ],
       description: "An octagonal pattern for complete breath awareness.",
       benefits: [
         "Deep relaxation",
@@ -150,14 +167,17 @@ export const en = {
   },
   about: {
     title: "About Breathscape",
-    description: "Breathscape helps you practice mindful breathing with simple, guided techniques designed for relaxation, focus, and stress relief.",
+    description:
+      "Breathscape helps you practice mindful breathing with simple, guided techniques designed for relaxation, focus, and stress relief.",
     mission: {
       title: "Our Mission",
-      description: "Make mindfulness accessible to everyone through a calm, distraction‑free experience that works on any device.",
+      description:
+        "Make mindfulness accessible to everyone through a calm, distraction‑free experience that works on any device.",
     },
     techniques: {
       title: "Techniques",
-      description: "Explore multiple patterns like box breathing, triangle breathing, and more. Each technique includes timing and visual guidance.",
+      description:
+        "Explore multiple patterns like box breathing, triangle breathing, and more. Each technique includes timing and visual guidance.",
     },
     offline: {
       title: "Works Offline",
@@ -192,7 +212,12 @@ export const en = {
           "Square breathing, also known as box breathing, is a simple yet powerful technique used by everyone from athletes to Navy SEALs for stress relief and focus enhancement.",
         howItWorks: {
           title: "How it works:",
-          steps: ["Breathe in for 4 seconds", "Hold for 4 seconds", "Breathe out for 4 seconds", "Hold for 4 seconds"],
+          steps: [
+            "Breathe in for 4 seconds",
+            "Hold for 4 seconds",
+            "Breathe out for 4 seconds",
+            "Hold for 4 seconds",
+          ],
         },
         benefits: {
           title: "Benefits:",
@@ -276,7 +301,11 @@ export const en = {
           "Infinity breathing uses a continuous flow pattern that mimics the infinity symbol, creating a seamless and rhythmic breathing experience.",
         howItWorks: {
           title: "How it works:",
-          steps: ["Continuous breathing pattern", "No holding phases", "Smooth transitions between inhale and exhale"],
+          steps: [
+            "Continuous breathing pattern",
+            "No holding phases",
+            "Smooth transitions between inhale and exhale",
+          ],
         },
         benefits: {
           title: "Benefits:",
@@ -328,4 +357,3 @@ export const en = {
     },
   },
 }
-

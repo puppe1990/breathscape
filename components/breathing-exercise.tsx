@@ -34,7 +34,8 @@ type StepPhase = "inhale" | "hold" | "exhale"
 
 function getStepPhase(stepIndex: number, totalSteps: number): StepPhase {
   if (totalSteps === 3) return (["inhale", "hold", "exhale"] as const)[stepIndex] ?? "inhale"
-  if (totalSteps === 4) return (["inhale", "hold", "exhale", "hold"] as const)[stepIndex] ?? "inhale"
+  if (totalSteps === 4)
+    return (["inhale", "hold", "exhale", "hold"] as const)[stepIndex] ?? "inhale"
   if (totalSteps === 6) {
     const phases: StepPhase[] = ["inhale", "hold", "exhale", "hold", "inhale", "hold"]
     return phases[stepIndex] ?? "inhale"
@@ -60,7 +61,13 @@ const phaseStyles: Record<StepPhase, { label: string; dot: string; ring: string 
   },
 }
 
-export function BreathingExercise({ technique, onClose, onPrevious, onNext, language }: BreathingExerciseProps) {
+export function BreathingExercise({
+  technique,
+  onClose,
+  onPrevious,
+  onNext,
+  language,
+}: BreathingExerciseProps) {
   const t = translations[language] || translations["en"]
   const [isPlaying, setIsPlaying] = useState(false)
   const [currentStep, setCurrentStep] = useState(0)

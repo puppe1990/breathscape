@@ -5,7 +5,14 @@ import { motion } from "framer-motion"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Settings2, Heart, Zap, Sparkles } from "lucide-react"
-import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet"
 import { Slider } from "@/components/ui/slider"
 import { Label } from "@/components/ui/label"
 import { useLanguage } from "@/components/language-provider"
@@ -57,7 +64,7 @@ export function CircleBreathing({
     setSelectedPreset(preset)
     const newDurations = breathingPresets[preset]
     setDurations({ in: newDurations.in, hold: newDurations.hold, out: newDurations.out })
-    
+
     if (onUpdateDurations) {
       onUpdateDurations([newDurations.in, newDurations.hold, newDurations.out])
     }
@@ -66,7 +73,7 @@ export function CircleBreathing({
   const handleDurationChange = (type: keyof typeof durations, value: number) => {
     const newDurations = { ...durations, [type]: value }
     setDurations(newDurations)
-    
+
     if (onUpdateDurations) {
       onUpdateDurations([newDurations.in, newDurations.hold, newDurations.out])
     }
@@ -77,13 +84,13 @@ export function CircleBreathing({
   return (
     <div className={cn("relative", className)} style={{ width: size, height: size }}>
       {/* Settings Button */}
-      <div className="absolute top-3 right-3 z-10">
+      <div className="absolute right-3 top-3 z-10">
         <Sheet>
           <SheetTrigger asChild>
             <Button
               variant="ghost"
               size="icon"
-              className="h-9 w-9 rounded-full bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm border border-gray-200 dark:border-gray-600 hover:bg-white dark:hover:bg-gray-700 shadow-sm"
+              className="h-9 w-9 rounded-full border border-gray-200 bg-white/90 shadow-sm backdrop-blur-sm hover:bg-white dark:border-gray-600 dark:bg-gray-800/90 dark:hover:bg-gray-700"
             >
               <Settings2 className="h-4 w-4 text-gray-600 dark:text-gray-300" />
             </Button>
@@ -93,8 +100,8 @@ export function CircleBreathing({
               <SheetTitle>Breathing Settings</SheetTitle>
               <SheetDescription>Customize your breathing pattern</SheetDescription>
             </SheetHeader>
-            
-            <div className="py-6 space-y-6">
+
+            <div className="space-y-6 py-6">
               {/* Preset Selection */}
               <div className="space-y-3">
                 <Label className="font-medium">Choose Pattern</Label>
@@ -109,7 +116,9 @@ export function CircleBreathing({
                     >
                       <div className="text-center">
                         <div className="font-medium">{preset.name}</div>
-                        <div className="text-xs opacity-70">{preset.in}-{preset.hold}-{preset.out}</div>
+                        <div className="text-xs opacity-70">
+                          {preset.in}-{preset.hold}-{preset.out}
+                        </div>
                       </div>
                     </Button>
                   ))}
@@ -119,7 +128,7 @@ export function CircleBreathing({
               {/* Custom Durations */}
               <div className="space-y-4">
                 <Label className="font-medium">Customize</Label>
-                
+
                 <div className="space-y-3">
                   <div>
                     <Label className="flex items-center gap-2 text-sm">
@@ -135,7 +144,7 @@ export function CircleBreathing({
                       className="mt-2"
                     />
                   </div>
-                  
+
                   <div>
                     <Label className="flex items-center gap-2 text-sm">
                       <Zap className="h-4 w-4 text-amber-500" />
@@ -150,7 +159,7 @@ export function CircleBreathing({
                       className="mt-2"
                     />
                   </div>
-                  
+
                   <div>
                     <Label className="flex items-center gap-2 text-sm">
                       <Sparkles className="h-4 w-4 text-rose-500" />
@@ -173,10 +182,10 @@ export function CircleBreathing({
       </div>
 
       {/* Main Breathing Circle */}
-      <div className="relative w-full h-full flex items-center justify-center">
+      <div className="relative flex h-full w-full items-center justify-center">
         {/* Background Circle */}
-        <div className="absolute w-full h-full rounded-full border-2 border-gray-200 dark:border-gray-700 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900" />
-        
+        <div className="absolute h-full w-full rounded-full border-2 border-gray-200 bg-gradient-to-br from-gray-50 to-gray-100 dark:border-gray-700 dark:from-gray-800 dark:to-gray-900" />
+
         {/* Breathing Progress Circle */}
         <svg
           width={size}
@@ -191,7 +200,7 @@ export function CircleBreathing({
               <stop offset="100%" stopColor="#f43f5e" />
             </linearGradient>
           </defs>
-          
+
           {/* Progress Circle */}
           <circle
             cx={center}
@@ -209,7 +218,7 @@ export function CircleBreathing({
         {/* Central Indicator */}
         <div className="relative z-10">
           <motion.div
-            className="w-20 h-20 rounded-full bg-white dark:bg-gray-800 shadow-lg border border-gray-200 dark:border-gray-600 flex items-center justify-center"
+            className="flex h-20 w-20 items-center justify-center rounded-full border border-gray-200 bg-white shadow-lg dark:border-gray-600 dark:bg-gray-800"
             animate={{
               scale: isPlaying ? [1, 1.05, 1] : 1,
             }}
@@ -221,7 +230,7 @@ export function CircleBreathing({
           >
             <div className="text-center">
               <motion.div
-                className="w-6 h-6 mx-auto mb-1"
+                className="mx-auto mb-1 h-6 w-6"
                 animate={{
                   scale: isPlaying ? [1, 1.1, 1] : 1,
                 }}
@@ -264,10 +273,10 @@ export function CircleBreathing({
             >
               <div
                 className={cn(
-                  "w-12 h-12 rounded-full flex items-center justify-center border-2 transition-all duration-200",
+                  "flex h-12 w-12 items-center justify-center rounded-full border-2 transition-all duration-200",
                   isActive
-                    ? "bg-gradient-to-r from-emerald-500 to-teal-500 border-white shadow-lg"
-                    : "bg-white/80 dark:bg-gray-800/80 border-gray-300 dark:border-gray-600"
+                    ? "border-white bg-gradient-to-r from-emerald-500 to-teal-500 shadow-lg"
+                    : "border-gray-300 bg-white/80 dark:border-gray-600 dark:bg-gray-800/80"
                 )}
               >
                 {React.createElement(stepInfo.icon, {
@@ -282,19 +291,19 @@ export function CircleBreathing({
       </div>
 
       {/* Progress Bars */}
-      <div className="absolute -bottom-6 left-1/2 transform -translate-x-1/2">
+      <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 transform">
         <div className="flex gap-2">
           {[0, 1, 2].map((step) => (
             <motion.div
               key={step}
-              className="h-1.5 w-10 rounded-full bg-gray-200 dark:bg-gray-700 overflow-hidden"
+              className="h-1.5 w-10 overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700"
               animate={{
                 scale: currentStep === step ? 1.1 : 1,
               }}
               transition={{ duration: 0.2 }}
             >
               <motion.div
-                className="h-full bg-gradient-to-r from-emerald-500 to-rose-500 rounded-full"
+                className="h-full rounded-full bg-gradient-to-r from-emerald-500 to-rose-500"
                 initial={{ width: 0 }}
                 animate={{
                   width: currentStep === step ? `${progress}%` : "0%",

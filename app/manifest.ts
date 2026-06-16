@@ -4,7 +4,8 @@ export default function manifest(): MetadataRoute.Manifest {
   return {
     name: "Breathscape - Mindful Breathing Techniques",
     short_name: "Breathscape",
-    description: "Discover peace and balance with Breathscape's collection of interactive breathing exercises for relaxation and mindfulness",
+    description:
+      "Discover peace and balance with Breathscape's collection of interactive breathing exercises for relaxation and mindfulness",
     start_url: "/",
     display: "standalone",
     background_color: "#ffffff",
@@ -25,4 +26,3 @@ export default function manifest(): MetadataRoute.Manifest {
     ],
   }
 }
-

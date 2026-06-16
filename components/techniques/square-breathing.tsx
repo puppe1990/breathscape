@@ -5,7 +5,14 @@ import { motion } from "framer-motion"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Settings2, Heart, Zap, Wind } from "lucide-react"
-import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet"
 import { Slider } from "@/components/ui/slider"
 import { Label } from "@/components/ui/label"
 import { translations } from "@/lib/translations/index"
@@ -71,13 +78,22 @@ export function SquareBreathing({
     const percent = progress / 100
     switch (currentStep) {
       case 0:
-        return { x: actualPadding, y: actualPadding + actualSquareSize - actualSquareSize * percent }
+        return {
+          x: actualPadding,
+          y: actualPadding + actualSquareSize - actualSquareSize * percent,
+        }
       case 1:
         return { x: actualPadding + actualSquareSize * percent, y: actualPadding }
       case 2:
-        return { x: actualPadding + actualSquareSize, y: actualPadding + actualSquareSize * percent }
+        return {
+          x: actualPadding + actualSquareSize,
+          y: actualPadding + actualSquareSize * percent,
+        }
       case 3:
-        return { x: actualPadding + actualSquareSize - actualSquareSize * percent, y: actualPadding + actualSquareSize }
+        return {
+          x: actualPadding + actualSquareSize - actualSquareSize * percent,
+          y: actualPadding + actualSquareSize,
+        }
       default:
         return { x: actualPadding, y: actualPadding + actualSquareSize }
     }
@@ -102,7 +118,12 @@ export function SquareBreathing({
   const handlePresetChange = (preset: PresetKey) => {
     setSelectedPreset(preset)
     const newDurations = breathingPresets[preset]
-    setDurations({ in: newDurations.in, hold1: newDurations.hold1, out: newDurations.out, hold2: newDurations.hold2 })
+    setDurations({
+      in: newDurations.in,
+      hold1: newDurations.hold1,
+      out: newDurations.out,
+      hold2: newDurations.hold2,
+    })
     onUpdateDurations?.([newDurations.in, newDurations.hold1, newDurations.out, newDurations.hold2])
   }
 
@@ -163,10 +184,30 @@ export function SquareBreathing({
                 <Label>Customize</Label>
                 {(
                   [
-                    { key: "in" as const, label: t.ui.breatheIn, icon: Heart, color: "text-emerald-500" },
-                    { key: "hold1" as const, label: `${t.ui.hold} 1`, icon: Zap, color: "text-amber-500" },
-                    { key: "out" as const, label: t.ui.breatheOut, icon: Wind, color: "text-sky-500" },
-                    { key: "hold2" as const, label: `${t.ui.hold} 2`, icon: Zap, color: "text-amber-500" },
+                    {
+                      key: "in" as const,
+                      label: t.ui.breatheIn,
+                      icon: Heart,
+                      color: "text-emerald-500",
+                    },
+                    {
+                      key: "hold1" as const,
+                      label: `${t.ui.hold} 1`,
+                      icon: Zap,
+                      color: "text-amber-500",
+                    },
+                    {
+                      key: "out" as const,
+                      label: t.ui.breatheOut,
+                      icon: Wind,
+                      color: "text-sky-500",
+                    },
+                    {
+                      key: "hold2" as const,
+                      label: `${t.ui.hold} 2`,
+                      icon: Zap,
+                      color: "text-amber-500",
+                    },
                   ] as const
                 ).map(({ key, label, icon: Icon, color }) => (
                   <div key={key}>
@@ -231,13 +272,7 @@ export function SquareBreathing({
 
         {/* Corner markers */}
         {[topLeft, topRight, bottomRight, bottomLeft].map((corner, i) => (
-          <circle
-            key={i}
-            cx={corner.x}
-            cy={corner.y}
-            r="3"
-            fill="hsl(var(--primary) / 0.25)"
-          />
+          <circle key={i} cx={corner.x} cy={corner.y} r="3" fill="hsl(var(--primary) / 0.25)" />
         ))}
       </svg>
 
@@ -285,7 +320,10 @@ export function SquareBreathing({
   )
 }
 
-function getStepDuration(step: number, durations: { in: number; hold1: number; out: number; hold2: number }) {
+function getStepDuration(
+  step: number,
+  durations: { in: number; hold1: number; out: number; hold2: number }
+) {
   const values = [durations.in, durations.hold1, durations.out, durations.hold2]
   return values[step] ?? 4
 }

@@ -19,7 +19,8 @@ export const ptBR = {
   },
   mainPage: {
     breathingTechniques: "Técnicas de Respiração",
-    breathingTechniquesDescription: "Escolha de nossa coleção de exercícios respiratórios comprovados",
+    breathingTechniquesDescription:
+      "Escolha de nossa coleção de exercícios respiratórios comprovados",
     breathingGuideDescription: "Aprenda sobre diferentes técnicas de respiração e seus benefícios",
   },
   breathingTechniques: {
@@ -41,7 +42,12 @@ export const ptBR = {
         "Pode baixar a pressão arterial",
         "Perfeito para alívio rápido do estresse durante o trabalho",
       ],
-      howItWorks: ["Inspire por 4 segundos", "Segure por 4 segundos", "Expire por 4 segundos", "Segure por 4 segundos"],
+      howItWorks: [
+        "Inspire por 4 segundos",
+        "Segure por 4 segundos",
+        "Expire por 4 segundos",
+        "Segure por 4 segundos",
+      ],
     },
     hexagon: {
       name: "Respiração Hexagonal",
@@ -108,8 +114,6 @@ export const ptBR = {
       ],
     },
 
-
-
     stop: {
       name: "Respiração do Pare",
       steps: ["Inspire", "Segure", "Expire", "Segure", "Inspire", "Segure", "Expire", "Segure"],
@@ -155,14 +159,17 @@ export const ptBR = {
   },
   about: {
     title: "Sobre o Breathscape",
-    description: "O Breathscape ajuda você a praticar respiração consciente com técnicas simples e guiadas projetadas para relaxamento, foco e alívio do estresse.",
+    description:
+      "O Breathscape ajuda você a praticar respiração consciente com técnicas simples e guiadas projetadas para relaxamento, foco e alívio do estresse.",
     mission: {
       title: "Nossa Missão",
-      description: "Tornar a atenção plena acessível a todos através de uma experiência calma e sem distrações que funciona em qualquer dispositivo.",
+      description:
+        "Tornar a atenção plena acessível a todos através de uma experiência calma e sem distrações que funciona em qualquer dispositivo.",
     },
     techniques: {
       title: "Técnicas",
-      description: "Explore múltiplos padrões como respiração quadrada, respiração triangular e mais. Cada técnica inclui orientação de tempo e visual.",
+      description:
+        "Explore múltiplos padrões como respiração quadrada, respiração triangular e mais. Cada técnica inclui orientação de tempo e visual.",
     },
     offline: {
       title: "Funciona Offline",
@@ -197,7 +204,12 @@ export const ptBR = {
           "A respiração quadrada, também conhecida como respiração em caixa, é uma técnica simples mas poderosa usada por atletas e SEALs da Marinha para alívio do estresse e melhoria do foco.",
         howItWorks: {
           title: "Como funciona:",
-          steps: ["Inspire por 4 segundos", "Segure por 4 segundos", "Expire por 4 segundos", "Segure por 4 segundos"],
+          steps: [
+            "Inspire por 4 segundos",
+            "Segure por 4 segundos",
+            "Expire por 4 segundos",
+            "Segure por 4 segundos",
+          ],
         },
         benefits: {
           title: "Benefícios:",
@@ -337,4 +349,3 @@ export const ptBR = {
     },
   },
 }
-

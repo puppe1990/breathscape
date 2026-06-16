@@ -14,7 +14,9 @@ export function Footer() {
       <div className="container flex flex-col items-center justify-between gap-6 py-8 text-sm text-muted-foreground md:flex-row">
         <div className="flex items-center gap-2">
           <span className="font-display font-medium text-foreground">{t.title}</span>
-          <span className="text-border" aria-hidden>·</span>
+          <span className="text-border" aria-hidden>
+            ·
+          </span>
           <span>© {year}</span>
         </div>
 
@@ -44,8 +46,9 @@ export function Footer() {
       </div>
 
       <div className="border-t border-border/40 py-4">
-        <p className="container text-center text-xs text-muted-foreground/70 flex items-center justify-center gap-1.5">
-          {t.footer?.madeWith || "Made with"} <Heart className="h-3 w-3 text-primary/60" /> {t.footer?.forMindfulBreathing || "for mindful breathing"}
+        <p className="container flex items-center justify-center gap-1.5 text-center text-xs text-muted-foreground/70">
+          {t.footer?.madeWith || "Made with"} <Heart className="h-3 w-3 text-primary/60" />{" "}
+          {t.footer?.forMindfulBreathing || "for mindful breathing"}
         </p>
       </div>
     </footer>

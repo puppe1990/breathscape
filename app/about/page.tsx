@@ -9,35 +9,50 @@ export default function AboutPage() {
     <main className="ambient-bg flex-1">
       <section className="container max-w-3xl py-12 md:py-16">
         <div className="space-y-4 text-center">
-          <h1 className="font-display text-4xl font-medium tracking-tight lg:text-5xl">{t.about?.title || "About Breathscape"}</h1>
+          <h1 className="font-display text-4xl font-medium tracking-tight lg:text-5xl">
+            {t.about?.title || "About Breathscape"}
+          </h1>
           <p className="text-muted-foreground">
-            {t.about?.description || "Breathscape helps you practice mindful breathing with simple, guided techniques designed for relaxation, focus, and stress relief."}
+            {t.about?.description ||
+              "Breathscape helps you practice mindful breathing with simple, guided techniques designed for relaxation, focus, and stress relief."}
           </p>
         </div>
 
         <div className="mt-10 grid gap-6 md:grid-cols-2">
           <div className="surface-card p-6">
-            <h2 className="mb-2 text-lg font-semibold">{t.about?.mission?.title || "Our Mission"}</h2>
+            <h2 className="mb-2 text-lg font-semibold">
+              {t.about?.mission?.title || "Our Mission"}
+            </h2>
             <p className="text-sm text-muted-foreground">
-              {t.about?.mission?.description || "Make mindfulness accessible to everyone through a calm, distraction‑free experience that works on any device."}
+              {t.about?.mission?.description ||
+                "Make mindfulness accessible to everyone through a calm, distraction‑free experience that works on any device."}
             </p>
           </div>
           <div className="surface-card p-6">
-            <h2 className="mb-2 text-lg font-semibold">{t.about?.techniques?.title || "Techniques"}</h2>
+            <h2 className="mb-2 text-lg font-semibold">
+              {t.about?.techniques?.title || "Techniques"}
+            </h2>
             <p className="text-sm text-muted-foreground">
-              {t.about?.techniques?.description || "Explore multiple patterns like box breathing, triangle breathing, and more. Each technique includes timing and visual guidance."}
+              {t.about?.techniques?.description ||
+                "Explore multiple patterns like box breathing, triangle breathing, and more. Each technique includes timing and visual guidance."}
             </p>
           </div>
           <div className="surface-card p-6">
-            <h2 className="mb-2 text-lg font-semibold">{t.about?.offline?.title || "Works Offline"}</h2>
+            <h2 className="mb-2 text-lg font-semibold">
+              {t.about?.offline?.title || "Works Offline"}
+            </h2>
             <p className="text-sm text-muted-foreground">
-              {t.about?.offline?.description || "Install as a PWA and keep practicing even without an internet connection."}
+              {t.about?.offline?.description ||
+                "Install as a PWA and keep practicing even without an internet connection."}
             </p>
           </div>
           <div className="surface-card p-6">
-            <h2 className="mb-2 text-lg font-semibold">{t.about?.privacy?.title || "Privacy‑Friendly"}</h2>
+            <h2 className="mb-2 text-lg font-semibold">
+              {t.about?.privacy?.title || "Privacy‑Friendly"}
+            </h2>
             <p className="text-sm text-muted-foreground">
-              {t.about?.privacy?.description || "We don't require accounts or personal data to use the app."}
+              {t.about?.privacy?.description ||
+                "We don't require accounts or personal data to use the app."}
             </p>
           </div>
         </div>
@@ -51,5 +66,3 @@ export default function AboutPage() {
     </main>
   )
 }
-
-

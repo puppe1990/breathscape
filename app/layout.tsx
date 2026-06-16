@@ -29,11 +29,9 @@ export const metadata: Metadata = {
       { url: "/icons/favicon-16x16.png", sizes: "16x16", type: "image/png" },
       { url: "/icons/favicon-32x32.png", sizes: "32x32", type: "image/png" },
     ],
-    apple: [
-      { url: "/icons/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
-    ],
+    apple: [{ url: "/icons/apple-touch-icon.png", sizes: "180x180", type: "image/png" }],
   },
-  generator: 'v0.dev'
+  generator: "v0.dev",
 }
 
 export const viewport: Viewport = {
@@ -44,11 +42,7 @@ export const viewport: Viewport = {
   userScalable: false,
 }
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <head>
@@ -59,10 +53,12 @@ export default function RootLayout({
         <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16x16.png" />
         <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32x32.png" />
       </head>
-      <body className={`${fraunces.variable} ${dmSans.variable} font-sans min-h-screen flex flex-col`}>
+      <body
+        className={`${fraunces.variable} ${dmSans.variable} flex min-h-screen flex-col font-sans`}
+      >
         <LanguageProvider>
           <Header />
-          <div className="flex-1 flex flex-col">{children}</div>
+          <div className="flex flex-1 flex-col">{children}</div>
           <Footer />
         </LanguageProvider>
       </body>

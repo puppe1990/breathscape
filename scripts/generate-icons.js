@@ -1,6 +1,6 @@
-const sharp = require('sharp');
-const fs = require('fs');
-const path = require('path');
+const sharp = require("sharp")
+const fs = require("fs")
+const path = require("path")
 
 // SVG content with the meditation-themed headphones icon
 const svgContent = `<svg xmlns="http://www.w3.org/2000/svg"
@@ -45,46 +45,45 @@ const svgContent = `<svg xmlns="http://www.w3.org/2000/svg"
     c-9.238,4.125-15.264,13.274-15.264,23.595c0,10.321,6.026,19.47,15.264,23.595c9.237-4.125,15.262-13.274,15.262-23.595
     C208.477,166.435,202.453,157.285,193.216,153.161z M333.911,81.23c-2.486-4.304-7.992-5.778-12.294-3.293l-4,2.31
     c-4.305,2.486-5.779,7.99-3.293,12.295c1.667,2.887,4.692,4.501,7.802,4.501c1.527,0,3.075-0.389,4.492-1.208l4-2.31
-    C334.922,91.04,336.396,85.535,333.911,81.23z"/></svg>`;
+    C334.922,91.04,336.396,85.535,333.911,81.23z"/></svg>`
 
 // Icon sizes needed for PWA
 const iconSizes = [
-    { size: 16, name: 'favicon-16x16.png' },
-    { size: 32, name: 'favicon-32x32.png' },
-    { size: 180, name: 'apple-touch-icon.png' },
-    { size: 192, name: 'icon-192x192.png' },
-    { size: 512, name: 'icon-512x512.png' }
-];
+  { size: 16, name: "favicon-16x16.png" },
+  { size: 32, name: "favicon-32x32.png" },
+  { size: 180, name: "apple-touch-icon.png" },
+  { size: 192, name: "icon-192x192.png" },
+  { size: 512, name: "icon-512x512.png" },
+]
 
 // Ensure the public/icons directory exists
-const iconsDir = path.join(__dirname, '..', 'public', 'icons');
+const iconsDir = path.join(__dirname, "..", "public", "icons")
 if (!fs.existsSync(iconsDir)) {
-    fs.mkdirSync(iconsDir, { recursive: true });
+  fs.mkdirSync(iconsDir, { recursive: true })
 }
 
 async function generateIcons() {
-    console.log('🎨 Generating PWA icons...');
-    
-    try {
-        for (const { size, name } of iconSizes) {
-            console.log(`📱 Generating ${name} (${size}x${size})...`);
-            
-            await sharp(Buffer.from(svgContent))
-                .resize(size, size)
-                .png()
-                .toFile(path.join(iconsDir, name));
-                
-            console.log(`✅ Generated ${name}`);
-        }
-        
-        console.log('\n🎉 All icons generated successfully!');
-        console.log(`📁 Icons saved to: ${iconsDir}`);
-        
-    } catch (error) {
-        console.error('❌ Error generating icons:', error);
-        process.exit(1);
+  console.log("🎨 Generating PWA icons...")
+
+  try {
+    for (const { size, name } of iconSizes) {
+      console.log(`📱 Generating ${name} (${size}x${size})...`)
+
+      await sharp(Buffer.from(svgContent))
+        .resize(size, size)
+        .png()
+        .toFile(path.join(iconsDir, name))
+
+      console.log(`✅ Generated ${name}`)
     }
+
+    console.log("\n🎉 All icons generated successfully!")
+    console.log(`📁 Icons saved to: ${iconsDir}`)
+  } catch (error) {
+    console.error("❌ Error generating icons:", error)
+    process.exit(1)
+  }
 }
 
 // Run the icon generation
-generateIcons();
+generateIcons()

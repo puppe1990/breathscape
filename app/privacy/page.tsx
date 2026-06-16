@@ -10,7 +10,9 @@ export default function PrivacyPage() {
     <main className="ambient-bg flex-1">
       <section className="container max-w-3xl py-12 md:py-16">
         <div className="space-y-4 text-center">
-          <h1 className="font-display text-4xl font-medium tracking-tight lg:text-5xl">Privacy Policy</h1>
+          <h1 className="font-display text-4xl font-medium tracking-tight lg:text-5xl">
+            Privacy Policy
+          </h1>
           <p className="text-muted-foreground">
             We built Breathscape to be calm, simple, and privacy‑friendly.
           </p>
@@ -60,5 +62,3 @@ export default function PrivacyPage() {
     </main>
   )
 }
-
-

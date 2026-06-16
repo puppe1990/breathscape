@@ -9,15 +9,20 @@ export default function ContactPage() {
     <main className="ambient-bg flex-1">
       <section className="container max-w-3xl py-12 md:py-16">
         <div className="space-y-4 text-center">
-          <h1 className="font-display text-4xl font-medium tracking-tight lg:text-5xl">{t.contact?.title || "Contact"}</h1>
-          <p className="text-muted-foreground">{t.contact?.description || "Questions, feedback, or ideas? We'd love to hear from you."}</p>
+          <h1 className="font-display text-4xl font-medium tracking-tight lg:text-5xl">
+            {t.contact?.title || "Contact"}
+          </h1>
+          <p className="text-muted-foreground">
+            {t.contact?.description || "Questions, feedback, or ideas? We'd love to hear from you."}
+          </p>
         </div>
 
         <div className="mt-10 grid gap-6 md:grid-cols-2">
           <div className="surface-card p-6">
             <h2 className="mb-2 text-lg font-semibold">{t.contact?.email?.title || "Email"}</h2>
-            <p className="text-sm text-muted-foreground mb-4">
-              {t.contact?.email?.description || "Send us an email and we'll get back to you as soon as possible."}
+            <p className="mb-4 text-sm text-muted-foreground">
+              {t.contact?.email?.description ||
+                "Send us an email and we'll get back to you as soon as possible."}
             </p>
             <a
               href="mailto:matheus.puppe@gmail.com?subject=Breathscape%20Contact"
@@ -29,7 +34,7 @@ export default function ContactPage() {
 
           <div className="surface-card p-6">
             <h2 className="mb-2 text-lg font-semibold">{t.contact?.github?.title || "GitHub"}</h2>
-            <p className="text-sm text-muted-foreground mb-4">
+            <p className="mb-4 text-sm text-muted-foreground">
               {t.contact?.github?.description || "Open an issue or share suggestions."}
             </p>
             <a
@@ -46,5 +51,3 @@ export default function ContactPage() {
     </main>
   )
 }
-
-

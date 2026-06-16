@@ -5,7 +5,14 @@ import { motion } from "framer-motion"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Settings2, Heart, Zap, Sparkles, Infinity as InfinityIcon } from "lucide-react"
-import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet"
 import { Slider } from "@/components/ui/slider"
 import { Label } from "@/components/ui/label"
 import { translations } from "@/lib/translations/index"
@@ -30,12 +37,12 @@ const breathingPresets = {
 
 type PresetKey = keyof typeof breathingPresets
 
-export function InfinityBreathing({ 
-  size = 280, 
-  isPlaying, 
-  currentStep, 
-  progress, 
-  className, 
+export function InfinityBreathing({
+  size = 280,
+  isPlaying,
+  currentStep,
+  progress,
+  className,
   language,
   onUpdateDurations,
 }: InfinityBreathingProps) {
@@ -53,10 +60,10 @@ export function InfinityBreathing({
       setIsMobile(width < 768)
       setIsSmallScreen(width < 480)
     }
-    
+
     checkScreenSize()
-    window.addEventListener('resize', checkScreenSize)
-    return () => window.removeEventListener('resize', checkScreenSize)
+    window.addEventListener("resize", checkScreenSize)
+    return () => window.removeEventListener("resize", checkScreenSize)
   }, [])
 
   // Responsive sizing
@@ -67,7 +74,7 @@ export function InfinityBreathing({
   }
 
   const adjustedSize = getResponsiveSize()
-  
+
   // Calculate centered infinity dimensions
   const desiredInfinitySize = adjustedSize * 0.7 // Infinity takes 70% of container
   const actualInfinitySize = Math.max(desiredInfinitySize, 120) // Minimum size
@@ -92,7 +99,7 @@ export function InfinityBreathing({
   // Calculate position along the infinity path using simplified parametric equations
   const getPosition = () => {
     const t = (progress / 100) * Math.PI * 2
-    
+
     // Simplified infinity curve for smoother animation
     const x = center + curveWidth * Math.cos(t)
     const y = center + curveHeight * Math.sin(t) * Math.cos(t)
@@ -111,11 +118,11 @@ export function InfinityBreathing({
   const handlePresetChange = (preset: PresetKey) => {
     setSelectedPreset(preset)
     const newDurations = breathingPresets[preset]
-    setDurations({ 
-      in: newDurations.in, 
-      out: newDurations.out
+    setDurations({
+      in: newDurations.in,
+      out: newDurations.out,
     })
-    
+
     if (onUpdateDurations) {
       onUpdateDurations([newDurations.in, newDurations.out])
     }
@@ -124,53 +131,56 @@ export function InfinityBreathing({
   const handleDurationChange = (type: keyof typeof durations, value: number) => {
     const newDurations = { ...durations, [type]: value }
     setDurations(newDurations)
-    
+
     if (onUpdateDurations) {
       onUpdateDurations([newDurations.in, newDurations.out])
     }
   }
 
-
-
   const position = getPosition()
   const currentStepInfo = getStepInfo(currentStep)
 
   return (
-    <div className={cn(
-      "relative w-full h-full flex items-center justify-center overflow-hidden",
-      className
-    )}>
+    <div
+      className={cn(
+        "relative flex h-full w-full items-center justify-center overflow-hidden",
+        className
+      )}
+    >
       {/* Settings Button - Responsive positioning */}
-      <div className={cn(
-        "absolute z-10",
-        isSmallScreen ? "top-2 right-2" : "top-3 right-3"
-      )}>
+      <div className={cn("absolute z-10", isSmallScreen ? "right-2 top-2" : "right-3 top-3")}>
         <Sheet>
           <SheetTrigger asChild>
             <Button
               variant="ghost"
               size="icon"
               className={cn(
-                "rounded-full bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm border border-gray-200 dark:border-gray-600 hover:bg-white dark:hover:bg-gray-700 shadow-sm",
+                "rounded-full border border-gray-200 bg-white/90 shadow-sm backdrop-blur-sm hover:bg-white dark:border-gray-600 dark:bg-gray-800/90 dark:hover:bg-gray-700",
                 isSmallScreen ? "h-7 w-7" : "h-9 w-9"
               )}
             >
-              <Settings2 className={cn(
-                "text-cyan-600 dark:text-cyan-400",
-                isSmallScreen ? "h-3 w-3" : "h-4 w-4"
-              )} />
+              <Settings2
+                className={cn(
+                  "text-cyan-600 dark:text-cyan-400",
+                  isSmallScreen ? "h-3 w-3" : "h-4 w-4"
+                )}
+              />
             </Button>
           </SheetTrigger>
           <SheetContent>
             <SheetHeader>
-              <SheetTitle className="text-cyan-700 dark:text-cyan-300">Infinity Breathing Settings</SheetTitle>
+              <SheetTitle className="text-cyan-700 dark:text-cyan-300">
+                Infinity Breathing Settings
+              </SheetTitle>
               <SheetDescription>Customize your infinity breathing pattern</SheetDescription>
             </SheetHeader>
-            
-            <div className="py-6 space-y-6">
+
+            <div className="space-y-6 py-6">
               {/* Preset Selection */}
               <div className="space-y-3">
-                <Label className="font-medium text-cyan-700 dark:text-cyan-300">Choose Pattern</Label>
+                <Label className="font-medium text-cyan-700 dark:text-cyan-300">
+                  Choose Pattern
+                </Label>
                 <div className="grid grid-cols-1 gap-2">
                   {Object.entries(breathingPresets).map(([key, preset]) => (
                     <Button
@@ -182,7 +192,9 @@ export function InfinityBreathing({
                     >
                       <div className="text-center">
                         <div className="font-medium">{preset.name}</div>
-                        <div className="text-xs opacity-70">{preset.in}-{preset.out}</div>
+                        <div className="text-xs opacity-70">
+                          {preset.in}-{preset.out}
+                        </div>
                       </div>
                     </Button>
                   ))}
@@ -192,7 +204,7 @@ export function InfinityBreathing({
               {/* Custom Durations */}
               <div className="space-y-4">
                 <Label className="font-medium text-cyan-700 dark:text-cyan-300">Customize</Label>
-                
+
                 <div className="space-y-3">
                   <div>
                     <Label className="flex items-center gap-2 text-sm">
@@ -208,7 +220,7 @@ export function InfinityBreathing({
                       className="mt-2"
                     />
                   </div>
-                  
+
                   <div>
                     <Label className="flex items-center gap-2 text-sm">
                       <Sparkles className="h-4 w-4 text-blue-500" />
@@ -231,10 +243,10 @@ export function InfinityBreathing({
       </div>
 
       {/* Main Infinity Container */}
-      <div className="relative w-full h-full flex items-center justify-center">
+      <div className="relative flex h-full w-full items-center justify-center">
         {/* Subtle gradient background */}
         <div
-          className="absolute inset-0 opacity-5 rounded-full blur-3xl"
+          className="absolute inset-0 rounded-full opacity-5 blur-3xl"
           style={{
             background: "radial-gradient(circle, rgba(6,182,212,0.3) 0%, rgba(6,182,212,0) 70%)",
           }}
@@ -277,8 +289,8 @@ export function InfinityBreathing({
         <div className="relative z-10">
           <motion.div
             className={cn(
-              "rounded-full bg-white dark:bg-gray-800 shadow-lg border border-gray-200 dark:border-gray-600 flex items-center justify-center",
-              isSmallScreen ? "w-12 h-12" : isMobile ? "w-16 h-16" : "w-20 h-20"
+              "flex items-center justify-center rounded-full border border-gray-200 bg-white shadow-lg dark:border-gray-600 dark:bg-gray-800",
+              isSmallScreen ? "h-12 w-12" : isMobile ? "h-16 w-16" : "h-20 w-20"
             )}
             animate={{
               scale: isPlaying ? [1, 1.05, 1] : 1,
@@ -293,7 +305,7 @@ export function InfinityBreathing({
               <motion.div
                 className={cn(
                   "mx-auto mb-1",
-                  isSmallScreen ? "w-4 h-4" : isMobile ? "w-5 h-5" : "w-6 h-6"
+                  isSmallScreen ? "h-4 w-4" : isMobile ? "h-5 w-5" : "h-6 w-6"
                 )}
                 animate={{
                   scale: isPlaying ? [1, 1.1, 1] : 1,
@@ -311,10 +323,12 @@ export function InfinityBreathing({
                   ),
                 })}
               </motion.div>
-              <span className={cn(
-                "font-medium text-gray-600 dark:text-gray-400",
-                isSmallScreen ? "text-[10px]" : "text-xs"
-              )}>
+              <span
+                className={cn(
+                  "font-medium text-gray-600 dark:text-gray-400",
+                  isSmallScreen ? "text-[10px]" : "text-xs"
+                )}
+              >
                 {currentStepInfo.name}
               </span>
             </div>
@@ -335,24 +349,28 @@ export function InfinityBreathing({
           transition={{ type: "tween", duration: 0.3, ease: "easeInOut" }}
         >
           {/* Simple dot with subtle glow */}
-          <div className={cn(
-            "absolute rounded-full -translate-x-1/2 -translate-y-1/2 bg-gradient-to-r from-cyan-500 to-blue-500 shadow-lg border-2 border-white",
-            isSmallScreen ? "w-4 h-4" : isMobile ? "w-5 h-5" : "w-6 h-6"
-          )} />
+          <div
+            className={cn(
+              "absolute -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white bg-gradient-to-r from-cyan-500 to-blue-500 shadow-lg",
+              isSmallScreen ? "h-4 w-4" : isMobile ? "h-5 w-5" : "h-6 w-6"
+            )}
+          />
         </motion.div>
       </div>
 
       {/* Progress Bars - Responsive positioning and sizing */}
-      <div className={cn(
-        "absolute left-1/2 transform -translate-x-1/2",
-        isSmallScreen ? "-bottom-4" : "-bottom-6"
-      )}>
+      <div
+        className={cn(
+          "absolute left-1/2 -translate-x-1/2 transform",
+          isSmallScreen ? "-bottom-4" : "-bottom-6"
+        )}
+      >
         <div className="flex gap-1 sm:gap-2">
           {[0, 1].map((step) => (
             <motion.div
               key={step}
               className={cn(
-                "h-1.5 rounded-full bg-gray-200 dark:bg-gray-700 overflow-hidden",
+                "h-1.5 overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700",
                 isSmallScreen ? "w-8" : isMobile ? "w-12" : "w-16"
               )}
               animate={{
@@ -361,7 +379,7 @@ export function InfinityBreathing({
               transition={{ duration: 0.2 }}
             >
               <motion.div
-                className="h-full bg-gradient-to-r from-cyan-500 to-blue-500 rounded-full"
+                className="h-full rounded-full bg-gradient-to-r from-cyan-500 to-blue-500"
                 initial={{ width: 0 }}
                 animate={{
                   width: currentStep === step ? `${progress}%` : "0%",
@@ -375,4 +393,3 @@ export function InfinityBreathing({
     </div>
   )
 }
-
