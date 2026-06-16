@@ -1,15 +1,16 @@
-const CACHE_NAME = "breathscape-v1"
+const CACHE_NAME = "breathscape-v2"
 
-// Add all the files you want to cache
 const urlsToCache = [
   "/",
   "/about",
   "/privacy",
   "/terms",
   "/contact",
+  "/favicon.png",
+  "/icons/apple-touch-icon.png",
   "/icons/icon-192x192.png",
-  "/icons/icon-384x384.png",
   "/icons/icon-512x512.png",
+  "/icons/badge-72x72.png",
 ]
 
 self.addEventListener("install", (event) => {
@@ -23,7 +24,6 @@ self.addEventListener("install", (event) => {
 self.addEventListener("fetch", (event) => {
   event.respondWith(
     caches.match(event.request).then((response) => {
-      // Return cached version or fetch new version
       return response || fetch(event.request)
     }),
   )
@@ -37,13 +37,15 @@ self.addEventListener("activate", (event) => {
   )
 })
 
-// Handle push notifications
 self.addEventListener("push", (event) => {
   const options = {
-    body: event.data.text(),
+    body: event.data?.text() ?? "Time for your breathing exercise!",
     icon: "/icons/icon-192x192.png",
     badge: "/icons/badge-72x72.png",
     vibrate: [100, 50, 100],
+    data: {
+      url: "/",
+    },
   }
 
   event.waitUntil(self.registration.showNotification("Breathscape", options))
@@ -51,6 +53,5 @@ self.addEventListener("push", (event) => {
 
 self.addEventListener("notificationclick", (event) => {
   event.notification.close()
-  event.waitUntil(clients.openWindow("/"))
+  event.waitUntil(clients.openWindow(event.notification.data?.url ?? "/"))
 })
-
