@@ -6,19 +6,41 @@ import { Download, Check } from "lucide-react"
 
 declare global {
   interface Window {
-    deferredPrompt?: any
-    workbox?: any
+    deferredPrompt?: Event
+    workbox?: unknown
   }
 }
 
+function getIsInstalled() {
+  if (typeof window === "undefined") {
+    return false
+  }
+
+  return (
+    window.matchMedia("(display-mode: standalone)").matches ||
+    (window.navigator as Navigator & { standalone?: boolean }).standalone === true
+  )
+}
+
+function getIsInstallable() {
+  if (typeof window === "undefined") {
+    return false
+  }
+
+  return "serviceWorker" in navigator && "PushManager" in window
+}
+
 export function PWAInstall() {
-  const [deferredPrompt, setDeferredPrompt] = useState<any>(null)
-  const [isInstalled, setIsInstalled] = useState(false)
-  const [isInstallable, setIsInstallable] = useState(false)
+  const [deferredPrompt, setDeferredPrompt] = useState<Event | null>(null)
+  const [isInstalled, setIsInstalled] = useState(getIsInstalled)
+  const [isInstallable, setIsInstallable] = useState(getIsInstallable)
   const [isLoading, setIsLoading] = useState(false)
 
   useEffect(() => {
-    // Register service worker
+    if (getIsInstalled()) {
+      return
+    }
+
     const registerServiceWorker = async () => {
       if ("serviceWorker" in navigator) {
         try {
@@ -30,27 +52,8 @@ export function PWAInstall() {
       }
     }
 
-    // Check if the app is already installed
-    const checkIfInstalled = () => {
-      if (
-        window.matchMedia("(display-mode: standalone)").matches ||
-        (window.navigator as any).standalone === true
-      ) {
-        setIsInstalled(true)
-        return true
-      }
-      return false
-    }
-
-    // Check if already installed
-    if (checkIfInstalled()) {
-      return
-    }
-
-    // Register service worker
     registerServiceWorker()
 
-    // Listen for the beforeinstallprompt event
     const handleBeforeInstallPrompt = (e: Event) => {
       e.preventDefault()
       setDeferredPrompt(e)
@@ -58,7 +61,6 @@ export function PWAInstall() {
       console.log("Install prompt available")
     }
 
-    // Listen for the appinstalled event
     const handleAppInstalled = () => {
       setIsInstalled(true)
       setIsInstallable(false)
@@ -66,14 +68,8 @@ export function PWAInstall() {
       console.log("App installed successfully")
     }
 
-    // Add event listeners
     window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt)
     window.addEventListener("appinstalled", handleAppInstalled)
-
-    // Check if the app is installable
-    if ("serviceWorker" in navigator && "PushManager" in window) {
-      setIsInstallable(true)
-    }
 
     return () => {
       window.removeEventListener("beforeinstallprompt", handleBeforeInstallPrompt)
@@ -107,10 +103,14 @@ On Firefox: Look for the install option in the menu`
       }
 
       // Show the install prompt
-      deferredPrompt.prompt()
+      const promptEvent = deferredPrompt as Event & {
+        prompt: () => void
+        userChoice: Promise<{ outcome: "accepted" | "dismissed" }>
+      }
+      promptEvent.prompt()
 
       // Wait for the user to respond to the prompt
-      const { outcome } = await deferredPrompt.userChoice
+      const { outcome } = await promptEvent.userChoice
 
       if (outcome === "accepted") {
         console.log("User accepted the install prompt")

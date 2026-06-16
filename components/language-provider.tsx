@@ -1,6 +1,6 @@
 "use client"
 
-import React, { createContext, useContext, useState, useEffect } from "react"
+import React, { createContext, useContext, useState } from "react"
 import { translations } from "@/lib/translations/index"
 
 interface LanguageContextType {
@@ -11,34 +11,30 @@ interface LanguageContextType {
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined)
 
-export function LanguageProvider({ children }: { children: React.ReactNode }) {
-  const [language, setLanguage] = useState("en")
-  const [mounted, setMounted] = useState(false)
+function detectBrowserLanguage() {
+  if (typeof window === "undefined") {
+    return "en"
+  }
 
-  useEffect(() => {
-    setMounted(true)
-    if (typeof window !== "undefined") {
-      try {
-        const browserLang = navigator.language
-        // Check if we support the full locale (e.g. pt-BR)
-        if (translations[browserLang]) {
-          setLanguage(browserLang)
-          return
-        }
-        // Check if we support the base language (e.g. pt)
-        const baseLang = browserLang.split("-")[0]
-        if (translations[baseLang]) {
-          setLanguage(baseLang)
-        }
-      } catch (error) {
-        console.warn("Error detecting browser language:", error)
-        // Fallback to English
-        setLanguage("en")
-      }
+  try {
+    const browserLang = navigator.language
+    if (translations[browserLang]) {
+      return browserLang
     }
-  }, [])
 
-  // Ensure we always have valid translations
+    const baseLang = browserLang.split("-")[0]
+    if (translations[baseLang]) {
+      return baseLang
+    }
+  } catch (error) {
+    console.warn("Error detecting browser language:", error)
+  }
+
+  return "en"
+}
+
+export function LanguageProvider({ children }: { children: React.ReactNode }) {
+  const [language, setLanguage] = useState(detectBrowserLanguage)
   const t = translations[language] || translations["en"] || {}
 
   return (
@@ -56,6 +52,5 @@ function useLanguage() {
   return context
 }
 
-// Export both named and default
 export { useLanguage }
 export default useLanguage
