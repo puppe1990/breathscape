@@ -6,15 +6,15 @@ export default function ContactPage() {
   const { t } = useLanguage()
 
   return (
-    <main className="flex-1 bg-gradient-to-b from-slate-50 to-slate-100 dark:from-slate-950 dark:to-slate-900">
-      <section className="mx-auto max-w-3xl px-4 py-12 md:py-16">
+    <main className="ambient-bg flex-1">
+      <section className="container max-w-3xl py-12 md:py-16">
         <div className="space-y-4 text-center">
-          <h1 className="text-4xl font-bold tracking-tight lg:text-5xl">{t.contact?.title || "Contact"}</h1>
+          <h1 className="font-display text-4xl font-medium tracking-tight lg:text-5xl">{t.contact?.title || "Contact"}</h1>
           <p className="text-muted-foreground">{t.contact?.description || "Questions, feedback, or ideas? We'd love to hear from you."}</p>
         </div>
 
         <div className="mt-10 grid gap-6 md:grid-cols-2">
-          <div className="rounded-lg border bg-card p-6 shadow-sm">
+          <div className="surface-card p-6">
             <h2 className="mb-2 text-lg font-semibold">{t.contact?.email?.title || "Email"}</h2>
             <p className="text-sm text-muted-foreground mb-4">
               {t.contact?.email?.description || "Send us an email and we'll get back to you as soon as possible."}
@@ -27,7 +27,7 @@ export default function ContactPage() {
             </a>
           </div>
 
-          <div className="rounded-lg border bg-card p-6 shadow-sm">
+          <div className="surface-card p-6">
             <h2 className="mb-2 text-lg font-semibold">{t.contact?.github?.title || "GitHub"}</h2>
             <p className="text-sm text-muted-foreground mb-4">
               {t.contact?.github?.description || "Open an issue or share suggestions."}

@@ -2,64 +2,60 @@
 
 import { TechniqueGrid } from "@/components/technique-grid"
 import { BreathingGuide } from "@/components/breathing-guide"
-import { Card, CardContent } from "@/components/ui/card"
-import { BookOpen, Sparkles } from "lucide-react"
 import { useLanguage } from "@/components/language-provider"
 
 export default function Home() {
   const { language, t } = useLanguage()
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-100/50 dark:from-slate-950 dark:via-slate-900/50 dark:to-slate-800/50">
-      {/* Main Content */}
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 pb-16 lg:pb-24">
-        {/* Breathing Techniques Section */}
-        <div className="mb-20 lg:mb-24">
-          <div className="text-center mb-12 lg:mb-16">
-            <div className="flex items-center justify-center gap-4 mb-6">
-              <div className="w-14 h-14 lg:w-16 lg:h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg">
-                <Sparkles className="w-7 h-7 lg:w-8 lg:w-8 text-white" />
-              </div>
-              <h2 className="text-3xl lg:text-4xl font-bold text-slate-900 dark:text-slate-100">
-                {t.mainPage?.breathingTechniques || "Breathing Techniques"}
-              </h2>
+    <main className="ambient-bg min-h-screen">
+      {/* Hero */}
+      <section className="container pt-12 pb-16 md:pt-20 md:pb-24">
+        <div className="mx-auto max-w-2xl text-center">
+          <p className="section-label mb-4">{t.footer?.mindfulBreathing || "Mindful Breathing"}</p>
+          <h1 className="font-display text-4xl font-medium leading-[1.15] text-foreground md:text-5xl lg:text-6xl">
+            {t.title}
+          </h1>
+          <p className="mt-5 text-base leading-relaxed text-muted-foreground md:text-lg">
+            {t.description}
+          </p>
+
+          {/* Breathing ring decoration */}
+          <div className="mt-10 flex justify-center" aria-hidden>
+            <div className="relative flex h-20 w-20 items-center justify-center">
+              <div className="breathing-ring absolute inset-0 rounded-full border border-primary/20" />
+              <div className="breathing-ring absolute inset-2 rounded-full border border-primary/30" style={{ animationDelay: "0.5s" }} />
+              <div className="h-3 w-3 rounded-full bg-primary/60" />
             </div>
-            <p className="text-lg lg:text-xl text-slate-600 dark:text-slate-400 max-w-3xl mx-auto leading-relaxed">
-              {t.mainPage?.breathingTechniquesDescription || "Choose from our collection of proven breathing exercises"}
-            </p>
           </div>
-          
-          <div className="max-w-6xl mx-auto">
-            <Card className="overflow-hidden border-0 shadow-2xl bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl">
-              <CardContent className="p-6 lg:p-8">
-                <TechniqueGrid language={language} />
-              </CardContent>
-            </Card>
-          </div>
+        </div>
+      </section>
+
+      {/* Techniques */}
+      <section className="container pb-20 md:pb-28" id="techniques">
+        <div className="mb-10 md:mb-12">
+          <p className="section-label mb-2">{t.mainPage?.breathingTechniques || "Breathing Techniques"}</p>
+          <h2 className="font-display text-2xl font-medium text-foreground md:text-3xl">
+            {t.mainPage?.breathingTechniquesDescription || "Choose from our collection of proven breathing exercises"}
+          </h2>
         </div>
 
-        {/* Breathing Guide Section */}
-        <div>
-          <div className="text-center mb-12 lg:mb-16">
-            <div className="flex items-center justify-center gap-4 mb-6">
-              <div className="w-14 h-14 lg:w-16 lg:h-16 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-2xl flex items-center justify-center shadow-lg">
-                <BookOpen className="w-7 h-7 lg:w-8 lg:w-8 text-white" />
-              </div>
-              <h2 className="text-3xl lg:text-4xl font-bold text-slate-900 dark:text-slate-100">
-                {t.guide?.title || "Breathing Guide"}
-              </h2>
-            </div>
-            <p className="text-lg lg:text-xl text-slate-600 dark:text-slate-400 max-w-3xl mx-auto leading-relaxed">
-              {t.mainPage?.breathingGuideDescription || "Learn about different breathing techniques and their benefits"}
-            </p>
-          </div>
-          
-          <div className="max-w-4xl mx-auto">
-            <BreathingGuide language={language} />
-          </div>
+        <TechniqueGrid language={language} />
+      </section>
+
+      {/* Guide */}
+      <section className="container pb-20 md:pb-28">
+        <div className="mb-10 md:mb-12">
+          <p className="section-label mb-2">{t.guide?.title || "Breathing Guide"}</p>
+          <h2 className="font-display text-2xl font-medium text-foreground md:text-3xl">
+            {t.mainPage?.breathingGuideDescription || "Learn about different breathing techniques and their benefits"}
+          </h2>
         </div>
-      </div>
+
+        <div className="mx-auto max-w-3xl">
+          <BreathingGuide language={language} />
+        </div>
+      </section>
     </main>
   )
 }
-

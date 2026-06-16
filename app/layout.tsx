@@ -1,12 +1,22 @@
 import type React from "react"
 import type { Metadata, Viewport } from "next"
-import { Inter } from "next/font/google"
+import { Fraunces, DM_Sans } from "next/font/google"
 import "./globals.css"
 import Footer from "@/components/footer"
 import Header from "@/components/header"
 import { LanguageProvider } from "@/components/language-provider"
 
-const inter = Inter({ subsets: ["latin"] })
+const fraunces = Fraunces({
+  subsets: ["latin"],
+  variable: "--font-display",
+  display: "swap",
+})
+
+const dmSans = DM_Sans({
+  subsets: ["latin"],
+  variable: "--font-body",
+  display: "swap",
+})
 
 export const metadata: Metadata = {
   title: "Breathscape - Mindful Breathing Techniques",
@@ -27,7 +37,7 @@ export const metadata: Metadata = {
 }
 
 export const viewport: Viewport = {
-  themeColor: "#000000",
+  themeColor: "#3d7a6e",
   width: "device-width",
   initialScale: 1,
   maximumScale: 1,
@@ -49,7 +59,7 @@ export default function RootLayout({
         <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16x16.png" />
         <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32x32.png" />
       </head>
-      <body className={`${inter.className} min-h-screen flex flex-col`}>
+      <body className={`${fraunces.variable} ${dmSans.variable} font-sans min-h-screen flex flex-col`}>
         <LanguageProvider>
           <Header />
           <div className="flex-1 flex flex-col">{children}</div>

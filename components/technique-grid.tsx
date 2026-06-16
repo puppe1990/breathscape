@@ -2,7 +2,6 @@
 
 import { useState } from "react"
 import { BreathingExercise } from "@/components/breathing-exercise"
-import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent } from "@/components/ui/dialog"
 import {
   Square,
@@ -14,10 +13,21 @@ import {
   Octagon,
 } from "lucide-react"
 import { translations } from "@/lib/translations/index"
+import { cn } from "@/lib/utils"
 
 interface TechniqueGridProps {
   language: string
 }
+
+const techniqueStyles = {
+  square: { iconBg: "bg-teal-500/10 text-teal-700 dark:text-teal-400", dot: "bg-teal-500" },
+  hexagon: { iconBg: "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400", dot: "bg-emerald-500" },
+  triangle: { iconBg: "bg-violet-500/10 text-violet-700 dark:text-violet-400", dot: "bg-violet-500" },
+  star: { iconBg: "bg-amber-500/10 text-amber-700 dark:text-amber-400", dot: "bg-amber-500" },
+  infinity: { iconBg: "bg-sky-500/10 text-sky-700 dark:text-sky-400", dot: "bg-sky-500" },
+  stop: { iconBg: "bg-slate-500/10 text-slate-600 dark:text-slate-400", dot: "bg-slate-500" },
+  circle: { iconBg: "bg-rose-500/10 text-rose-700 dark:text-rose-400", dot: "bg-rose-500" },
+} as const
 
 export function TechniqueGrid({ language }: TechniqueGridProps) {
   const t = translations[language] || translations["en"]
@@ -27,10 +37,7 @@ export function TechniqueGrid({ language }: TechniqueGridProps) {
       id: "square",
       name: t.breathingTechniques.square.name,
       icon: Square,
-      color: "from-blue-400 to-indigo-500",
-      bgColor: "bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950/50 dark:to-indigo-950/50",
-      textColor: "text-blue-700 dark:text-blue-300",
-      borderColor: "border-blue-200 dark:border-blue-800",
+      textColor: "text-teal-700 dark:text-teal-400",
       steps: t.breathingTechniques.square.steps,
       duration: 4,
     },
@@ -38,10 +45,7 @@ export function TechniqueGrid({ language }: TechniqueGridProps) {
       id: "hexagon",
       name: t.breathingTechniques.hexagon.name,
       icon: Hexagon,
-      color: "from-emerald-400 to-teal-500",
-      bgColor: "bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-950/50 dark:to-teal-950/50",
-      textColor: "text-emerald-700 dark:text-emerald-300",
-      borderColor: "border-emerald-200 dark:border-emerald-800",
+      textColor: "text-emerald-700 dark:text-emerald-400",
       steps: t.breathingTechniques.hexagon.steps,
       duration: 4,
     },
@@ -49,10 +53,7 @@ export function TechniqueGrid({ language }: TechniqueGridProps) {
       id: "triangle",
       name: t.breathingTechniques.triangle.name,
       icon: Triangle,
-      color: "from-purple-400 to-violet-500",
-      bgColor: "bg-gradient-to-br from-purple-50 to-violet-50 dark:from-purple-950/50 dark:to-violet-950/50",
-      textColor: "text-purple-700 dark:text-purple-300",
-      borderColor: "border-purple-200 dark:border-purple-800",
+      textColor: "text-violet-700 dark:text-violet-400",
       steps: t.breathingTechniques.triangle.steps,
       duration: 5,
     },
@@ -60,10 +61,7 @@ export function TechniqueGrid({ language }: TechniqueGridProps) {
       id: "star",
       name: t.breathingTechniques.star.name,
       icon: Star,
-      color: "from-amber-400 to-orange-500",
-      bgColor: "bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-950/50 dark:to-orange-950/50",
-      textColor: "text-amber-700 dark:text-amber-300",
-      borderColor: "border-amber-200 dark:border-amber-800",
+      textColor: "text-amber-700 dark:text-amber-400",
       steps: t.breathingTechniques.star.steps,
       duration: 4,
     },
@@ -71,10 +69,7 @@ export function TechniqueGrid({ language }: TechniqueGridProps) {
       id: "infinity",
       name: t.breathingTechniques.infinity.name,
       icon: Infinity,
-      color: "from-cyan-400 to-blue-500",
-      bgColor: "bg-gradient-to-br from-cyan-50 to-blue-50 dark:from-cyan-950/50 dark:to-blue-950/50",
-      textColor: "text-cyan-700 dark:text-cyan-300",
-      borderColor: "border-cyan-200 dark:border-cyan-800",
+      textColor: "text-sky-700 dark:text-sky-400",
       steps: t.breathingTechniques.infinity.steps,
       duration: 6,
     },
@@ -82,10 +77,7 @@ export function TechniqueGrid({ language }: TechniqueGridProps) {
       id: "stop",
       name: t.breathingTechniques.stop.name,
       icon: Octagon,
-      color: "from-gray-400 to-slate-500",
-      bgColor: "bg-gradient-to-br from-gray-50 to-slate-50 dark:from-gray-950/50 dark:to-gray-950/50",
-      textColor: "text-gray-700 dark:text-gray-300",
-      borderColor: "border-gray-200 dark:border-gray-800",
+      textColor: "text-slate-600 dark:text-slate-400",
       steps: t.breathingTechniques.stop.steps,
       duration: 4,
     },
@@ -93,10 +85,7 @@ export function TechniqueGrid({ language }: TechniqueGridProps) {
       id: "circle",
       name: t.breathingTechniques.circle.name,
       icon: Circle,
-      color: "from-rose-400 to-pink-500",
-      bgColor: "bg-gradient-to-br from-rose-50 to-pink-50 dark:from-rose-950/50 dark:to-pink-950/50",
-      textColor: "text-rose-700 dark:text-rose-300",
-      borderColor: "border-rose-200 dark:border-rose-800",
+      textColor: "text-rose-700 dark:text-rose-400",
       steps: t.breathingTechniques.circle.steps,
       duration: 4,
     },
@@ -120,31 +109,30 @@ export function TechniqueGrid({ language }: TechniqueGridProps) {
 
   return (
     <>
-      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 sm:gap-6">
-        {techniques.map((technique, index) => (
-          <Button
-            key={technique.id}
-            variant="ghost"
-            className={`h-32 sm:h-36 md:h-40 flex flex-col items-center justify-center gap-4 p-4 ${technique.bgColor} border-2 ${technique.borderColor} hover:scale-105 transition-all duration-300 hover:shadow-xl group rounded-2xl relative overflow-hidden`}
-            onClick={() => setSelectedTechniqueIndex(index)}
-          >
-            {/* Background pattern for visual interest */}
-            <div className="absolute inset-0 opacity-5 group-hover:opacity-10 transition-opacity duration-300">
-              <div className="absolute inset-0 bg-gradient-to-br from-current to-transparent"></div>
-            </div>
-            
-            <div className={`w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 bg-gradient-to-br ${technique.color} rounded-2xl flex items-center justify-center shadow-lg group-hover:shadow-2xl transition-all duration-300 relative z-10`}>
-              <technique.icon className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 text-white" />
-            </div>
-            <span className={`text-sm sm:text-base font-semibold ${technique.textColor} text-center leading-tight px-2 relative z-10`}>
-              {technique.name}
-            </span>
-          </Button>
-        ))}
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4">
+        {techniques.map((technique, index) => {
+          const style = techniqueStyles[technique.id as keyof typeof techniqueStyles]
+          return (
+            <button
+              key={technique.id}
+              type="button"
+              className="technique-card h-36 sm:h-40"
+              onClick={() => setSelectedTechniqueIndex(index)}
+            >
+              <span className={cn("absolute left-3 top-3 h-1.5 w-1.5 rounded-full", style.dot)} />
+              <div className={cn("technique-icon", style.iconBg)}>
+                <technique.icon className="h-6 w-6" strokeWidth={1.75} />
+              </div>
+              <span className="text-center text-sm font-medium leading-snug text-foreground">
+                {technique.name}
+              </span>
+            </button>
+          )
+        })}
       </div>
 
       <Dialog open={selectedTechniqueIndex !== null} onOpenChange={() => setSelectedTechniqueIndex(null)}>
-        <DialogContent className="max-h-[95vh] sm:max-h-[90vh] w-[95vw] sm:w-auto max-w-4xl overflow-y-auto flex flex-col items-center justify-center p-0 border-0 shadow-2xl">
+        <DialogContent className="exercise-dialog max-h-[96vh] w-[96vw] !max-w-lg overflow-hidden border-border/50 bg-background p-0 shadow-2xl sm:!max-w-xl md:!max-w-2xl">
           {selectedTechniqueIndex !== null && (
             <BreathingExercise
               technique={techniques[selectedTechniqueIndex]}
@@ -159,4 +147,3 @@ export function TechniqueGrid({ language }: TechniqueGridProps) {
     </>
   )
 }
-

@@ -3,8 +3,7 @@
 import type React from "react"
 import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
-import { DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { Play, Pause, RotateCcw, ChevronLeft, ChevronRight, Timer, RotateCw } from "lucide-react"
+import { Play, Pause, RotateCcw, ChevronLeft, ChevronRight } from "lucide-react"
 import { SquareBreathing } from "@/components/techniques/square-breathing"
 import { HexagonBreathing } from "@/components/techniques/hexagon-breathing"
 import { TriangleBreathing } from "@/components/techniques/triangle-breathing"
@@ -12,7 +11,7 @@ import { StarBreathing } from "@/components/techniques/star-breathing"
 import { InfinityBreathing } from "@/components/techniques/infinity-breathing"
 import { CircleBreathing } from "@/components/techniques/circle-breathing"
 import { StopBreathing } from "@/components/techniques/stop-breathing"
-import { motion } from "framer-motion"
+import { motion, AnimatePresence } from "framer-motion"
 import { translations } from "@/lib/translations/index"
 import { cn } from "@/lib/utils"
 
@@ -31,6 +30,36 @@ interface BreathingExerciseProps {
   language: string
 }
 
+type StepPhase = "inhale" | "hold" | "exhale"
+
+function getStepPhase(stepIndex: number, totalSteps: number): StepPhase {
+  if (totalSteps === 3) return (["inhale", "hold", "exhale"] as const)[stepIndex] ?? "inhale"
+  if (totalSteps === 4) return (["inhale", "hold", "exhale", "hold"] as const)[stepIndex] ?? "inhale"
+  if (totalSteps === 6) {
+    const phases: StepPhase[] = ["inhale", "hold", "exhale", "hold", "inhale", "hold"]
+    return phases[stepIndex] ?? "inhale"
+  }
+  return stepIndex % 2 === 0 ? "inhale" : "hold"
+}
+
+const phaseStyles: Record<StepPhase, { label: string; dot: string; ring: string }> = {
+  inhale: {
+    label: "text-emerald-600 dark:text-emerald-400",
+    dot: "bg-emerald-500",
+    ring: "ring-emerald-500/30",
+  },
+  hold: {
+    label: "text-amber-600 dark:text-amber-400",
+    dot: "bg-amber-500",
+    ring: "ring-amber-500/30",
+  },
+  exhale: {
+    label: "text-sky-600 dark:text-sky-400",
+    dot: "bg-sky-500",
+    ring: "ring-sky-500/30",
+  },
+}
+
 export function BreathingExercise({ technique, onClose, onPrevious, onNext, language }: BreathingExerciseProps) {
   const t = translations[language] || translations["en"]
   const [isPlaying, setIsPlaying] = useState(false)
@@ -40,41 +69,28 @@ export function BreathingExercise({ technique, onClose, onPrevious, onNext, lang
   const [sessionTime, setSessionTime] = useState(0)
   const [cyclesCompleted, setCyclesCompleted] = useState(0)
 
-  const getStepText = (step: number) => {
-    if (step === 0) return t?.ui?.breatheIn || "Breathe In"
-    if (step === 1) return t?.ui?.hold || "Hold"
-    return t?.ui?.breatheOut || "Breathe Out"
-  }
-
-  // Session timer
   useEffect(() => {
     let interval: NodeJS.Timeout
     if (isPlaying) {
-      interval = setInterval(() => {
-        setSessionTime((prev) => prev + 1)
-      }, 1000)
+      interval = setInterval(() => setSessionTime((prev) => prev + 1), 1000)
     }
     return () => clearInterval(interval)
   }, [isPlaying])
 
-  // Breathing cycle progress
   useEffect(() => {
     let interval: NodeJS.Timeout
 
     if (isPlaying) {
       const stepDuration = customDurations[currentStep] || technique.duration
       const stepDurationMs = stepDuration * 1000
-      const increment = (100 / stepDurationMs) * 100 // Update every 100ms
+      const increment = (100 / stepDurationMs) * 100
 
       interval = setInterval(() => {
         setProgress((prev) => {
           if (prev >= 100) {
             const nextStep = (currentStep + 1) % technique.steps.length
             setCurrentStep(nextStep)
-            // Increment cycle counter when completing a full cycle
-            if (nextStep === 0) {
-              setCyclesCompleted((prev) => prev + 1)
-            }
+            if (nextStep === 0) setCyclesCompleted((c) => c + 1)
             return 0
           }
           return prev + increment
@@ -131,7 +147,7 @@ export function BreathingExercise({ technique, onClose, onPrevious, onNext, lang
       default:
         return (
           <>
-            <technique.icon className={`w-full h-full ${technique.textColor}`} />
+            <technique.icon className={`h-full w-full ${technique.textColor}`} />
             <motion.div
               className="absolute inset-0 bg-current opacity-20"
               initial={{ pathLength: 0 }}
@@ -143,129 +159,173 @@ export function BreathingExercise({ technique, onClose, onPrevious, onNext, lang
     }
   }
 
-  const getCurrentDuration = () => {
-    return customDurations[currentStep] || technique.duration
-  }
+  const getCurrentDuration = () => customDurations[currentStep] || technique.duration
+  const remainingSeconds = Math.ceil(getCurrentDuration() - (progress / 100) * getCurrentDuration())
+  const phase = getStepPhase(currentStep, technique.steps.length)
+  const styles = phaseStyles[phase]
 
-  // Compute a smooth scale for a subtle in/hold/out pulse synced with the step
+  const isLargeShape =
+    technique.id === "square" ||
+    technique.id === "hexagon" ||
+    technique.id === "star" ||
+    technique.id === "infinity"
+
   const getBreathScale = () => {
     const progress01 = Math.min(Math.max(progress / 100, 0), 1)
-    // Index 0=in, 1=hold, 2=out, and for 4-step: 3=hold
-    const inhaleIndex = 0
-    const exhaleIndex = 2
-
-    if (currentStep === inhaleIndex) {
-      // Gentle expansion up to 1.08x
-      return 1 + 0.08 * progress01
-    }
-    if (currentStep === exhaleIndex) {
-      // Smooth contraction from 1.08x back to 1.00x
-      return 1.08 - 0.08 * progress01
-    }
-    // Hold: maintain a soft expanded state
-    return 1.06
-  }
-
-  const getAuraOpacity = () => {
-    const scaleNow = getBreathScale()
-    const normalized = Math.min(Math.max((scaleNow - 1) / 0.08, 0), 1) // 0..1 based on pulse
-    return 0.15 + 0.35 * normalized
+    if (phase === "inhale") return 1 + 0.06 * progress01
+    if (phase === "exhale") return 1.06 - 0.06 * progress01
+    return 1.04
   }
 
   return (
-    <div className="flex flex-col items-center justify-center p-2 sm:p-4 md:p-6 relative w-full min-h-[80vh] sm:min-h-[70vh]">
-      {/* Navigation arrows */}
-      <Button
-        variant="ghost"
-        size="icon"
-        className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 h-10 w-10 sm:h-12 sm:w-12 rounded-full opacity-70 hover:opacity-100 z-20"
-        onClick={onPrevious}
-      >
-        <ChevronLeft className="h-6 w-6 sm:h-8 sm:w-8" />
-      </Button>
-      <Button
-        variant="ghost"
-        size="icon"
-        className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 h-10 w-10 sm:h-12 sm:w-12 rounded-full opacity-70 hover:opacity-100 z-20"
-        onClick={onNext}
-      >
-        <ChevronRight className="h-6 w-6 sm:h-8 sm:w-8" />
-      </Button>
+    <div className="exercise-shell relative flex min-h-[85vh] w-full flex-col sm:min-h-[75vh]">
+      {/* Header */}
+      <div className="flex items-center justify-between border-b border-border/40 px-4 py-4 sm:px-6">
+        <Button
+          variant="ghost"
+          size="icon"
+          className="h-9 w-9 shrink-0 rounded-full text-muted-foreground hover:text-foreground"
+          onClick={onPrevious}
+        >
+          <ChevronLeft className="h-5 w-5" />
+        </Button>
 
-      <DialogHeader className="space-y-0.5 mb-4 sm:mb-6">
-        <DialogTitle className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-light tracking-wider text-center">
-          {technique.name}
-        </DialogTitle>
-      </DialogHeader>
-
-      {/* Session stats */}
-      <div className="w-full max-w-md mx-auto mb-4 sm:mb-6 flex items-center justify-center gap-3 sm:gap-4 md:gap-6">
-        <div className="flex flex-col items-center gap-1 sm:gap-2">
-          <div className="flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 md:w-14 md:h-14 rounded-full bg-background/50 backdrop-blur-sm shadow-sm">
-            <Timer className="h-3 w-3 sm:h-4 sm:w-4 md:h-5 md:w-5 text-muted-foreground" />
-          </div>
-          <div className="text-center">
-            <div className="text-sm sm:text-base md:text-xl font-semibold">{formatTime(sessionTime)}</div>
-            <div className="text-xs sm:text-sm text-muted-foreground">{t?.ui?.sessionTime || "Session Time"}</div>
+        <div className="min-w-0 flex-1 px-3 text-center">
+          <h2 className="truncate font-display text-lg font-medium text-foreground sm:text-xl">
+            {technique.name}
+          </h2>
+          <div className="mt-1 flex items-center justify-center gap-3 text-xs text-muted-foreground">
+            <span>{formatTime(sessionTime)}</span>
+            <span className="text-border">·</span>
+            <span>
+              {cyclesCompleted} {t?.ui?.cycles || "cycles"}
+            </span>
           </div>
         </div>
-        <div className="flex flex-col items-center gap-1 sm:gap-2">
-          <div className="flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 md:w-14 md:h-14 rounded-full bg-background/50 backdrop-blur-sm shadow-sm">
-            <RotateCw className="h-3 w-3 sm:h-4 sm:w-4 md:h-5 md:w-5 text-muted-foreground" />
-          </div>
-          <div className="text-center">
-            <div className="text-sm sm:text-base md:text-xl font-semibold">{cyclesCompleted}</div>
-            <div className="text-xs sm:text-sm text-muted-foreground">{t?.ui?.cycles || "Cycles"}</div>
+
+        <Button
+          variant="ghost"
+          size="icon"
+          className="h-9 w-9 shrink-0 rounded-full text-muted-foreground hover:text-foreground"
+          onClick={onNext}
+        >
+          <ChevronRight className="h-5 w-5" />
+        </Button>
+      </div>
+
+      {/* Animation area */}
+      <div className="relative flex flex-1 flex-col items-center justify-center px-4 py-6 sm:px-8">
+        <div
+          className="pointer-events-none absolute inset-0 opacity-60"
+          aria-hidden
+          style={{
+            background:
+              "radial-gradient(ellipse 70% 50% at 50% 50%, hsl(var(--primary) / 0.08) 0%, transparent 70%)",
+          }}
+        />
+
+        <motion.div
+          className={cn(
+            "relative flex items-center justify-center",
+            isLargeShape
+              ? "h-[min(52vw,320px)] w-[min(52vw,320px)] sm:h-[min(45vw,380px)] sm:w-[min(45vw,380px)]"
+              : "h-48 w-48 sm:h-56 sm:w-56 md:h-64 md:w-64"
+          )}
+          animate={{ scale: isPlaying ? getBreathScale() : 1 }}
+          transition={{ type: "spring", stiffness: 80, damping: 20, mass: 0.8 }}
+        >
+          {renderBreathingAnimation()}
+        </motion.div>
+
+        {/* Instruction + countdown */}
+        <div className="relative z-10 mt-8 text-center">
+          <AnimatePresence mode="wait">
+            <motion.p
+              key={currentStep}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.25 }}
+              className={cn("font-display text-xl font-medium sm:text-2xl", styles.label)}
+            >
+              {technique.steps[currentStep]}
+            </motion.p>
+          </AnimatePresence>
+
+          <motion.div
+            key={`${currentStep}-${remainingSeconds}`}
+            className="mt-2 font-display text-6xl font-light tabular-nums tracking-tight text-foreground sm:text-7xl"
+            initial={{ scale: 0.95, opacity: 0.6 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ duration: 0.2 }}
+          >
+            {remainingSeconds}
+          </motion.div>
+
+          {/* Step progress */}
+          <div className="mt-6 flex items-center justify-center gap-2">
+            {technique.steps.map((_, index) => {
+              const stepPhase = getStepPhase(index, technique.steps.length)
+              const isActive = index === currentStep
+              const isDone = index < currentStep || (index === currentStep && progress > 0)
+
+              return (
+                <div key={index} className="flex flex-col items-center gap-1">
+                  <div
+                    className={cn(
+                      "h-1.5 overflow-hidden rounded-full bg-muted transition-all duration-300",
+                      isActive ? "w-10" : "w-6"
+                    )}
+                  >
+                    <div
+                      className={cn(
+                        "h-full rounded-full transition-all duration-100",
+                        phaseStyles[stepPhase].dot,
+                        isActive ? "opacity-100" : isDone ? "w-full opacity-40" : "w-0 opacity-0"
+                      )}
+                      style={{ width: isActive ? `${progress}%` : isDone ? "100%" : "0%" }}
+                    />
+                  </div>
+                </div>
+              )
+            })}
           </div>
         </div>
       </div>
 
-      <div className="flex flex-col items-center justify-center gap-2 sm:gap-4 w-full flex-1">
-        {/* Responsive container for breathing animation */}
-        <motion.div
-          className={cn(
-            "relative flex items-center justify-center",
-            // Responsive sizing based on technique
-            technique.id === "square" || technique.id === "hexagon" || technique.id === "star" || technique.id === "infinity"
-              ? "w-full max-w-[280px] h-[280px] sm:max-w-[320px] sm:h-[320px] md:max-w-[360px] md:h-[360px] lg:max-w-[400px] lg:h-[400px]"
-              : "w-40 h-40 sm:w-48 sm:h-48 md:w-56 md:h-56 lg:w-72 lg:h-72"
-          )}
-          animate={{ scale: isPlaying ? getBreathScale() : 1 }}
-          transition={{ type: "spring", stiffness: 90, damping: 18, mass: 0.7 }}
-        >
-          {/* Pulsing background aura synced with breath */}
-          <motion.div
-            className="absolute inset-0 rounded-full"
-            style={{
-              background:
-                "radial-gradient(circle, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0) 60%)",
-              filter: "blur(10px)",
-            }}
-            animate={{ opacity: isPlaying ? getAuraOpacity() : 0, scale: isPlaying ? getBreathScale() : 1 }}
-            transition={{ type: "tween", duration: 0.3, ease: "easeInOut" }}
-          />
-          {renderBreathingAnimation()}
-        </motion.div>
-
-        <div className="text-center mt-2 sm:mt-4">
-          <h3 className="text-sm sm:text-base md:text-xl lg:text-2xl font-semibold mb-1 sm:mb-2">
-            {technique.steps[currentStep]}
-          </h3>
-          <p className="text-muted-foreground text-xs sm:text-sm md:text-base">
-            {Math.ceil(getCurrentDuration() - (progress / 100) * getCurrentDuration())}s
-          </p>
-        </div>
-
-        <div className="flex gap-2 sm:gap-3 md:gap-4 w-full justify-center mt-2 sm:mt-4">
-          <Button variant="outline" size="sm" className="sm:h-10 px-4 sm:px-6" onClick={() => setIsPlaying(!isPlaying)}>
-            {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
-          </Button>
-          <Button variant="outline" size="sm" className="sm:h-10 px-4 sm:px-6" onClick={resetExercise}>
+      {/* Controls */}
+      <div className="border-t border-border/40 px-6 py-5 sm:py-6">
+        <div className="mx-auto flex max-w-xs items-center justify-center gap-4">
+          <Button
+            variant="outline"
+            size="icon"
+            className="h-12 w-12 shrink-0 rounded-full border-border/70"
+            onClick={resetExercise}
+            aria-label="Reset"
+          >
             <RotateCcw className="h-4 w-4" />
           </Button>
+
+          <Button
+            size="icon"
+            className={cn(
+              "h-16 w-16 rounded-full shadow-lg transition-transform hover:scale-105 active:scale-95",
+              isPlaying && styles.ring,
+              isPlaying && "ring-4"
+            )}
+            onClick={() => setIsPlaying(!isPlaying)}
+            aria-label={isPlaying ? "Pause" : "Play"}
+          >
+            {isPlaying ? (
+              <Pause className="h-6 w-6" fill="currentColor" />
+            ) : (
+              <Play className="h-6 w-6 translate-x-0.5" fill="currentColor" />
+            )}
+          </Button>
+
+          <div className="h-12 w-12 shrink-0" aria-hidden />
         </div>
       </div>
     </div>
   )
 }
-
