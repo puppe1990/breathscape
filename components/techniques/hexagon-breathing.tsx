@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react"
 import { motion } from "framer-motion"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-import { Settings2, Heart, Zap, Sparkles, Wind, Brain, Pause } from "lucide-react"
+import { Settings2, Heart, Zap, Wind } from "lucide-react"
 import {
   Sheet,
   SheetContent,
@@ -37,6 +37,30 @@ const breathingPresets = {
 
 type PresetKey = keyof typeof breathingPresets
 
+const stepColors = [
+  "#34d399", // inhale 1
+  "#fbbf24", // hold 1
+  "#38bdf8", // exhale
+  "#fbbf24", // hold 2
+  "#2dd4bf", // inhale 2
+  "#a78bfa", // hold 3
+]
+
+const durationFields = [
+  {
+    key: "in1" as const,
+    labelKey: "breatheIn",
+    suffix: " 1",
+    icon: Heart,
+    color: "text-emerald-500",
+  },
+  { key: "hold1" as const, labelKey: "hold", suffix: " 1", icon: Zap, color: "text-amber-500" },
+  { key: "out" as const, labelKey: "breatheOut", suffix: "", icon: Wind, color: "text-sky-500" },
+  { key: "hold2" as const, labelKey: "hold", suffix: " 2", icon: Zap, color: "text-amber-500" },
+  { key: "in2" as const, labelKey: "breatheIn", suffix: " 2", icon: Heart, color: "text-teal-500" },
+  { key: "hold3" as const, labelKey: "hold", suffix: " 3", icon: Zap, color: "text-violet-500" },
+]
+
 export function HexagonBreathing({
   size = 280,
   isPlaying,
@@ -55,41 +79,26 @@ export function HexagonBreathing({
     in2: 4,
     hold3: 4,
   })
-  const [isMobile, setIsMobile] = useState(false)
-  const [isSmallScreen, setIsSmallScreen] = useState(false)
+  const [adjustedSize, setAdjustedSize] = useState(size)
 
   const t = translations[language] || translations["en"]
 
-  // Detect screen sizes
   useEffect(() => {
-    const checkScreenSize = () => {
+    const checkSize = () => {
       const width = window.innerWidth
-      setIsMobile(width < 768)
-      setIsSmallScreen(width < 480)
+      if (width < 480) setAdjustedSize(Math.min(size, 220))
+      else if (width < 768) setAdjustedSize(Math.min(size, 260))
+      else setAdjustedSize(size)
     }
+    checkSize()
+    window.addEventListener("resize", checkSize)
+    return () => window.removeEventListener("resize", checkSize)
+  }, [size])
 
-    checkScreenSize()
-    window.addEventListener("resize", checkScreenSize)
-    return () => window.removeEventListener("resize", checkScreenSize)
-  }, [])
-
-  // Responsive sizing
-  const getResponsiveSize = () => {
-    if (isSmallScreen) return Math.min(size, 200)
-    if (isMobile) return Math.min(size, 240)
-    return size
-  }
-
-  const adjustedSize = getResponsiveSize()
-
-  // Calculate centered hexagon dimensions
-  const desiredHexagonSize = adjustedSize * 0.7 // Hexagon takes 70% of container
-  const actualHexagonSize = Math.max(desiredHexagonSize, 120) // Minimum size
-  const actualPadding = (adjustedSize - actualHexagonSize) / 2 // Center the hexagon
+  const actualHexagonSize = Math.max(adjustedSize * 0.72, 120)
   const center = adjustedSize / 2
   const radius = actualHexagonSize / 2
 
-  // Calculate the six points of the hexagon
   const points = Array.from({ length: 6 }).map((_, i) => {
     const angle = (i * 60 - 30) * (Math.PI / 180)
     return {
@@ -98,33 +107,34 @@ export function HexagonBreathing({
     }
   })
 
-  // Get the current position based on step and progress
   const getPosition = () => {
     const percent = progress / 100
     const currentPoint = points[currentStep]
     const nextPoint = points[(currentStep + 1) % 6]
-
     return {
       x: currentPoint.x + (nextPoint.x - currentPoint.x) * percent,
       y: currentPoint.y + (nextPoint.y - currentPoint.y) * percent,
     }
   }
 
-  // Create the hexagon path
   const hexagonPath =
     points.map((point, i) => `${i === 0 ? "M" : "L"} ${point.x} ${point.y}`).join(" ") + " Z"
 
-  const getStepInfo = (step: number) => {
-    const steps = [
-      { name: t.ui.breatheIn, icon: Heart, color: "text-emerald-500" },
-      { name: t.ui.hold, icon: Zap, color: "text-amber-500" },
-      { name: t.ui.breatheOut, icon: Sparkles, color: "text-rose-500" },
-      { name: t.ui.hold, icon: Zap, color: "text-amber-500" },
-      { name: t.ui.breatheIn, icon: Wind, color: "text-blue-500" },
-      { name: t.ui.hold, icon: Brain, color: "text-purple-500" },
-    ]
-    return steps[step] || steps[0]
+  const getProgressPath = () => {
+    const percent = progress / 100
+    const currentPoint = points[currentStep]
+    const nextPoint = points[(currentStep + 1) % 6]
+    const currentX = currentPoint.x + (nextPoint.x - currentPoint.x) * percent
+    const currentY = currentPoint.y + (nextPoint.y - currentPoint.y) * percent
+    return `M ${currentPoint.x} ${currentPoint.y} L ${currentX} ${currentY}`
   }
+
+  const getCompletedPaths = () =>
+    Array.from({ length: currentStep }, (_, i) => {
+      const p1 = points[i]
+      const p2 = points[(i + 1) % 6]
+      return `M ${p1.x} ${p1.y} L ${p2.x} ${p2.y}`
+    })
 
   const handlePresetChange = (preset: PresetKey) => {
     setSelectedPreset(preset)
@@ -137,91 +147,57 @@ export function HexagonBreathing({
       in2: newDurations.in2,
       hold3: newDurations.hold3,
     })
-
-    if (onUpdateDurations) {
-      onUpdateDurations([
-        newDurations.in1,
-        newDurations.hold1,
-        newDurations.out,
-        newDurations.hold2,
-        newDurations.in2,
-        newDurations.hold3,
-      ])
-    }
+    onUpdateDurations?.([
+      newDurations.in1,
+      newDurations.hold1,
+      newDurations.out,
+      newDurations.hold2,
+      newDurations.in2,
+      newDurations.hold3,
+    ])
   }
 
   const handleDurationChange = (type: keyof typeof durations, value: number) => {
     const newDurations = { ...durations, [type]: value }
     setDurations(newDurations)
-
-    if (onUpdateDurations) {
-      onUpdateDurations([
-        newDurations.in1,
-        newDurations.hold1,
-        newDurations.out,
-        newDurations.hold2,
-        newDurations.in2,
-        newDurations.hold3,
-      ])
-    }
+    onUpdateDurations?.([
+      newDurations.in1,
+      newDurations.hold1,
+      newDurations.out,
+      newDurations.hold2,
+      newDurations.in2,
+      newDurations.hold3,
+    ])
   }
 
   const position = getPosition()
-  const currentStepInfo = getStepInfo(currentStep)
-
-  // Create progress path for current segment
-  const getProgressPath = () => {
-    const percent = progress / 100
-    const currentPoint = points[currentStep]
-    const nextPoint = points[(currentStep + 1) % 6]
-
-    const currentX = currentPoint.x + (nextPoint.x - currentPoint.x) * percent
-    const currentY = currentPoint.y + (nextPoint.y - currentPoint.y) * percent
-
-    return `M ${currentPoint.x} ${currentPoint.y} L ${currentX} ${currentY}`
-  }
+  const progressPath = getProgressPath()
+  const activeColor = stepColors[currentStep] ?? stepColors[0]
+  const stepDuration = getStepDuration(currentStep, durations)
 
   return (
-    <div
-      className={cn(
-        "relative flex h-full w-full items-center justify-center overflow-hidden",
-        className
-      )}
-    >
-      {/* Settings Button - Responsive positioning */}
-      <div className={cn("absolute z-10", isSmallScreen ? "right-2 top-2" : "right-3 top-3")}>
+    <div className={cn("relative h-full w-full", className)}>
+      {/* Settings */}
+      <div className="absolute right-0 top-0 z-20">
         <Sheet>
           <SheetTrigger asChild>
             <Button
               variant="ghost"
               size="icon"
-              className={cn(
-                "rounded-full border border-gray-200 bg-white/90 shadow-sm backdrop-blur-sm hover:bg-white dark:border-gray-600 dark:bg-gray-800/90 dark:hover:bg-gray-700",
-                isSmallScreen ? "h-7 w-7" : "h-9 w-9"
-              )}
+              className="h-8 w-8 rounded-full text-muted-foreground hover:bg-muted hover:text-foreground"
             >
-              <Settings2
-                className={cn(
-                  "text-emerald-600 dark:text-emerald-400",
-                  isSmallScreen ? "h-3 w-3" : "h-4 w-4"
-                )}
-              />
+              <Settings2 className="h-4 w-4" />
             </Button>
           </SheetTrigger>
           <SheetContent>
             <SheetHeader>
-              <SheetTitle className="text-emerald-700 dark:text-emerald-300">
-                Hexagon Breathing Settings
-              </SheetTitle>
+              <SheetTitle>{t.breathingTechniques.hexagon.name}</SheetTitle>
               <SheetDescription>Customize your 6-step breathing pattern</SheetDescription>
             </SheetHeader>
 
             <div className="space-y-6 py-6">
-              {/* Preset Selection */}
               <div className="space-y-3">
-                <Label className="font-medium text-emerald-700 dark:text-emerald-300">
-                  Choose Pattern
-                </Label>
+                <Label>Choose Pattern</Label>
                 <div className="grid grid-cols-1 gap-2">
                   {Object.entries(breathingPresets).map(([key, preset]) => (
                     <Button
@@ -243,264 +219,166 @@ export function HexagonBreathing({
                 </div>
               </div>
 
-              {/* Custom Durations */}
               <div className="space-y-4">
-                <Label className="font-medium text-emerald-700 dark:text-emerald-300">
-                  Customize
-                </Label>
-
-                <div className="space-y-3">
-                  <div>
+                <Label>Customize</Label>
+                {durationFields.map(({ key, labelKey, suffix, icon: Icon, color }) => (
+                  <div key={key}>
                     <Label className="flex items-center gap-2 text-sm">
-                      <Heart className="h-4 w-4 text-emerald-500" />
-                      Breathe In 1: {durations.in1}s
+                      <Icon className={cn("h-4 w-4", color)} />
+                      {t.ui[labelKey as keyof typeof t.ui]}
+                      {suffix}: {durations[key]}s
                     </Label>
                     <Slider
-                      value={[durations.in1]}
-                      onValueChange={(value) => handleDurationChange("in1", value[0])}
+                      value={[durations[key]]}
+                      onValueChange={(value) => handleDurationChange(key, value[0])}
                       max={10}
-                      min={2}
+                      min={key.startsWith("hold") ? 0 : 2}
                       step={1}
                       className="mt-2"
                     />
                   </div>
-
-                  <div>
-                    <Label className="flex items-center gap-2 text-sm">
-                      <Zap className="h-4 w-4 text-amber-500" />
-                      Hold 1: {durations.hold1}s
-                    </Label>
-                    <Slider
-                      value={[durations.hold1]}
-                      onValueChange={(value) => handleDurationChange("hold1", value[0])}
-                      max={10}
-                      min={0}
-                      step={1}
-                      className="mt-2"
-                    />
-                  </div>
-
-                  <div>
-                    <Label className="flex items-center gap-2 text-sm">
-                      <Sparkles className="h-4 w-4 text-rose-500" />
-                      Breathe Out: {durations.out}s
-                    </Label>
-                    <Slider
-                      value={[durations.out]}
-                      onValueChange={(value) => handleDurationChange("out", value[0])}
-                      max={10}
-                      min={2}
-                      step={1}
-                      className="mt-2"
-                    />
-                  </div>
-
-                  <div>
-                    <Label className="flex items-center gap-2 text-sm">
-                      <Zap className="h-4 w-4 text-amber-500" />
-                      Hold 2: {durations.hold2}s
-                    </Label>
-                    <Slider
-                      value={[durations.hold2]}
-                      onValueChange={(value) => handleDurationChange("hold2", value[0])}
-                      max={10}
-                      min={0}
-                      step={1}
-                      className="mt-2"
-                    />
-                  </div>
-
-                  <div>
-                    <Label className="flex items-center gap-2 text-sm">
-                      <Wind className="h-4 w-4 text-blue-500" />
-                      Breathe In 2: {durations.in2}s
-                    </Label>
-                    <Slider
-                      value={[durations.in2]}
-                      onValueChange={(value) => handleDurationChange("in2", value[0])}
-                      max={10}
-                      min={2}
-                      step={1}
-                      className="mt-2"
-                    />
-                  </div>
-
-                  <div>
-                    <Label className="flex items-center gap-2 text-sm">
-                      <Brain className="h-4 w-4 text-purple-500" />
-                      Hold 3: {durations.hold3}s
-                    </Label>
-                    <Slider
-                      value={[durations.hold3]}
-                      onValueChange={(value) => handleDurationChange("hold3", value[0])}
-                      max={10}
-                      min={0}
-                      step={1}
-                      className="mt-2"
-                    />
-                  </div>
-                </div>
+                ))}
               </div>
             </div>
           </SheetContent>
         </Sheet>
       </div>
 
-      {/* Main Hexagon Container */}
-      <div className="relative flex h-full w-full items-center justify-center">
-        {/* Hexagon Outline */}
-        <svg
-          width="100%"
-          height="100%"
-          viewBox={`0 0 ${adjustedSize} ${adjustedSize}`}
-          className="absolute"
-          preserveAspectRatio="xMidYMid meet"
-        >
-          {/* Hexagon outline */}
-          <path d={hexagonPath} stroke="rgba(16, 185, 129, 0.6)" strokeWidth="3" fill="none" />
-
-          {/* Progress Path */}
-          <path
-            d={getProgressPath()}
-            fill="none"
-            stroke="url(#hexagonGradient)"
-            strokeWidth="6"
-            strokeLinecap="round"
-            className="drop-shadow-lg"
-          />
-
-          <defs>
-            <linearGradient id="hexagonGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#10b981" />
-              <stop offset="25%" stopColor="#34d399" />
-              <stop offset="50%" stopColor="#6ee7b7" />
-              <stop offset="75%" stopColor="#34d399" />
-              <stop offset="100%" stopColor="#10b981" />
-            </linearGradient>
-          </defs>
-        </svg>
-
-        {/* Central Indicator - Responsive sizing */}
-        <div className="relative z-10">
-          <motion.div
-            className={cn(
-              "flex items-center justify-center rounded-full border border-gray-200 bg-white shadow-lg dark:border-gray-600 dark:bg-gray-800",
-              isSmallScreen ? "h-12 w-12" : isMobile ? "h-16 w-16" : "h-20 w-20"
-            )}
-            animate={{
-              scale: isPlaying ? [1, 1.05, 1] : 1,
-            }}
-            transition={{
-              duration: 2,
-              repeat: isPlaying ? Infinity : 0,
-              ease: "easeInOut",
-            }}
-          >
-            <div className="text-center">
-              <motion.div
-                className={cn(
-                  "mx-auto mb-1",
-                  isSmallScreen ? "h-4 w-4" : isMobile ? "h-5 w-5" : "h-6 w-6"
-                )}
-                animate={{
-                  scale: isPlaying ? [1, 1.1, 1] : 1,
-                }}
-                transition={{
-                  duration: 2,
-                  repeat: isPlaying ? Infinity : 0,
-                  ease: "easeInOut",
-                }}
-              >
-                {React.createElement(currentStepInfo.icon, {
-                  className: cn(
-                    currentStepInfo.color,
-                    isSmallScreen ? "w-4 h-4" : isMobile ? "w-5 h-5" : "w-6 h-6"
-                  ),
-                })}
-              </motion.div>
-              <span
-                className={cn(
-                  "font-medium text-gray-600 dark:text-gray-400",
-                  isSmallScreen ? "text-[10px]" : "text-xs"
-                )}
-              >
-                {currentStepInfo.name}
-              </span>
-            </div>
-          </motion.div>
-        </div>
-
-        {/* Moving Dot - Responsive sizing */}
-        <motion.div
-          className="absolute z-20"
+      {/* Ambient glow */}
+      <motion.div
+        className="pointer-events-none absolute inset-0"
+        animate={{ opacity: isPlaying ? 0.35 : 0 }}
+        transition={{ duration: 0.6 }}
+      >
+        <div
+          className="absolute inset-[15%] rounded-full blur-3xl"
           style={{
-            left: `${(position.x / adjustedSize) * 100}%`,
-            top: `${(position.y / adjustedSize) * 100}%`,
+            background: `radial-gradient(circle, ${activeColor}55 0%, transparent 70%)`,
+          }}
+        />
+      </motion.div>
+
+      <svg
+        width="100%"
+        height="100%"
+        viewBox={`0 0 ${adjustedSize} ${adjustedSize}`}
+        className="absolute inset-0"
+        preserveAspectRatio="xMidYMid meet"
+      >
+        {/* Soft fill */}
+        <path d={hexagonPath} fill="hsl(var(--primary) / 0.04)" />
+
+        {/* Track */}
+        <path
+          d={hexagonPath}
+          fill="none"
+          stroke="hsl(var(--primary) / 0.18)"
+          strokeWidth="2"
+          strokeLinejoin="round"
+        />
+
+        {/* Completed segments */}
+        {getCompletedPaths().map((path, i) => (
+          <path
+            key={i}
+            d={path}
+            fill="none"
+            stroke={stepColors[i]}
+            strokeWidth="2.5"
+            strokeLinecap="round"
+            opacity={0.35}
+          />
+        ))}
+
+        {/* Active progress */}
+        <path
+          d={progressPath}
+          fill="none"
+          stroke={activeColor}
+          strokeWidth="3"
+          strokeLinecap="round"
+          opacity={0.9}
+        />
+
+        {/* Vertex markers */}
+        {points.map((point, i) => (
+          <circle
+            key={i}
+            cx={point.x}
+            cy={point.y}
+            r={currentStep === i ? 4.5 : 3}
+            fill={currentStep === i ? stepColors[i] : "hsl(var(--primary) / 0.22)"}
+            opacity={currentStep === i ? 1 : 0.7}
+          />
+        ))}
+      </svg>
+
+      {/* Center pulse orb */}
+      <div className="absolute inset-0 flex items-center justify-center">
+        <motion.div
+          className="rounded-full ring-1"
+          style={{
+            background: `${activeColor}18`,
+            borderColor: `${activeColor}33`,
           }}
           animate={{
-            left: `${(position.x / adjustedSize) * 100}%`,
-            top: `${(position.y / adjustedSize) * 100}%`,
+            width: isPlaying ? [52, 68, 52] : 52,
+            height: isPlaying ? [52, 68, 52] : 52,
+            opacity: isPlaying ? [0.5, 0.85, 0.5] : 0.45,
           }}
-          transition={{ type: "spring", stiffness: 150, damping: 20, mass: 0.8 }}
-        >
-          {/* Outer glow */}
-          <div
-            className={cn(
-              "absolute -translate-x-1/2 -translate-y-1/2 rounded-full bg-emerald-400/20 blur-sm",
-              isSmallScreen ? "h-8 w-8" : isMobile ? "h-12 w-12" : "h-16 w-16"
-            )}
-          />
-
-          {/* Main dot */}
-          <div
-            className={cn(
-              "absolute -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white bg-gradient-to-r from-emerald-500 to-green-500 shadow-lg",
-              isSmallScreen ? "h-3 w-3" : "h-4 w-4"
-            )}
-          />
-
-          {/* Inner highlight */}
-          <div
-            className={cn(
-              "absolute -translate-x-1/2 -translate-y-1/2 rounded-full bg-white/80",
-              isSmallScreen ? "h-1.5 w-1.5" : "h-2 w-2"
-            )}
-          />
-        </motion.div>
+          transition={{
+            duration: stepDuration,
+            repeat: isPlaying ? Infinity : 0,
+            ease: "easeInOut",
+          }}
+        />
       </div>
 
-      {/* Progress Bars - Responsive positioning and sizing */}
-      <div
-        className={cn(
-          "absolute left-1/2 -translate-x-1/2 transform",
-          isSmallScreen ? "-bottom-4" : "-bottom-6"
-        )}
+      {/* Moving dot */}
+      <motion.div
+        className="absolute z-10"
+        style={{
+          left: `${(position.x / adjustedSize) * 100}%`,
+          top: `${(position.y / adjustedSize) * 100}%`,
+        }}
+        animate={{
+          left: `${(position.x / adjustedSize) * 100}%`,
+          top: `${(position.y / adjustedSize) * 100}%`,
+        }}
+        transition={{ type: "spring", stiffness: 120, damping: 22, mass: 0.6 }}
       >
-        <div className="flex gap-1 sm:gap-2">
-          {[0, 1, 2, 3, 4, 5].map((step) => (
-            <motion.div
-              key={step}
-              className={cn(
-                "h-1.5 overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700",
-                isSmallScreen ? "w-4" : isMobile ? "w-6" : "w-8"
-              )}
-              animate={{
-                scale: currentStep === step ? 1.1 : 1,
-              }}
-              transition={{ duration: 0.2 }}
-            >
-              <motion.div
-                className="h-full rounded-full bg-gradient-to-r from-emerald-500 to-green-500"
-                initial={{ width: 0 }}
-                animate={{
-                  width: currentStep === step ? `${progress}%` : "0%",
-                }}
-                transition={{ duration: 0.1 }}
-              />
-            </motion.div>
-          ))}
-        </div>
-      </div>
+        <div
+          className="-translate-x-1/2 -translate-y-1/2 rounded-full"
+          style={{
+            width: 14,
+            height: 14,
+            background: activeColor,
+            boxShadow: `0 0 16px 4px ${activeColor}66`,
+          }}
+        />
+      </motion.div>
     </div>
   )
+}
+
+function getStepDuration(
+  step: number,
+  durations: {
+    in1: number
+    hold1: number
+    out: number
+    hold2: number
+    in2: number
+    hold3: number
+  }
+) {
+  const values = [
+    durations.in1,
+    durations.hold1,
+    durations.out,
+    durations.hold2,
+    durations.in2,
+    durations.hold3,
+  ]
+  return values[step] ?? 4
 }

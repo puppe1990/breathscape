@@ -11,6 +11,7 @@ import { StarBreathing } from "@/components/techniques/star-breathing"
 import { InfinityBreathing } from "@/components/techniques/infinity-breathing"
 import { CircleBreathing } from "@/components/techniques/circle-breathing"
 import { StopBreathing } from "@/components/techniques/stop-breathing"
+import { PentagonBreathing } from "@/components/techniques/pentagon-breathing"
 import { motion, AnimatePresence } from "framer-motion"
 import { translations } from "@/lib/translations/index"
 import { cn } from "@/lib/utils"
@@ -36,8 +37,25 @@ function getStepPhase(stepIndex: number, totalSteps: number): StepPhase {
   if (totalSteps === 3) return (["inhale", "hold", "exhale"] as const)[stepIndex] ?? "inhale"
   if (totalSteps === 4)
     return (["inhale", "hold", "exhale", "hold"] as const)[stepIndex] ?? "inhale"
+  if (totalSteps === 5) {
+    const phases: StepPhase[] = ["inhale", "hold", "exhale", "hold", "inhale"]
+    return phases[stepIndex] ?? "inhale"
+  }
   if (totalSteps === 6) {
     const phases: StepPhase[] = ["inhale", "hold", "exhale", "hold", "inhale", "hold"]
+    return phases[stepIndex] ?? "inhale"
+  }
+  if (totalSteps === 8) {
+    const phases: StepPhase[] = [
+      "inhale",
+      "hold",
+      "exhale",
+      "hold",
+      "inhale",
+      "hold",
+      "exhale",
+      "hold",
+    ]
     return phases[stepIndex] ?? "inhale"
   }
   return stepIndex % 2 === 0 ? "inhale" : "hold"
@@ -151,6 +169,8 @@ export function BreathingExercise({
         return <CircleBreathing {...commonProps} onUpdateDurations={handleUpdateDurations} />
       case "stop":
         return <StopBreathing {...commonProps} />
+      case "pentagon":
+        return <PentagonBreathing {...commonProps} onUpdateDurations={handleUpdateDurations} />
       default:
         return (
           <>
@@ -174,6 +194,7 @@ export function BreathingExercise({
   const isLargeShape =
     technique.id === "square" ||
     technique.id === "hexagon" ||
+    technique.id === "pentagon" ||
     technique.id === "star" ||
     technique.id === "infinity"
 

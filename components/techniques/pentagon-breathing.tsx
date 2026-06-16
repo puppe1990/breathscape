@@ -17,7 +17,7 @@ import { Slider } from "@/components/ui/slider"
 import { Label } from "@/components/ui/label"
 import { translations } from "@/lib/translations/index"
 
-interface CircleBreathingProps {
+interface PentagonBreathingProps {
   size?: number
   isPlaying: boolean
   currentStep: number
@@ -28,52 +28,54 @@ interface CircleBreathingProps {
 }
 
 const breathingPresets = {
-  "4-7-8": { name: "4-7-8", in: 4, hold: 7, out: 8 },
-  box: { name: "Box", in: 4, hold: 4, out: 4 },
-  relaxing: { name: "Relaxing", in: 6, hold: 0, out: 7 },
-  energizing: { name: "Energizing", in: 2, hold: 0, out: 4 },
-  coherent: { name: "Coherent", in: 5, hold: 0, out: 5 },
+  "4-4-4-4-4": { name: "Balanced Pentagon", in1: 4, hold1: 4, out: 4, hold2: 4, in2: 4 },
+  "5-5-5-5-5": { name: "Extended Pentagon", in1: 5, hold1: 5, out: 5, hold2: 5, in2: 5 },
+  "6-2-6-2-6": { name: "Relaxing Pentagon", in1: 6, hold1: 2, out: 6, hold2: 2, in2: 6 },
+  "4-7-8-4-4": { name: "Sleep Pentagon", in1: 4, hold1: 7, out: 8, hold2: 4, in2: 4 },
+  "3-3-3-3-3": { name: "Quick Pentagon", in1: 3, hold1: 3, out: 3, hold2: 3, in2: 3 },
 } as const
 
 type PresetKey = keyof typeof breathingPresets
 
 const stepColors = [
-  "#34d399", // inhale
-  "#fbbf24", // hold
+  "#34d399", // inhale 1
+  "#fbbf24", // hold 1
   "#38bdf8", // exhale
+  "#fbbf24", // hold 2
+  "#2dd4bf", // inhale 2
 ]
 
 const durationFields = [
-  { key: "in" as const, labelKey: "breatheIn", icon: Heart, color: "text-emerald-500" },
-  { key: "hold" as const, labelKey: "hold", icon: Zap, color: "text-amber-500" },
-  { key: "out" as const, labelKey: "breatheOut", icon: Wind, color: "text-sky-500" },
+  {
+    key: "in1" as const,
+    labelKey: "breatheIn",
+    suffix: " 1",
+    icon: Heart,
+    color: "text-emerald-500",
+  },
+  { key: "hold1" as const, labelKey: "hold", suffix: " 1", icon: Zap, color: "text-amber-500" },
+  { key: "out" as const, labelKey: "breatheOut", suffix: "", icon: Wind, color: "text-sky-500" },
+  { key: "hold2" as const, labelKey: "hold", suffix: " 2", icon: Zap, color: "text-amber-500" },
+  { key: "in2" as const, labelKey: "breatheIn", suffix: " 2", icon: Heart, color: "text-teal-500" },
 ]
 
-const SEGMENT_ANGLE = (2 * Math.PI) / 3
-
-function polarToCartesian(cx: number, cy: number, r: number, angle: number) {
-  return { x: cx + r * Math.cos(angle), y: cy + r * Math.sin(angle) }
-}
-
-function describeArc(cx: number, cy: number, r: number, startAngle: number, endAngle: number) {
-  const start = polarToCartesian(cx, cy, r, startAngle)
-  const end = polarToCartesian(cx, cy, r, endAngle)
-  const sweep = endAngle - startAngle
-  const largeArc = sweep > Math.PI ? 1 : 0
-  return `M ${start.x} ${start.y} A ${r} ${r} 0 ${largeArc} 1 ${end.x} ${end.y}`
-}
-
-export function CircleBreathing({
-  size = 256,
+export function PentagonBreathing({
+  size = 280,
   isPlaying,
   currentStep,
   progress,
   className,
   language,
   onUpdateDurations,
-}: CircleBreathingProps) {
-  const [selectedPreset, setSelectedPreset] = useState<PresetKey>("4-7-8")
-  const [durations, setDurations] = useState({ in: 4, hold: 7, out: 8 })
+}: PentagonBreathingProps) {
+  const [selectedPreset, setSelectedPreset] = useState<PresetKey>("4-4-4-4-4")
+  const [durations, setDurations] = useState({
+    in1: 4,
+    hold1: 4,
+    out: 4,
+    hold2: 4,
+    in2: 4,
+  })
   const [adjustedSize, setAdjustedSize] = useState(size)
 
   const t = translations[language] || translations["en"]
@@ -81,51 +83,85 @@ export function CircleBreathing({
   useEffect(() => {
     const checkSize = () => {
       const width = window.innerWidth
-      if (width < 480) setAdjustedSize(Math.min(size, 192))
-      else if (width < 768) setAdjustedSize(Math.min(size, 224))
-      else setAdjustedSize(Math.min(size, 256))
+      if (width < 480) setAdjustedSize(Math.min(size, 220))
+      else if (width < 768) setAdjustedSize(Math.min(size, 260))
+      else setAdjustedSize(size)
     }
     checkSize()
     window.addEventListener("resize", checkSize)
     return () => window.removeEventListener("resize", checkSize)
   }, [size])
 
+  const actualPentagonSize = Math.max(adjustedSize * 0.72, 120)
   const center = adjustedSize / 2
-  const radius = adjustedSize * 0.34
+  const radius = actualPentagonSize / 2
 
-  const getSegmentAngles = (step: number, segmentProgress = 1) => {
-    const startAngle = step * SEGMENT_ANGLE - Math.PI / 2
-    const endAngle = startAngle + SEGMENT_ANGLE * segmentProgress
-    return { startAngle, endAngle }
-  }
+  const points = Array.from({ length: 5 }).map((_, i) => {
+    const angle = (i * 72 - 90) * (Math.PI / 180)
+    return {
+      x: center + radius * Math.cos(angle),
+      y: center + radius * Math.sin(angle),
+    }
+  })
 
   const getPosition = () => {
-    const { endAngle } = getSegmentAngles(currentStep, progress / 100)
-    return polarToCartesian(center, center, radius, endAngle)
+    const percent = progress / 100
+    const currentPoint = points[currentStep]
+    const nextPoint = points[(currentStep + 1) % 5]
+    return {
+      x: currentPoint.x + (nextPoint.x - currentPoint.x) * percent,
+      y: currentPoint.y + (nextPoint.y - currentPoint.y) * percent,
+    }
   }
 
+  const pentagonPath =
+    points.map((point, i) => `${i === 0 ? "M" : "L"} ${point.x} ${point.y}`).join(" ") + " Z"
+
   const getProgressPath = () => {
-    const { startAngle, endAngle } = getSegmentAngles(currentStep, progress / 100)
-    return describeArc(center, center, radius, startAngle, endAngle)
+    const percent = progress / 100
+    const currentPoint = points[currentStep]
+    const nextPoint = points[(currentStep + 1) % 5]
+    const currentX = currentPoint.x + (nextPoint.x - currentPoint.x) * percent
+    const currentY = currentPoint.y + (nextPoint.y - currentPoint.y) * percent
+    return `M ${currentPoint.x} ${currentPoint.y} L ${currentX} ${currentY}`
   }
 
   const getCompletedPaths = () =>
     Array.from({ length: currentStep }, (_, i) => {
-      const { startAngle, endAngle } = getSegmentAngles(i)
-      return describeArc(center, center, radius, startAngle, endAngle)
+      const p1 = points[i]
+      const p2 = points[(i + 1) % 5]
+      return `M ${p1.x} ${p1.y} L ${p2.x} ${p2.y}`
     })
 
   const handlePresetChange = (preset: PresetKey) => {
     setSelectedPreset(preset)
     const newDurations = breathingPresets[preset]
-    setDurations({ in: newDurations.in, hold: newDurations.hold, out: newDurations.out })
-    onUpdateDurations?.([newDurations.in, newDurations.hold, newDurations.out])
+    setDurations({
+      in1: newDurations.in1,
+      hold1: newDurations.hold1,
+      out: newDurations.out,
+      hold2: newDurations.hold2,
+      in2: newDurations.in2,
+    })
+    onUpdateDurations?.([
+      newDurations.in1,
+      newDurations.hold1,
+      newDurations.out,
+      newDurations.hold2,
+      newDurations.in2,
+    ])
   }
 
   const handleDurationChange = (type: keyof typeof durations, value: number) => {
     const newDurations = { ...durations, [type]: value }
     setDurations(newDurations)
-    onUpdateDurations?.([newDurations.in, newDurations.hold, newDurations.out])
+    onUpdateDurations?.([
+      newDurations.in1,
+      newDurations.hold1,
+      newDurations.out,
+      newDurations.hold2,
+      newDurations.in2,
+    ])
   }
 
   const position = getPosition()
@@ -133,14 +169,8 @@ export function CircleBreathing({
   const activeColor = stepColors[currentStep] ?? stepColors[0]
   const stepDuration = getStepDuration(currentStep, durations)
 
-  const stepMarkers = [0, 1, 2].map((step) => {
-    const { startAngle } = getSegmentAngles(step)
-    return { ...polarToCartesian(center, center, radius, startAngle), step }
-  })
-
   return (
     <div className={cn("relative h-full w-full", className)}>
-      {/* Settings */}
       <div className="absolute right-0 top-0 z-20">
         <Sheet>
           <SheetTrigger asChild>
@@ -154,14 +184,14 @@ export function CircleBreathing({
           </SheetTrigger>
           <SheetContent>
             <SheetHeader>
-              <SheetTitle>{t.breathingTechniques.circle.name}</SheetTitle>
-              <SheetDescription>Customize your breathing pattern</SheetDescription>
+              <SheetTitle>{t.breathingTechniques.pentagon.name}</SheetTitle>
+              <SheetDescription>Customize your 5-step breathing pattern</SheetDescription>
             </SheetHeader>
 
             <div className="space-y-6 py-6">
               <div className="space-y-3">
                 <Label>Choose Pattern</Label>
-                <div className="grid grid-cols-2 gap-2">
+                <div className="grid grid-cols-1 gap-2">
                   {Object.entries(breathingPresets).map(([key, preset]) => (
                     <Button
                       key={key}
@@ -173,7 +203,7 @@ export function CircleBreathing({
                       <div className="text-center">
                         <div className="font-medium">{preset.name}</div>
                         <div className="text-xs opacity-70">
-                          {preset.in}-{preset.hold}-{preset.out}
+                          {preset.in1}-{preset.hold1}-{preset.out}-{preset.hold2}-{preset.in2}
                         </div>
                       </div>
                     </Button>
@@ -183,17 +213,18 @@ export function CircleBreathing({
 
               <div className="space-y-4">
                 <Label>Customize</Label>
-                {durationFields.map(({ key, labelKey, icon: Icon, color }) => (
+                {durationFields.map(({ key, labelKey, suffix, icon: Icon, color }) => (
                   <div key={key}>
                     <Label className="flex items-center gap-2 text-sm">
                       <Icon className={cn("h-4 w-4", color)} />
-                      {t.ui[labelKey as keyof typeof t.ui]}: {durations[key]}s
+                      {t.ui[labelKey as keyof typeof t.ui]}
+                      {suffix}: {durations[key]}s
                     </Label>
                     <Slider
                       value={[durations[key]]}
                       onValueChange={(value) => handleDurationChange(key, value[0])}
                       max={10}
-                      min={key === "hold" ? 0 : 2}
+                      min={key.startsWith("hold") ? 0 : 2}
                       step={1}
                       className="mt-2"
                     />
@@ -205,7 +236,6 @@ export function CircleBreathing({
         </Sheet>
       </div>
 
-      {/* Ambient glow */}
       <motion.div
         className="pointer-events-none absolute inset-0"
         animate={{ opacity: isPlaying ? 0.35 : 0 }}
@@ -226,20 +256,16 @@ export function CircleBreathing({
         className="absolute inset-0"
         preserveAspectRatio="xMidYMid meet"
       >
-        {/* Soft fill */}
-        <circle cx={center} cy={center} r={radius} fill="hsl(var(--primary) / 0.04)" />
+        <path d={pentagonPath} fill="hsl(var(--primary) / 0.04)" />
 
-        {/* Track */}
-        <circle
-          cx={center}
-          cy={center}
-          r={radius}
+        <path
+          d={pentagonPath}
           fill="none"
           stroke="hsl(var(--primary) / 0.18)"
           strokeWidth="2"
+          strokeLinejoin="round"
         />
 
-        {/* Completed segments */}
         {getCompletedPaths().map((path, i) => (
           <path
             key={i}
@@ -252,7 +278,6 @@ export function CircleBreathing({
           />
         ))}
 
-        {/* Active progress */}
         <path
           d={progressPath}
           fill="none"
@@ -262,20 +287,18 @@ export function CircleBreathing({
           opacity={0.9}
         />
 
-        {/* Step markers */}
-        {stepMarkers.map(({ x, y, step }) => (
+        {points.map((point, i) => (
           <circle
-            key={step}
-            cx={x}
-            cy={y}
-            r={currentStep === step ? 4.5 : 3}
-            fill={currentStep === step ? stepColors[step] : "hsl(var(--primary) / 0.22)"}
-            opacity={currentStep === step ? 1 : 0.7}
+            key={i}
+            cx={point.x}
+            cy={point.y}
+            r={currentStep === i ? 4.5 : 3}
+            fill={currentStep === i ? stepColors[i] : "hsl(var(--primary) / 0.22)"}
+            opacity={currentStep === i ? 1 : 0.7}
           />
         ))}
       </svg>
 
-      {/* Center pulse orb */}
       <div className="absolute inset-0 flex items-center justify-center">
         <motion.div
           className="rounded-full ring-1"
@@ -284,8 +307,8 @@ export function CircleBreathing({
             borderColor: `${activeColor}33`,
           }}
           animate={{
-            width: isPlaying ? [48, 62, 48] : 48,
-            height: isPlaying ? [48, 62, 48] : 48,
+            width: isPlaying ? [52, 68, 52] : 52,
+            height: isPlaying ? [52, 68, 52] : 52,
             opacity: isPlaying ? [0.5, 0.85, 0.5] : 0.45,
           }}
           transition={{
@@ -296,7 +319,6 @@ export function CircleBreathing({
         />
       </div>
 
-      {/* Moving dot */}
       <motion.div
         className="absolute z-10"
         style={{
@@ -323,7 +345,10 @@ export function CircleBreathing({
   )
 }
 
-function getStepDuration(step: number, durations: { in: number; hold: number; out: number }) {
-  const values = [durations.in, durations.hold, durations.out]
+function getStepDuration(
+  step: number,
+  durations: { in1: number; hold1: number; out: number; hold2: number; in2: number }
+) {
+  const values = [durations.in1, durations.hold1, durations.out, durations.hold2, durations.in2]
   return values[step] ?? 4
 }

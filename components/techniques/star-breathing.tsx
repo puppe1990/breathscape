@@ -1,10 +1,10 @@
 "use client"
 
-import React, { useState, useEffect } from "react"
+import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-import { Settings2, Heart, Zap, Sparkles, Star, Flame } from "lucide-react"
+import { Settings2, Heart, Zap, Wind } from "lucide-react"
 import {
   Sheet,
   SheetContent,
@@ -37,6 +37,36 @@ const breathingPresets = {
 
 type PresetKey = keyof typeof breathingPresets
 
+const stepColors = [
+  "#34d399", // inhale 1
+  "#fbbf24", // hold 1
+  "#38bdf8", // exhale
+  "#fbbf24", // hold 2
+  "#2dd4bf", // inhale 2
+]
+
+const durationFields = [
+  {
+    key: "in1" as const,
+    labelKey: "breatheIn",
+    suffix: " 1",
+    icon: Heart,
+    color: "text-emerald-500",
+  },
+  { key: "hold1" as const, labelKey: "hold", suffix: " 1", icon: Zap, color: "text-amber-500" },
+  { key: "out" as const, labelKey: "breatheOut", suffix: "", icon: Wind, color: "text-sky-500" },
+  { key: "hold2" as const, labelKey: "hold", suffix: " 2", icon: Zap, color: "text-amber-500" },
+  {
+    key: "focus" as const,
+    labelKey: "breatheIn",
+    suffix: " 2",
+    icon: Heart,
+    color: "text-teal-500",
+  },
+]
+
+const SEGMENTS_PER_STEP = 2
+
 export function StarBreathing({
   size = 280,
   isPlaying,
@@ -48,45 +78,29 @@ export function StarBreathing({
 }: StarBreathingProps) {
   const [selectedPreset, setSelectedPreset] = useState<PresetKey>("4-4-4-4-4")
   const [durations, setDurations] = useState({ in1: 4, hold1: 4, out: 4, hold2: 4, focus: 4 })
-  const [isMobile, setIsMobile] = useState(false)
-  const [isSmallScreen, setIsSmallScreen] = useState(false)
+  const [adjustedSize, setAdjustedSize] = useState(size)
 
   const t = translations[language] || translations["en"]
 
-  // Detect screen sizes
   useEffect(() => {
-    const checkScreenSize = () => {
+    const checkSize = () => {
       const width = window.innerWidth
-      setIsMobile(width < 768)
-      setIsSmallScreen(width < 480)
+      if (width < 480) setAdjustedSize(Math.min(size, 220))
+      else if (width < 768) setAdjustedSize(Math.min(size, 260))
+      else setAdjustedSize(size)
     }
+    checkSize()
+    window.addEventListener("resize", checkSize)
+    return () => window.removeEventListener("resize", checkSize)
+  }, [size])
 
-    checkScreenSize()
-    window.addEventListener("resize", checkScreenSize)
-    return () => window.removeEventListener("resize", checkScreenSize)
-  }, [])
-
-  // Responsive sizing
-  const getResponsiveSize = () => {
-    if (isSmallScreen) return Math.min(size, 200)
-    if (isMobile) return Math.min(size, 240)
-    return size
-  }
-
-  const adjustedSize = getResponsiveSize()
-
-  // Calculate centered star dimensions
-  const desiredStarSize = adjustedSize * 0.7 // Star takes 70% of container
-  const actualStarSize = Math.max(desiredStarSize, 120) // Minimum size
-  const actualPadding = (adjustedSize - actualStarSize) / 2 // Center the star
+  const actualStarSize = Math.max(adjustedSize * 0.72, 120)
   const center = adjustedSize / 2
   const outerRadius = actualStarSize / 2
-  const innerRadius = outerRadius * 0.382 // Golden ratio for star proportion
+  const innerRadius = outerRadius * 0.382
 
-  // Calculate all star points (5 outer points and 5 inner points)
   const points = Array.from({ length: 10 }).map((_, i) => {
-    const angle = (i * 36 - 90) * (Math.PI / 180) // Start from top (-90 degrees)
-    // Alternate between outer and inner points
+    const angle = (i * 36 - 90) * (Math.PI / 180)
     const radius = i % 2 === 0 ? outerRadius : innerRadius
     return {
       x: center + radius * Math.cos(angle),
@@ -94,56 +108,65 @@ export function StarBreathing({
     }
   })
 
-  // Get the current position based on step and progress
+  const getStepIndices = (step: number) => {
+    const baseIndex = (step * SEGMENTS_PER_STEP) % points.length
+    return {
+      baseIndex,
+      nextIndex: (baseIndex + 1) % points.length,
+      afterNextIndex: (baseIndex + 2) % points.length,
+    }
+  }
+
   const getPosition = () => {
-    // Each step now covers 2 segments of the star (from outer to inner to outer)
-    const segmentsPerStep = 2
-    const totalPoints = points.length
-
-    // Calculate which segments we're currently traversing
-    const baseIndex = (currentStep * segmentsPerStep) % totalPoints
-    const nextIndex = (baseIndex + 1) % totalPoints
-    const afterNextIndex = (baseIndex + 2) % totalPoints
-
-    // Calculate progress within the current step (0-1)
     const stepProgress = progress / 100
+    const { baseIndex, nextIndex, afterNextIndex } = getStepIndices(currentStep)
 
-    // If we're in the first half of the step
     if (stepProgress < 0.5) {
-      // Normalize progress for the first segment
       const normalizedProgress = stepProgress * 2
       return {
         x: points[baseIndex].x + (points[nextIndex].x - points[baseIndex].x) * normalizedProgress,
         y: points[baseIndex].y + (points[nextIndex].y - points[baseIndex].y) * normalizedProgress,
       }
-    } else {
-      // Normalize progress for the second segment
-      const normalizedProgress = (stepProgress - 0.5) * 2
-      return {
-        x:
-          points[nextIndex].x +
-          (points[afterNextIndex].x - points[nextIndex].x) * normalizedProgress,
-        y:
-          points[nextIndex].y +
-          (points[afterNextIndex].y - points[nextIndex].y) * normalizedProgress,
-      }
+    }
+
+    const normalizedProgress = (stepProgress - 0.5) * 2
+    return {
+      x:
+        points[nextIndex].x + (points[afterNextIndex].x - points[nextIndex].x) * normalizedProgress,
+      y:
+        points[nextIndex].y + (points[afterNextIndex].y - points[nextIndex].y) * normalizedProgress,
     }
   }
 
-  // Create the star path
   const starPath =
     points.map((point, i) => `${i === 0 ? "M" : "L"} ${point.x} ${point.y}`).join(" ") + " Z"
 
-  const getStepInfo = (step: number) => {
-    const steps = [
-      { name: t.ui.breatheIn, icon: Heart, color: "text-amber-500" },
-      { name: t.ui.hold, icon: Zap, color: "text-orange-500" },
-      { name: t.ui.breatheOut, icon: Sparkles, color: "text-red-500" },
-      { name: t.ui.hold, icon: Star, color: "text-yellow-500" },
-      { name: "Focus", icon: Flame, color: "text-pink-500" },
-    ]
-    return steps[step] || steps[0]
+  const getProgressPath = () => {
+    const percent = progress / 100
+    const { baseIndex, nextIndex, afterNextIndex } = getStepIndices(currentStep)
+
+    if (percent < 0.5) {
+      const normalizedProgress = percent * 2
+      const currentX =
+        points[baseIndex].x + (points[nextIndex].x - points[baseIndex].x) * normalizedProgress
+      const currentY =
+        points[baseIndex].y + (points[nextIndex].y - points[baseIndex].y) * normalizedProgress
+      return `M ${points[baseIndex].x} ${points[baseIndex].y} L ${currentX} ${currentY}`
+    }
+
+    const normalizedProgress = (percent - 0.5) * 2
+    const currentX =
+      points[nextIndex].x + (points[afterNextIndex].x - points[nextIndex].x) * normalizedProgress
+    const currentY =
+      points[nextIndex].y + (points[afterNextIndex].y - points[nextIndex].y) * normalizedProgress
+    return `M ${points[baseIndex].x} ${points[baseIndex].y} L ${points[nextIndex].x} ${points[nextIndex].y} L ${currentX} ${currentY}`
   }
+
+  const getCompletedPaths = () =>
+    Array.from({ length: currentStep }, (_, stepIndex) => {
+      const { baseIndex, nextIndex, afterNextIndex } = getStepIndices(stepIndex)
+      return `M ${points[baseIndex].x} ${points[baseIndex].y} L ${points[nextIndex].x} ${points[nextIndex].y} L ${points[afterNextIndex].x} ${points[afterNextIndex].y}`
+    })
 
   const handlePresetChange = (preset: PresetKey) => {
     setSelectedPreset(preset)
@@ -155,108 +178,55 @@ export function StarBreathing({
       hold2: newDurations.hold2,
       focus: newDurations.focus,
     })
-
-    if (onUpdateDurations) {
-      onUpdateDurations([
-        newDurations.in1,
-        newDurations.hold1,
-        newDurations.out,
-        newDurations.hold2,
-        newDurations.focus,
-      ])
-    }
+    onUpdateDurations?.([
+      newDurations.in1,
+      newDurations.hold1,
+      newDurations.out,
+      newDurations.hold2,
+      newDurations.focus,
+    ])
   }
 
   const handleDurationChange = (type: keyof typeof durations, value: number) => {
     const newDurations = { ...durations, [type]: value }
     setDurations(newDurations)
-
-    if (onUpdateDurations) {
-      onUpdateDurations([
-        newDurations.in1,
-        newDurations.hold1,
-        newDurations.out,
-        newDurations.hold2,
-        newDurations.focus,
-      ])
-    }
+    onUpdateDurations?.([
+      newDurations.in1,
+      newDurations.hold1,
+      newDurations.out,
+      newDurations.hold2,
+      newDurations.focus,
+    ])
   }
 
   const position = getPosition()
-  const currentStepInfo = getStepInfo(currentStep)
-
-  // Create progress path for current segment
-  const getProgressPath = () => {
-    const percent = progress / 100
-    const segmentsPerStep = 2
-    const totalPoints = points.length
-
-    // Calculate which segments we're currently traversing
-    const baseIndex = (currentStep * segmentsPerStep) % totalPoints
-    const nextIndex = (baseIndex + 1) % totalPoints
-    const afterNextIndex = (baseIndex + 2) % totalPoints
-
-    // If we're in the first half of the step
-    if (percent < 0.5) {
-      const normalizedProgress = percent * 2
-      const currentX =
-        points[baseIndex].x + (points[nextIndex].x - points[baseIndex].x) * normalizedProgress
-      const currentY =
-        points[baseIndex].y + (points[nextIndex].y - points[baseIndex].y) * normalizedProgress
-      return `M ${points[baseIndex].x} ${points[baseIndex].y} L ${currentX} ${currentY}`
-    } else {
-      const normalizedProgress = (percent - 0.5) * 2
-      const midX = points[nextIndex].x
-      const midY = points[nextIndex].y
-      const currentX =
-        points[nextIndex].x + (points[afterNextIndex].x - points[nextIndex].x) * normalizedProgress
-      const currentY =
-        points[nextIndex].y + (points[afterNextIndex].y - points[nextIndex].y) * normalizedProgress
-      return `M ${points[baseIndex].x} ${points[baseIndex].y} L ${midX} ${midY} L ${currentX} ${currentY}`
-    }
-  }
+  const progressPath = getProgressPath()
+  const activeColor = stepColors[currentStep] ?? stepColors[0]
+  const stepDuration = getStepDuration(currentStep, durations)
 
   return (
-    <div
-      className={cn(
-        "relative flex h-full w-full items-center justify-center overflow-hidden",
-        className
-      )}
-    >
-      {/* Settings Button - Responsive positioning */}
-      <div className={cn("absolute z-10", isSmallScreen ? "right-2 top-2" : "right-3 top-3")}>
+    <div className={cn("relative h-full w-full", className)}>
+      {/* Settings */}
+      <div className="absolute right-0 top-0 z-20">
         <Sheet>
           <SheetTrigger asChild>
             <Button
               variant="ghost"
               size="icon"
-              className={cn(
-                "rounded-full border border-gray-200 bg-white/90 shadow-sm backdrop-blur-sm hover:bg-white dark:border-gray-600 dark:bg-gray-800/90 dark:hover:bg-gray-700",
-                isSmallScreen ? "h-7 w-7" : "h-9 w-9"
-              )}
+              className="h-8 w-8 rounded-full text-muted-foreground hover:bg-muted hover:text-foreground"
             >
-              <Settings2
-                className={cn(
-                  "text-amber-600 dark:text-amber-400",
-                  isSmallScreen ? "h-3 w-3" : "h-4 w-4"
-                )}
-              />
+              <Settings2 className="h-4 w-4" />
             </Button>
           </SheetTrigger>
           <SheetContent>
             <SheetHeader>
-              <SheetTitle className="text-amber-700 dark:text-amber-300">
-                Star Breathing Settings
-              </SheetTitle>
+              <SheetTitle>{t.breathingTechniques.star.name}</SheetTitle>
               <SheetDescription>Customize your 5-point star breathing pattern</SheetDescription>
             </SheetHeader>
 
             <div className="space-y-6 py-6">
-              {/* Preset Selection */}
               <div className="space-y-3">
-                <Label className="font-medium text-amber-700 dark:text-amber-300">
-                  Choose Pattern
-                </Label>
+                <Label>Choose Pattern</Label>
                 <div className="grid grid-cols-1 gap-2">
                   {Object.entries(breathingPresets).map(([key, preset]) => (
                     <Button
@@ -277,253 +247,166 @@ export function StarBreathing({
                 </div>
               </div>
 
-              {/* Custom Durations */}
               <div className="space-y-4">
-                <Label className="font-medium text-amber-700 dark:text-amber-300">Customize</Label>
-
-                <div className="space-y-3">
-                  <div>
+                <Label>Customize</Label>
+                {durationFields.map(({ key, labelKey, suffix, icon: Icon, color }) => (
+                  <div key={key}>
                     <Label className="flex items-center gap-2 text-sm">
-                      <Heart className="h-4 w-4 text-amber-500" />
-                      Breathe In: {durations.in1}s
+                      <Icon className={cn("h-4 w-4", color)} />
+                      {t.ui[labelKey as keyof typeof t.ui]}
+                      {suffix}: {durations[key]}s
                     </Label>
                     <Slider
-                      value={[durations.in1]}
-                      onValueChange={(value) => handleDurationChange("in1", value[0])}
+                      value={[durations[key]]}
+                      onValueChange={(value) => handleDurationChange(key, value[0])}
                       max={10}
-                      min={2}
+                      min={key.startsWith("hold") ? 0 : 2}
                       step={1}
                       className="mt-2"
                     />
                   </div>
-
-                  <div>
-                    <Label className="flex items-center gap-2 text-sm">
-                      <Zap className="h-4 w-4 text-orange-500" />
-                      Hold 1: {durations.hold1}s
-                    </Label>
-                    <Slider
-                      value={[durations.hold1]}
-                      onValueChange={(value) => handleDurationChange("hold1", value[0])}
-                      max={10}
-                      min={0}
-                      step={1}
-                      className="mt-2"
-                    />
-                  </div>
-
-                  <div>
-                    <Label className="flex items-center gap-2 text-sm">
-                      <Sparkles className="h-4 w-4 text-red-500" />
-                      Breathe Out: {durations.out}s
-                    </Label>
-                    <Slider
-                      value={[durations.out]}
-                      onValueChange={(value) => handleDurationChange("out", value[0])}
-                      max={10}
-                      min={2}
-                      step={1}
-                      className="mt-2"
-                    />
-                  </div>
-
-                  <div>
-                    <Label className="flex items-center gap-2 text-sm">
-                      <Star className="h-4 w-4 text-yellow-500" />
-                      Hold 2: {durations.hold2}s
-                    </Label>
-                    <Slider
-                      value={[durations.hold2]}
-                      onValueChange={(value) => handleDurationChange("hold2", value[0])}
-                      max={10}
-                      min={0}
-                      step={1}
-                      className="mt-2"
-                    />
-                  </div>
-
-                  <div>
-                    <Label className="flex items-center gap-2 text-sm">
-                      <Flame className="h-4 w-4 text-pink-500" />
-                      Focus: {durations.focus}s
-                    </Label>
-                    <Slider
-                      value={[durations.focus]}
-                      onValueChange={(value) => handleDurationChange("focus", value[0])}
-                      max={10}
-                      min={2}
-                      step={1}
-                      className="mt-2"
-                    />
-                  </div>
-                </div>
+                ))}
               </div>
             </div>
           </SheetContent>
         </Sheet>
       </div>
 
-      {/* Main Star Container */}
-      <div className="relative flex h-full w-full items-center justify-center">
-        {/* Star Outline */}
-        <svg
-          width="100%"
-          height="100%"
-          viewBox={`0 0 ${adjustedSize} ${adjustedSize}`}
-          className="absolute"
-          preserveAspectRatio="xMidYMid meet"
-        >
-          {/* Star outline */}
-          <path
-            d={starPath}
-            stroke="rgba(217, 119, 6, 0.6)"
-            strokeWidth="3"
-            fill="none"
-            strokeLinejoin="round"
-          />
-
-          {/* Progress Path */}
-          <path
-            d={getProgressPath()}
-            fill="none"
-            stroke="url(#starGradient)"
-            strokeWidth="6"
-            strokeLinecap="round"
-            className="drop-shadow-lg"
-          />
-
-          <defs>
-            <linearGradient id="starGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#f59e0b" />
-              <stop offset="25%" stopColor="#f97316" />
-              <stop offset="50%" stopColor="#ef4444" />
-              <stop offset="75%" stopColor="#eab308" />
-              <stop offset="100%" stopColor="#ec4899" />
-            </linearGradient>
-          </defs>
-        </svg>
-
-        {/* Central Indicator - Responsive sizing */}
-        <div className="relative z-10">
-          <motion.div
-            className={cn(
-              "flex items-center justify-center rounded-full border border-gray-200 bg-white shadow-lg dark:border-gray-600 dark:bg-gray-800",
-              isSmallScreen ? "h-12 w-12" : isMobile ? "h-16 w-16" : "h-20 w-20"
-            )}
-            animate={{
-              scale: isPlaying ? [1, 1.05, 1] : 1,
-            }}
-            transition={{
-              duration: 2,
-              repeat: isPlaying ? Infinity : 0,
-              ease: "easeInOut",
-            }}
-          >
-            <div className="text-center">
-              <motion.div
-                className={cn(
-                  "mx-auto mb-1",
-                  isSmallScreen ? "h-4 w-4" : isMobile ? "h-5 w-5" : "h-6 w-6"
-                )}
-                animate={{
-                  scale: isPlaying ? [1, 1.1, 1] : 1,
-                }}
-                transition={{
-                  duration: 2,
-                  repeat: isPlaying ? Infinity : 0,
-                  ease: "easeInOut",
-                }}
-              >
-                {React.createElement(currentStepInfo.icon, {
-                  className: cn(
-                    currentStepInfo.color,
-                    isSmallScreen ? "w-4 h-4" : isMobile ? "w-5 h-5" : "w-6 h-6"
-                  ),
-                })}
-              </motion.div>
-              <span
-                className={cn(
-                  "font-medium text-gray-600 dark:text-gray-400",
-                  isSmallScreen ? "text-[10px]" : "text-xs"
-                )}
-              >
-                {currentStepInfo.name}
-              </span>
-            </div>
-          </motion.div>
-        </div>
-
-        {/* Moving Dot - Responsive sizing */}
-        <motion.div
-          className="absolute z-20"
+      {/* Ambient glow */}
+      <motion.div
+        className="pointer-events-none absolute inset-0"
+        animate={{ opacity: isPlaying ? 0.35 : 0 }}
+        transition={{ duration: 0.6 }}
+      >
+        <div
+          className="absolute inset-[15%] rounded-full blur-3xl"
           style={{
-            left: `${(position.x / adjustedSize) * 100}%`,
-            top: `${(position.y / adjustedSize) * 100}%`,
+            background: `radial-gradient(circle, ${activeColor}55 0%, transparent 70%)`,
+          }}
+        />
+      </motion.div>
+
+      <svg
+        width="100%"
+        height="100%"
+        viewBox={`0 0 ${adjustedSize} ${adjustedSize}`}
+        className="absolute inset-0"
+        preserveAspectRatio="xMidYMid meet"
+      >
+        {/* Soft fill */}
+        <path d={starPath} fill="hsl(var(--primary) / 0.04)" />
+
+        {/* Track */}
+        <path
+          d={starPath}
+          fill="none"
+          stroke="hsl(var(--primary) / 0.18)"
+          strokeWidth="2"
+          strokeLinejoin="round"
+        />
+
+        {/* Completed segments */}
+        {getCompletedPaths().map((path, i) => (
+          <path
+            key={i}
+            d={path}
+            fill="none"
+            stroke={stepColors[i]}
+            strokeWidth="2.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            opacity={0.35}
+          />
+        ))}
+
+        {/* Active progress */}
+        <path
+          d={progressPath}
+          fill="none"
+          stroke={activeColor}
+          strokeWidth="3"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          opacity={0.9}
+        />
+
+        {/* Vertex markers — outer points (step starts) */}
+        {points.map((point, i) => {
+          const isOuter = i % 2 === 0
+          const stepIndex = i / 2
+          const isActive = isOuter && currentStep === stepIndex
+
+          return (
+            <circle
+              key={i}
+              cx={point.x}
+              cy={point.y}
+              r={isActive ? 4.5 : isOuter ? 3 : 2}
+              fill={
+                isActive
+                  ? stepColors[stepIndex]
+                  : isOuter
+                    ? "hsl(var(--primary) / 0.22)"
+                    : "hsl(var(--primary) / 0.12)"
+              }
+              opacity={isActive ? 1 : isOuter ? 0.7 : 0.5}
+            />
+          )
+        })}
+      </svg>
+
+      {/* Center pulse orb */}
+      <div className="absolute inset-0 flex items-center justify-center">
+        <motion.div
+          className="rounded-full ring-1"
+          style={{
+            background: `${activeColor}18`,
+            borderColor: `${activeColor}33`,
           }}
           animate={{
-            left: `${(position.x / adjustedSize) * 100}%`,
-            top: `${(position.y / adjustedSize) * 100}%`,
+            width: isPlaying ? [52, 68, 52] : 52,
+            height: isPlaying ? [52, 68, 52] : 52,
+            opacity: isPlaying ? [0.5, 0.85, 0.5] : 0.45,
           }}
-          transition={{ type: "spring", stiffness: 150, damping: 20, mass: 0.8 }}
-        >
-          {/* Outer glow */}
-          <div
-            className={cn(
-              "absolute -translate-x-1/2 -translate-y-1/2 rounded-full bg-amber-400/20 blur-sm",
-              isSmallScreen ? "h-8 w-8" : isMobile ? "h-12 w-12" : "h-16 w-16"
-            )}
-          />
-
-          {/* Main dot */}
-          <div
-            className={cn(
-              "absolute -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white bg-gradient-to-r from-amber-500 to-orange-500 shadow-lg",
-              isSmallScreen ? "h-3 w-3" : "h-4 w-4"
-            )}
-          />
-
-          {/* Inner highlight */}
-          <div
-            className={cn(
-              "absolute -translate-x-1/2 -translate-y-1/2 rounded-full bg-white/80",
-              isSmallScreen ? "h-1.5 w-1.5" : "h-2 w-2"
-            )}
-          />
-        </motion.div>
+          transition={{
+            duration: stepDuration,
+            repeat: isPlaying ? Infinity : 0,
+            ease: "easeInOut",
+          }}
+        />
       </div>
 
-      {/* Progress Bars - Responsive positioning and sizing */}
-      <div
-        className={cn(
-          "absolute left-1/2 -translate-x-1/2 transform",
-          isSmallScreen ? "-bottom-4" : "-bottom-6"
-        )}
+      {/* Moving dot */}
+      <motion.div
+        className="absolute z-10"
+        style={{
+          left: `${(position.x / adjustedSize) * 100}%`,
+          top: `${(position.y / adjustedSize) * 100}%`,
+        }}
+        animate={{
+          left: `${(position.x / adjustedSize) * 100}%`,
+          top: `${(position.y / adjustedSize) * 100}%`,
+        }}
+        transition={{ type: "spring", stiffness: 120, damping: 22, mass: 0.6 }}
       >
-        <div className="flex gap-1 sm:gap-2">
-          {[0, 1, 2, 3, 4].map((step) => (
-            <motion.div
-              key={step}
-              className={cn(
-                "h-1.5 overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700",
-                isSmallScreen ? "w-5" : isMobile ? "w-7" : "w-9"
-              )}
-              animate={{
-                scale: currentStep === step ? 1.1 : 1,
-              }}
-              transition={{ duration: 0.2 }}
-            >
-              <motion.div
-                className="h-full rounded-full bg-gradient-to-r from-amber-500 to-orange-500"
-                initial={{ width: 0 }}
-                animate={{
-                  width: currentStep === step ? `${progress}%` : "0%",
-                }}
-                transition={{ duration: 0.1 }}
-              />
-            </motion.div>
-          ))}
-        </div>
-      </div>
+        <div
+          className="-translate-x-1/2 -translate-y-1/2 rounded-full"
+          style={{
+            width: 14,
+            height: 14,
+            background: activeColor,
+            boxShadow: `0 0 16px 4px ${activeColor}66`,
+          }}
+        />
+      </motion.div>
     </div>
   )
+}
+
+function getStepDuration(
+  step: number,
+  durations: { in1: number; hold1: number; out: number; hold2: number; focus: number }
+) {
+  const values = [durations.in1, durations.hold1, durations.out, durations.hold2, durations.focus]
+  return values[step] ?? 4
 }

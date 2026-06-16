@@ -1,10 +1,8 @@
 "use client"
 
-import React from "react"
+import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
 import { cn } from "@/lib/utils"
-import { translations } from "@/lib/translations/index"
-import { Heart, Zap, Sparkles } from "lucide-react"
 
 interface TriangleBreathingProps {
   size?: number
@@ -15,282 +13,196 @@ interface TriangleBreathingProps {
   language: string
 }
 
+const stepColors = [
+  "#34d399", // inhale
+  "#fbbf24", // hold
+  "#38bdf8", // exhale
+]
+
+const stepDurations = [4, 4, 4]
+
 export function TriangleBreathing({
-  size = 200,
+  size = 256,
   isPlaying,
   currentStep,
   progress,
   className,
-  language,
+  language: _language,
 }: TriangleBreathingProps) {
-  const t = translations[language] || translations["en"]
+  const [adjustedSize, setAdjustedSize] = useState(size)
 
-  // Calculate triangle points for an equilateral triangle
-  const padding = size * 0.08
-  const triangleSize = size - padding * 2
-  const height = triangleSize * Math.sin(Math.PI / 3) // Height of equilateral triangle
+  useEffect(() => {
+    const checkSize = () => {
+      const width = window.innerWidth
+      if (width < 480) setAdjustedSize(Math.min(size, 192))
+      else if (width < 768) setAdjustedSize(Math.min(size, 224))
+      else setAdjustedSize(Math.min(size, 256))
+    }
+    checkSize()
+    window.addEventListener("resize", checkSize)
+    return () => window.removeEventListener("resize", checkSize)
+  }, [size])
+
+  const padding = adjustedSize * 0.12
+  const triangleSize = adjustedSize - padding * 2
+  const height = triangleSize * Math.sin(Math.PI / 3)
   const halfWidth = triangleSize / 2
 
-  // Calculate the three points of the triangle
   const points = [
-    { x: size / 2, y: padding }, // Top point
-    { x: size / 2 + halfWidth, y: padding + height }, // Bottom right
-    { x: size / 2 - halfWidth, y: padding + height }, // Bottom left
+    { x: adjustedSize / 2, y: padding },
+    { x: adjustedSize / 2 + halfWidth, y: padding + height },
+    { x: adjustedSize / 2 - halfWidth, y: padding + height },
   ]
 
-  // Get the current position based on step and progress
   const getPosition = () => {
     const percent = progress / 100
     const currentPoint = points[currentStep]
     const nextPoint = points[(currentStep + 1) % 3]
-
     return {
       x: currentPoint.x + (nextPoint.x - currentPoint.x) * percent,
       y: currentPoint.y + (nextPoint.y - currentPoint.y) * percent,
     }
   }
 
-  // Create the triangle path
   const trianglePath =
     points.map((point, i) => `${i === 0 ? "M" : "L"} ${point.x} ${point.y}`).join(" ") + " Z"
 
-  // Get breathing instruction based on current step
-  const getInstruction = (step: number) => {
-    switch (step) {
-      case 0:
-        return t.ui.breatheIn
-      case 1:
-        return t.ui.hold
-      case 2:
-        return t.ui.breatheOut
-      default:
-        return ""
-    }
-  }
-
-  // Get step info with icons and colors
-  const getStepInfo = (step: number) => {
-    const steps = [
-      { name: t.ui.breatheIn, icon: Heart, color: "text-emerald-500" },
-      { name: t.ui.hold, icon: Zap, color: "text-amber-500" },
-      { name: t.ui.breatheOut, icon: Sparkles, color: "text-rose-500" },
-    ]
-    return steps[step] || steps[0]
-  }
-
-  // Calculate label positions with proper spacing
-  const getLabelPosition = (index: number) => {
-    switch (index) {
-      case 0: // Top
-        return {
-          x: points[0].x,
-          y: points[0].y - 28,
-          align: "center",
-        }
-      case 1: // Bottom Right
-        return {
-          x: points[1].x + 28,
-          y: points[1].y,
-          align: "start",
-        }
-      case 2: // Bottom Left
-        return {
-          x: points[2].x - 28,
-          y: points[2].y,
-          align: "end",
-        }
-    }
-  }
-
-  const position = getPosition()
-  const currentStepInfo = getStepInfo(currentStep)
-
-  // Create progress path for current segment
   const getProgressPath = () => {
     const percent = progress / 100
     const currentPoint = points[currentStep]
     const nextPoint = points[(currentStep + 1) % 3]
-
     const currentX = currentPoint.x + (nextPoint.x - currentPoint.x) * percent
     const currentY = currentPoint.y + (nextPoint.y - currentPoint.y) * percent
-
     return `M ${currentPoint.x} ${currentPoint.y} L ${currentX} ${currentY}`
   }
 
+  const getCompletedPaths = () =>
+    Array.from({ length: currentStep }, (_, i) => {
+      const p1 = points[i]
+      const p2 = points[(i + 1) % 3]
+      return `M ${p1.x} ${p1.y} L ${p2.x} ${p2.y}`
+    })
+
+  const position = getPosition()
+  const progressPath = getProgressPath()
+  const activeColor = stepColors[currentStep] ?? stepColors[0]
+  const stepDuration = stepDurations[currentStep] ?? 4
+
   return (
-    <div
-      className={cn(
-        "relative flex h-full w-full items-center justify-center overflow-hidden",
-        className
-      )}
-      style={{ width: size, height: size }}
-    >
-      {/* Background glow effect */}
-      <div
-        className={cn(
-          "absolute inset-0 transition-opacity duration-500",
-          isPlaying ? "opacity-30" : "opacity-0"
-        )}
+    <div className={cn("relative h-full w-full", className)}>
+      {/* Ambient glow */}
+      <motion.div
+        className="pointer-events-none absolute inset-0"
+        animate={{ opacity: isPlaying ? 0.35 : 0 }}
+        transition={{ duration: 0.6 }}
       >
         <div
-          className="absolute inset-0 rounded-full blur-3xl"
+          className="absolute inset-[15%] rounded-full blur-3xl"
           style={{
-            background: "radial-gradient(circle, rgba(16,185,129,0.4) 0%, rgba(16,185,129,0) 70%)",
+            background: `radial-gradient(circle, ${activeColor}55 0%, transparent 70%)`,
           }}
         />
-      </div>
+      </motion.div>
 
-      {/* Triangle outline */}
       <svg
-        width={size}
-        height={size}
-        viewBox={`0 0 ${size} ${size}`}
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-        className="absolute"
+        width="100%"
+        height="100%"
+        viewBox={`0 0 ${adjustedSize} ${adjustedSize}`}
+        className="absolute inset-0"
+        preserveAspectRatio="xMidYMid meet"
       >
-        <defs>
-          <linearGradient id="triangleGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#10b981" />
-            <stop offset="25%" stopColor="#34d399" />
-            <stop offset="50%" stopColor="#6ee7b7" />
-            <stop offset="75%" stopColor="#34d399" />
-            <stop offset="100%" stopColor="#10b981" />
-          </linearGradient>
-        </defs>
+        {/* Soft fill */}
+        <path d={trianglePath} fill="hsl(var(--primary) / 0.04)" />
 
-        {/* Background triangle */}
-        <path d={trianglePath} stroke="rgba(16, 185, 129, 0.6)" strokeWidth={3} fill="none" />
-
-        {/* Progress Path */}
+        {/* Track */}
         <path
-          d={getProgressPath()}
+          d={trianglePath}
           fill="none"
-          stroke="url(#triangleGradient)"
-          strokeWidth={6}
-          strokeLinecap="round"
-          className="drop-shadow-lg"
+          stroke="hsl(var(--primary) / 0.18)"
+          strokeWidth="2"
+          strokeLinejoin="round"
         />
+
+        {/* Completed segments */}
+        {getCompletedPaths().map((path, i) => (
+          <path
+            key={i}
+            d={path}
+            fill="none"
+            stroke={stepColors[i]}
+            strokeWidth="2.5"
+            strokeLinecap="round"
+            opacity={0.35}
+          />
+        ))}
+
+        {/* Active progress */}
+        <path
+          d={progressPath}
+          fill="none"
+          stroke={activeColor}
+          strokeWidth="3"
+          strokeLinecap="round"
+          opacity={0.9}
+        />
+
+        {/* Vertex markers */}
+        {points.map((point, i) => (
+          <circle
+            key={i}
+            cx={point.x}
+            cy={point.y}
+            r={currentStep === i ? 4.5 : 3}
+            fill={currentStep === i ? stepColors[i] : "hsl(var(--primary) / 0.22)"}
+            opacity={currentStep === i ? 1 : 0.7}
+          />
+        ))}
       </svg>
 
-      {/* Central Indicator */}
-      <div className="relative z-10">
+      {/* Center pulse orb */}
+      <div className="absolute inset-0 flex items-center justify-center">
         <motion.div
-          className="flex h-16 w-16 items-center justify-center rounded-full border border-gray-200 bg-white shadow-lg dark:border-gray-600 dark:bg-gray-800"
+          className="rounded-full ring-1"
+          style={{
+            background: `${activeColor}18`,
+            borderColor: `${activeColor}33`,
+          }}
           animate={{
-            scale: isPlaying ? [1, 1.05, 1] : 1,
+            width: isPlaying ? [48, 62, 48] : 48,
+            height: isPlaying ? [48, 62, 48] : 48,
+            opacity: isPlaying ? [0.5, 0.85, 0.5] : 0.45,
           }}
           transition={{
-            duration: 2,
+            duration: stepDuration,
             repeat: isPlaying ? Infinity : 0,
             ease: "easeInOut",
           }}
-        >
-          <div className="text-center">
-            <motion.div
-              className="mx-auto mb-1 h-5 w-5"
-              animate={{
-                scale: isPlaying ? [1, 1.1, 1] : 1,
-              }}
-              transition={{
-                duration: 2,
-                repeat: isPlaying ? Infinity : 0,
-                ease: "easeInOut",
-              }}
-            >
-              {React.createElement(currentStepInfo.icon, {
-                className: cn(currentStepInfo.color, "w-5 h-5"),
-              })}
-            </motion.div>
-            <span className="text-xs font-medium text-gray-600 dark:text-gray-400">
-              {currentStepInfo.name}
-            </span>
-          </div>
-        </motion.div>
+        />
       </div>
 
-      {/* Moving dot with enhanced glow effects */}
+      {/* Moving dot */}
       <motion.div
-        className="absolute z-20"
+        className="absolute z-10"
         style={{
-          left: position.x,
-          top: position.y,
+          left: `${(position.x / adjustedSize) * 100}%`,
+          top: `${(position.y / adjustedSize) * 100}%`,
         }}
         animate={{
-          left: position.x,
-          top: position.y,
+          left: `${(position.x / adjustedSize) * 100}%`,
+          top: `${(position.y / adjustedSize) * 100}%`,
         }}
-        transition={{ type: "spring", stiffness: 150, damping: 20, mass: 0.8 }}
+        transition={{ type: "spring", stiffness: 120, damping: 22, mass: 0.6 }}
       >
-        {/* Outer glow */}
-        <div className="absolute h-16 w-16 -translate-x-8 -translate-y-8 rounded-full bg-emerald-400/20 blur-sm" />
-
-        {/* Main dot */}
-        <div className="absolute h-4 w-4 -translate-x-2 -translate-y-2 rounded-full border-2 border-white bg-gradient-to-r from-emerald-500 to-green-500 shadow-lg" />
-
-        {/* Inner highlight */}
-        <div className="absolute h-2 w-2 -translate-x-1 -translate-y-1 rounded-full bg-white/80" />
+        <div
+          className="-translate-x-1/2 -translate-y-1/2 rounded-full"
+          style={{
+            width: 14,
+            height: 14,
+            background: activeColor,
+            boxShadow: `0 0 16px 4px ${activeColor}66`,
+          }}
+        />
       </motion.div>
-
-      {/* Step labels */}
-      {[0, 1, 2].map((index) => {
-        const instruction = getInstruction(index)
-        const labelPosition = getLabelPosition(index)
-
-        return (
-          <div
-            key={index}
-            className={cn(
-              "duration-400 absolute -translate-y-1/2 transform rounded-full px-3 py-1.5 transition-all",
-              currentStep === index
-                ? "scale-110 bg-emerald-500/10 text-emerald-700 shadow-sm dark:text-emerald-300"
-                : "scale-95 opacity-50"
-            )}
-            style={{
-              left: labelPosition?.x,
-              top: labelPosition?.y,
-              textAlign: labelPosition?.align as any,
-              transform: `translate(${
-                labelPosition?.align === "center"
-                  ? "-50%"
-                  : labelPosition?.align === "end"
-                    ? "-100%"
-                    : "0"
-              }, -50%)`,
-            }}
-          >
-            <motion.span
-              animate={{ opacity: currentStep === index ? 1 : 0.7 }}
-              transition={{ duration: 0.25 }}
-            >
-              {instruction}
-            </motion.span>
-          </div>
-        )
-      })}
-
-      {/* Progress indicators */}
-      <div className="absolute inset-x-0 -bottom-6 flex justify-center gap-2">
-        {[0, 1, 2].map((step) => (
-          <motion.div
-            key={step}
-            className="h-1.5 w-8 overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700"
-            animate={{
-              scale: currentStep === step ? 1.1 : 1,
-            }}
-            transition={{ duration: 0.2 }}
-          >
-            <motion.div
-              className="h-full rounded-full bg-gradient-to-r from-emerald-500 to-green-500"
-              initial={{ width: 0 }}
-              animate={{
-                width: currentStep === step ? `${progress}%` : "0%",
-              }}
-              transition={{ duration: 0.1 }}
-            />
-          </motion.div>
-        ))}
-      </div>
     </div>
   )
 }

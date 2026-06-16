@@ -96,6 +96,24 @@ export const ptBR = {
         "Complete a forma da estrela com sua respiração",
       ],
     },
+    pentagon: {
+      name: "Respiração Pentagonal",
+      steps: ["Inspire", "Segure", "Expire", "Segure", "Inspire"],
+      description:
+        "Um padrão de cinco lados que conecta exercícios respiratórios simples e avançados.",
+      benefits: [
+        "Desenvolve consciência da respiração passo a passo",
+        "Equilibra foco e relaxamento",
+        "Passo ideal após triângulo ou quadrado",
+        "Apoia o aterramento emocional",
+        "Ótimo para sessões de mindfulness de média duração",
+      ],
+      howItWorks: [
+        "Siga cada lado do pentágono com uma fase da respiração",
+        "Cinco fases: inspire, segure, expire, segure, inspire",
+        "Complete a forma para finalizar um ciclo",
+      ],
+    },
     infinity: {
       name: "Respiração Infinita",
       steps: ["Inspire", "Expire"],
@@ -261,6 +279,29 @@ export const ptBR = {
             "Ótimo para prática de mindfulness infantil",
             "Combina visualização com respiração",
             "Pode ajudar com ansiedade em situações sociais",
+          ],
+        },
+      },
+      pentagon: {
+        title: "Respiração Pentagonal",
+        description:
+          "A respiração pentagonal usa um caminho limpo de cinco lados — uma fase por aresta — ideal como evolução entre padrões mais curtos e mais longos.",
+        howItWorks: {
+          title: "Como funciona:",
+          steps: [
+            "Percorra cada lado do pentágono com sua respiração",
+            "Cinco fases: inspire, segure, expire, segure, inspire",
+            "Complete os cinco lados para finalizar um ciclo",
+          ],
+        },
+        benefits: {
+          title: "Benefícios:",
+          items: [
+            "Desenvolve consciência da respiração gradualmente",
+            "Equilibra foco calmo e relaxamento",
+            "Ponte ideal entre técnicas iniciantes e avançadas",
+            "Apoia o aterramento emocional",
+            "Perfeita para sessões de 5–10 minutos",
           ],
         },
       },
