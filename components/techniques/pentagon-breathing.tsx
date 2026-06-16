@@ -46,7 +46,13 @@ const stepColors = [
 ]
 
 const durationFields = [
-  { key: "in1" as const, labelKey: "breatheIn", suffix: " 1", icon: Heart, color: "text-emerald-500" },
+  {
+    key: "in1" as const,
+    labelKey: "breatheIn",
+    suffix: " 1",
+    icon: Heart,
+    color: "text-emerald-500",
+  },
   { key: "hold1" as const, labelKey: "hold", suffix: " 1", icon: Zap, color: "text-amber-500" },
   { key: "out" as const, labelKey: "breatheOut", suffix: "", icon: Wind, color: "text-sky-500" },
   { key: "hold2" as const, labelKey: "hold", suffix: " 2", icon: Zap, color: "text-amber-500" },

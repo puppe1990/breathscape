@@ -46,11 +46,23 @@ const stepColors = [
 ]
 
 const durationFields = [
-  { key: "in1" as const, labelKey: "breatheIn", suffix: " 1", icon: Heart, color: "text-emerald-500" },
+  {
+    key: "in1" as const,
+    labelKey: "breatheIn",
+    suffix: " 1",
+    icon: Heart,
+    color: "text-emerald-500",
+  },
   { key: "hold1" as const, labelKey: "hold", suffix: " 1", icon: Zap, color: "text-amber-500" },
   { key: "out" as const, labelKey: "breatheOut", suffix: "", icon: Wind, color: "text-sky-500" },
   { key: "hold2" as const, labelKey: "hold", suffix: " 2", icon: Zap, color: "text-amber-500" },
-  { key: "focus" as const, labelKey: "breatheIn", suffix: " 2", icon: Heart, color: "text-teal-500" },
+  {
+    key: "focus" as const,
+    labelKey: "breatheIn",
+    suffix: " 2",
+    icon: Heart,
+    color: "text-teal-500",
+  },
 ]
 
 const SEGMENTS_PER_STEP = 2
@@ -120,11 +132,9 @@ export function StarBreathing({
     const normalizedProgress = (stepProgress - 0.5) * 2
     return {
       x:
-        points[nextIndex].x +
-        (points[afterNextIndex].x - points[nextIndex].x) * normalizedProgress,
+        points[nextIndex].x + (points[afterNextIndex].x - points[nextIndex].x) * normalizedProgress,
       y:
-        points[nextIndex].y +
-        (points[afterNextIndex].y - points[nextIndex].y) * normalizedProgress,
+        points[nextIndex].y + (points[afterNextIndex].y - points[nextIndex].y) * normalizedProgress,
     }
   }
 
@@ -146,11 +156,9 @@ export function StarBreathing({
 
     const normalizedProgress = (percent - 0.5) * 2
     const currentX =
-      points[nextIndex].x +
-      (points[afterNextIndex].x - points[nextIndex].x) * normalizedProgress
+      points[nextIndex].x + (points[afterNextIndex].x - points[nextIndex].x) * normalizedProgress
     const currentY =
-      points[nextIndex].y +
-      (points[afterNextIndex].y - points[nextIndex].y) * normalizedProgress
+      points[nextIndex].y + (points[afterNextIndex].y - points[nextIndex].y) * normalizedProgress
     return `M ${points[baseIndex].x} ${points[baseIndex].y} L ${points[nextIndex].x} ${points[nextIndex].y} L ${currentX} ${currentY}`
   }
 
