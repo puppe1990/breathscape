@@ -10,4 +10,3 @@ export const translations: { [key: string]: Translation } = {
 export const defaultTranslation = translations["en"]
 
 export type { Translation }
-

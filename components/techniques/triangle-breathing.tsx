@@ -51,7 +51,8 @@ export function TriangleBreathing({
   }
 
   // Create the triangle path
-  const trianglePath = points.map((point, i) => `${i === 0 ? "M" : "L"} ${point.x} ${point.y}`).join(" ") + " Z"
+  const trianglePath =
+    points.map((point, i) => `${i === 0 ? "M" : "L"} ${point.x} ${point.y}`).join(" ") + " Z"
 
   // Get breathing instruction based on current step
   const getInstruction = (step: number) => {
@@ -109,17 +110,28 @@ export function TriangleBreathing({
     const percent = progress / 100
     const currentPoint = points[currentStep]
     const nextPoint = points[(currentStep + 1) % 3]
-    
+
     const currentX = currentPoint.x + (nextPoint.x - currentPoint.x) * percent
     const currentY = currentPoint.y + (nextPoint.y - currentPoint.y) * percent
-    
+
     return `M ${currentPoint.x} ${currentPoint.y} L ${currentX} ${currentY}`
   }
 
   return (
-    <div className={cn("relative w-full h-full flex items-center justify-center overflow-hidden", className)} style={{ width: size, height: size }}>
+    <div
+      className={cn(
+        "relative flex h-full w-full items-center justify-center overflow-hidden",
+        className
+      )}
+      style={{ width: size, height: size }}
+    >
       {/* Background glow effect */}
-      <div className={cn("absolute inset-0 transition-opacity duration-500", isPlaying ? "opacity-30" : "opacity-0")}>
+      <div
+        className={cn(
+          "absolute inset-0 transition-opacity duration-500",
+          isPlaying ? "opacity-30" : "opacity-0"
+        )}
+      >
         <div
           className="absolute inset-0 rounded-full blur-3xl"
           style={{
@@ -164,7 +176,7 @@ export function TriangleBreathing({
       {/* Central Indicator */}
       <div className="relative z-10">
         <motion.div
-          className="w-16 h-16 rounded-full bg-white dark:bg-gray-800 shadow-lg border border-gray-200 dark:border-gray-600 flex items-center justify-center"
+          className="flex h-16 w-16 items-center justify-center rounded-full border border-gray-200 bg-white shadow-lg dark:border-gray-600 dark:bg-gray-800"
           animate={{
             scale: isPlaying ? [1, 1.05, 1] : 1,
           }}
@@ -176,7 +188,7 @@ export function TriangleBreathing({
         >
           <div className="text-center">
             <motion.div
-              className="mx-auto mb-1 w-5 h-5"
+              className="mx-auto mb-1 h-5 w-5"
               animate={{
                 scale: isPlaying ? [1, 1.1, 1] : 1,
               }}
@@ -190,7 +202,7 @@ export function TriangleBreathing({
                 className: cn(currentStepInfo.color, "w-5 h-5"),
               })}
             </motion.div>
-            <span className="font-medium text-xs text-gray-600 dark:text-gray-400">
+            <span className="text-xs font-medium text-gray-600 dark:text-gray-400">
               {currentStepInfo.name}
             </span>
           </div>
@@ -211,13 +223,13 @@ export function TriangleBreathing({
         transition={{ type: "spring", stiffness: 150, damping: 20, mass: 0.8 }}
       >
         {/* Outer glow */}
-        <div className="absolute w-16 h-16 rounded-full -translate-x-8 -translate-y-8 bg-emerald-400/20 blur-sm" />
-        
+        <div className="absolute h-16 w-16 -translate-x-8 -translate-y-8 rounded-full bg-emerald-400/20 blur-sm" />
+
         {/* Main dot */}
-        <div className="absolute w-4 h-4 rounded-full -translate-x-2 -translate-y-2 bg-gradient-to-r from-emerald-500 to-green-500 shadow-lg border-2 border-white" />
-        
+        <div className="absolute h-4 w-4 -translate-x-2 -translate-y-2 rounded-full border-2 border-white bg-gradient-to-r from-emerald-500 to-green-500 shadow-lg" />
+
         {/* Inner highlight */}
-        <div className="absolute w-2 h-2 rounded-full -translate-x-1 -translate-y-1 bg-white/80" />
+        <div className="absolute h-2 w-2 -translate-x-1 -translate-y-1 rounded-full bg-white/80" />
       </motion.div>
 
       {/* Step labels */}
@@ -229,21 +241,28 @@ export function TriangleBreathing({
           <div
             key={index}
             className={cn(
-              "absolute transform -translate-y-1/2 transition-all duration-400 px-3 py-1.5 rounded-full",
+              "duration-400 absolute -translate-y-1/2 transform rounded-full px-3 py-1.5 transition-all",
               currentStep === index
-                ? "bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 scale-110 shadow-sm"
-                : "opacity-50 scale-95",
+                ? "scale-110 bg-emerald-500/10 text-emerald-700 shadow-sm dark:text-emerald-300"
+                : "scale-95 opacity-50"
             )}
             style={{
               left: labelPosition?.x,
               top: labelPosition?.y,
               textAlign: labelPosition?.align as any,
               transform: `translate(${
-                labelPosition?.align === "center" ? "-50%" : labelPosition?.align === "end" ? "-100%" : "0"
+                labelPosition?.align === "center"
+                  ? "-50%"
+                  : labelPosition?.align === "end"
+                    ? "-100%"
+                    : "0"
               }, -50%)`,
             }}
           >
-            <motion.span animate={{ opacity: currentStep === index ? 1 : 0.7 }} transition={{ duration: 0.25 }}>
+            <motion.span
+              animate={{ opacity: currentStep === index ? 1 : 0.7 }}
+              transition={{ duration: 0.25 }}
+            >
               {instruction}
             </motion.span>
           </div>
@@ -255,14 +274,14 @@ export function TriangleBreathing({
         {[0, 1, 2].map((step) => (
           <motion.div
             key={step}
-            className="h-1.5 w-8 rounded-full overflow-hidden bg-gray-200 dark:bg-gray-700"
+            className="h-1.5 w-8 overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700"
             animate={{
               scale: currentStep === step ? 1.1 : 1,
             }}
             transition={{ duration: 0.2 }}
           >
             <motion.div
-              className="h-full bg-gradient-to-r from-emerald-500 to-green-500 rounded-full"
+              className="h-full rounded-full bg-gradient-to-r from-emerald-500 to-green-500"
               initial={{ width: 0 }}
               animate={{
                 width: currentStep === step ? `${progress}%` : "0%",
@@ -275,4 +294,3 @@ export function TriangleBreathing({
     </div>
   )
 }
-

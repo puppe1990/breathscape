@@ -1,7 +1,12 @@
 "use client"
 
 import type React from "react"
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion"
 import { translations } from "@/lib/translations/index"
 import { Heart, Target, Brain, Leaf, BookOpen } from "lucide-react"
 
@@ -98,7 +103,10 @@ function GuideSection({
       </div>
       <ul className="space-y-1.5 pl-6">
         {items.map((item, index) => (
-          <li key={index} className="list-disc text-sm leading-relaxed text-muted-foreground marker:text-border">
+          <li
+            key={index}
+            className="list-disc text-sm leading-relaxed text-muted-foreground marker:text-border"
+          >
             {item}
           </li>
         ))}

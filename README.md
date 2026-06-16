@@ -24,23 +24,26 @@ A modern, responsive web application for practicing various breathing techniques
 
 ### Prerequisites
 
-- Node.js 18+ 
+- Node.js 18+
 - npm or yarn
 
 ### Installation
 
 1. Clone the repository:
+
 ```bash
 git clone <repository-url>
 cd breathscape-app
 ```
 
 2. Install dependencies:
+
 ```bash
 npm install
 ```
 
 3. Run the development server:
+
 ```bash
 npm run dev
 ```
@@ -56,6 +59,7 @@ npm run generate-icons
 ```
 
 This will create all necessary PWA icons in different sizes:
+
 - `favicon.png` (32x32) - Main favicon
 - `favicon-16x16.png` - Small favicon
 - `favicon-32x32.png` - Standard favicon
@@ -106,6 +110,7 @@ breathscape-app/
 ## Design System
 
 The app features a sophisticated design system with:
+
 - **Color Palette**: Lavender, turquoise, and warm pink gradients
 - **Typography**: Clean, readable fonts with proper hierarchy
 - **Components**: Glassmorphism effects, smooth animations, and hover states
@@ -128,4 +133,3 @@ This project is licensed under the MIT License.
 - Meditation and mindfulness community
 - Breathing technique experts
 - Open source contributors
-

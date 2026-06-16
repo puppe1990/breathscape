@@ -19,7 +19,7 @@ self.addEventListener("install", (event: ExtendableEvent) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
       return cache.addAll(urlsToCache)
-    }),
+    })
   )
 })
 
@@ -28,7 +28,7 @@ self.addEventListener("fetch", (event: FetchEvent) => {
     caches.match(event.request).then((response) => {
       // Return cached version or fetch new version
       return response || fetch(event.request)
-    }),
+    })
   )
 })
 
@@ -36,11 +36,9 @@ self.addEventListener("activate", (event: ExtendableEvent) => {
   event.waitUntil(
     caches.keys().then((cacheNames) => {
       return Promise.all(
-        cacheNames
-          .filter((name) => name !== CACHE_NAME)
-          .map((name) => caches.delete(name))
+        cacheNames.filter((name) => name !== CACHE_NAME).map((name) => caches.delete(name))
       )
-    }),
+    })
   )
 })
 
@@ -55,18 +53,13 @@ self.addEventListener("push", (event: PushEvent) => {
     },
   }
 
-  event.waitUntil(
-    self.registration.showNotification("Breathscape", options)
-  )
+  event.waitUntil(self.registration.showNotification("Breathscape", options))
 })
 
 // Handle notification clicks
 self.addEventListener("notificationclick", (event: NotificationEvent) => {
   event.notification.close()
-  event.waitUntil(
-    self.clients.openWindow("/")
-  )
+  event.waitUntil(self.clients.openWindow("/"))
 })
 
 export {}
-

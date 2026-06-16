@@ -5,7 +5,14 @@ import { motion } from "framer-motion"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Settings2, Heart, Zap, Sparkles, Star, Flame } from "lucide-react"
-import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet"
 import { Slider } from "@/components/ui/slider"
 import { Label } from "@/components/ui/label"
 import { translations } from "@/lib/translations/index"
@@ -30,12 +37,12 @@ const breathingPresets = {
 
 type PresetKey = keyof typeof breathingPresets
 
-export function StarBreathing({ 
-  size = 280, 
-  isPlaying, 
-  currentStep, 
-  progress, 
-  className, 
+export function StarBreathing({
+  size = 280,
+  isPlaying,
+  currentStep,
+  progress,
+  className,
   language,
   onUpdateDurations,
 }: StarBreathingProps) {
@@ -53,10 +60,10 @@ export function StarBreathing({
       setIsMobile(width < 768)
       setIsSmallScreen(width < 480)
     }
-    
+
     checkScreenSize()
-    window.addEventListener('resize', checkScreenSize)
-    return () => window.removeEventListener('resize', checkScreenSize)
+    window.addEventListener("resize", checkScreenSize)
+    return () => window.removeEventListener("resize", checkScreenSize)
   }, [])
 
   // Responsive sizing
@@ -67,7 +74,7 @@ export function StarBreathing({
   }
 
   const adjustedSize = getResponsiveSize()
-  
+
   // Calculate centered star dimensions
   const desiredStarSize = adjustedSize * 0.7 // Star takes 70% of container
   const actualStarSize = Math.max(desiredStarSize, 120) // Minimum size
@@ -113,14 +120,19 @@ export function StarBreathing({
       // Normalize progress for the second segment
       const normalizedProgress = (stepProgress - 0.5) * 2
       return {
-        x: points[nextIndex].x + (points[afterNextIndex].x - points[nextIndex].x) * normalizedProgress,
-        y: points[nextIndex].y + (points[afterNextIndex].y - points[nextIndex].y) * normalizedProgress,
+        x:
+          points[nextIndex].x +
+          (points[afterNextIndex].x - points[nextIndex].x) * normalizedProgress,
+        y:
+          points[nextIndex].y +
+          (points[afterNextIndex].y - points[nextIndex].y) * normalizedProgress,
       }
     }
   }
 
   // Create the star path
-  const starPath = points.map((point, i) => `${i === 0 ? "M" : "L"} ${point.x} ${point.y}`).join(" ") + " Z"
+  const starPath =
+    points.map((point, i) => `${i === 0 ? "M" : "L"} ${point.x} ${point.y}`).join(" ") + " Z"
 
   const getStepInfo = (step: number) => {
     const steps = [
@@ -136,25 +148,37 @@ export function StarBreathing({
   const handlePresetChange = (preset: PresetKey) => {
     setSelectedPreset(preset)
     const newDurations = breathingPresets[preset]
-    setDurations({ 
-      in1: newDurations.in1, 
-      hold1: newDurations.hold1, 
-      out: newDurations.out, 
+    setDurations({
+      in1: newDurations.in1,
+      hold1: newDurations.hold1,
+      out: newDurations.out,
       hold2: newDurations.hold2,
-      focus: newDurations.focus
+      focus: newDurations.focus,
     })
-    
+
     if (onUpdateDurations) {
-      onUpdateDurations([newDurations.in1, newDurations.hold1, newDurations.out, newDurations.hold2, newDurations.focus])
+      onUpdateDurations([
+        newDurations.in1,
+        newDurations.hold1,
+        newDurations.out,
+        newDurations.hold2,
+        newDurations.focus,
+      ])
     }
   }
 
   const handleDurationChange = (type: keyof typeof durations, value: number) => {
     const newDurations = { ...durations, [type]: value }
     setDurations(newDurations)
-    
+
     if (onUpdateDurations) {
-      onUpdateDurations([newDurations.in1, newDurations.hold1, newDurations.out, newDurations.hold2, newDurations.focus])
+      onUpdateDurations([
+        newDurations.in1,
+        newDurations.hold1,
+        newDurations.out,
+        newDurations.hold2,
+        newDurations.focus,
+      ])
     }
   }
 
@@ -175,55 +199,64 @@ export function StarBreathing({
     // If we're in the first half of the step
     if (percent < 0.5) {
       const normalizedProgress = percent * 2
-      const currentX = points[baseIndex].x + (points[nextIndex].x - points[baseIndex].x) * normalizedProgress
-      const currentY = points[baseIndex].y + (points[nextIndex].y - points[baseIndex].y) * normalizedProgress
+      const currentX =
+        points[baseIndex].x + (points[nextIndex].x - points[baseIndex].x) * normalizedProgress
+      const currentY =
+        points[baseIndex].y + (points[nextIndex].y - points[baseIndex].y) * normalizedProgress
       return `M ${points[baseIndex].x} ${points[baseIndex].y} L ${currentX} ${currentY}`
     } else {
       const normalizedProgress = (percent - 0.5) * 2
       const midX = points[nextIndex].x
       const midY = points[nextIndex].y
-      const currentX = points[nextIndex].x + (points[afterNextIndex].x - points[nextIndex].x) * normalizedProgress
-      const currentY = points[nextIndex].y + (points[afterNextIndex].y - points[nextIndex].y) * normalizedProgress
+      const currentX =
+        points[nextIndex].x + (points[afterNextIndex].x - points[nextIndex].x) * normalizedProgress
+      const currentY =
+        points[nextIndex].y + (points[afterNextIndex].y - points[nextIndex].y) * normalizedProgress
       return `M ${points[baseIndex].x} ${points[baseIndex].y} L ${midX} ${midY} L ${currentX} ${currentY}`
     }
   }
 
   return (
-    <div className={cn(
-      "relative w-full h-full flex items-center justify-center overflow-hidden",
-      className
-    )}>
+    <div
+      className={cn(
+        "relative flex h-full w-full items-center justify-center overflow-hidden",
+        className
+      )}
+    >
       {/* Settings Button - Responsive positioning */}
-      <div className={cn(
-        "absolute z-10",
-        isSmallScreen ? "top-2 right-2" : "top-3 right-3"
-      )}>
+      <div className={cn("absolute z-10", isSmallScreen ? "right-2 top-2" : "right-3 top-3")}>
         <Sheet>
           <SheetTrigger asChild>
             <Button
               variant="ghost"
               size="icon"
               className={cn(
-                "rounded-full bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm border border-gray-200 dark:border-gray-600 hover:bg-white dark:hover:bg-gray-700 shadow-sm",
+                "rounded-full border border-gray-200 bg-white/90 shadow-sm backdrop-blur-sm hover:bg-white dark:border-gray-600 dark:bg-gray-800/90 dark:hover:bg-gray-700",
                 isSmallScreen ? "h-7 w-7" : "h-9 w-9"
               )}
             >
-              <Settings2 className={cn(
-                "text-amber-600 dark:text-amber-400",
-                isSmallScreen ? "h-3 w-3" : "h-4 w-4"
-              )} />
+              <Settings2
+                className={cn(
+                  "text-amber-600 dark:text-amber-400",
+                  isSmallScreen ? "h-3 w-3" : "h-4 w-4"
+                )}
+              />
             </Button>
           </SheetTrigger>
           <SheetContent>
             <SheetHeader>
-              <SheetTitle className="text-amber-700 dark:text-amber-300">Star Breathing Settings</SheetTitle>
+              <SheetTitle className="text-amber-700 dark:text-amber-300">
+                Star Breathing Settings
+              </SheetTitle>
               <SheetDescription>Customize your 5-point star breathing pattern</SheetDescription>
             </SheetHeader>
-            
-            <div className="py-6 space-y-6">
+
+            <div className="space-y-6 py-6">
               {/* Preset Selection */}
               <div className="space-y-3">
-                <Label className="font-medium text-amber-700 dark:text-amber-300">Choose Pattern</Label>
+                <Label className="font-medium text-amber-700 dark:text-amber-300">
+                  Choose Pattern
+                </Label>
                 <div className="grid grid-cols-1 gap-2">
                   {Object.entries(breathingPresets).map(([key, preset]) => (
                     <Button
@@ -235,7 +268,9 @@ export function StarBreathing({
                     >
                       <div className="text-center">
                         <div className="font-medium">{preset.name}</div>
-                        <div className="text-xs opacity-70">{preset.in1}-{preset.hold1}-{preset.out}-{preset.hold2}-{preset.focus}</div>
+                        <div className="text-xs opacity-70">
+                          {preset.in1}-{preset.hold1}-{preset.out}-{preset.hold2}-{preset.focus}
+                        </div>
                       </div>
                     </Button>
                   ))}
@@ -245,7 +280,7 @@ export function StarBreathing({
               {/* Custom Durations */}
               <div className="space-y-4">
                 <Label className="font-medium text-amber-700 dark:text-amber-300">Customize</Label>
-                
+
                 <div className="space-y-3">
                   <div>
                     <Label className="flex items-center gap-2 text-sm">
@@ -261,7 +296,7 @@ export function StarBreathing({
                       className="mt-2"
                     />
                   </div>
-                  
+
                   <div>
                     <Label className="flex items-center gap-2 text-sm">
                       <Zap className="h-4 w-4 text-orange-500" />
@@ -276,7 +311,7 @@ export function StarBreathing({
                       className="mt-2"
                     />
                   </div>
-                  
+
                   <div>
                     <Label className="flex items-center gap-2 text-sm">
                       <Sparkles className="h-4 w-4 text-red-500" />
@@ -329,7 +364,7 @@ export function StarBreathing({
       </div>
 
       {/* Main Star Container */}
-      <div className="relative w-full h-full flex items-center justify-center">
+      <div className="relative flex h-full w-full items-center justify-center">
         {/* Star Outline */}
         <svg
           width="100%"
@@ -339,14 +374,14 @@ export function StarBreathing({
           preserveAspectRatio="xMidYMid meet"
         >
           {/* Star outline */}
-          <path 
-            d={starPath} 
-            stroke="rgba(217, 119, 6, 0.6)" 
-            strokeWidth="3" 
-            fill="none" 
+          <path
+            d={starPath}
+            stroke="rgba(217, 119, 6, 0.6)"
+            strokeWidth="3"
+            fill="none"
             strokeLinejoin="round"
           />
-          
+
           {/* Progress Path */}
           <path
             d={getProgressPath()}
@@ -356,7 +391,7 @@ export function StarBreathing({
             strokeLinecap="round"
             className="drop-shadow-lg"
           />
-          
+
           <defs>
             <linearGradient id="starGradient" x1="0%" y1="0%" x2="100%" y2="100%">
               <stop offset="0%" stopColor="#f59e0b" />
@@ -372,8 +407,8 @@ export function StarBreathing({
         <div className="relative z-10">
           <motion.div
             className={cn(
-              "rounded-full bg-white dark:bg-gray-800 shadow-lg border border-gray-200 dark:border-gray-600 flex items-center justify-center",
-              isSmallScreen ? "w-12 h-12" : isMobile ? "w-16 h-16" : "w-20 h-20"
+              "flex items-center justify-center rounded-full border border-gray-200 bg-white shadow-lg dark:border-gray-600 dark:bg-gray-800",
+              isSmallScreen ? "h-12 w-12" : isMobile ? "h-16 w-16" : "h-20 w-20"
             )}
             animate={{
               scale: isPlaying ? [1, 1.05, 1] : 1,
@@ -388,7 +423,7 @@ export function StarBreathing({
               <motion.div
                 className={cn(
                   "mx-auto mb-1",
-                  isSmallScreen ? "w-4 h-4" : isMobile ? "w-5 h-5" : "w-6 h-6"
+                  isSmallScreen ? "h-4 w-4" : isMobile ? "h-5 w-5" : "h-6 w-6"
                 )}
                 animate={{
                   scale: isPlaying ? [1, 1.1, 1] : 1,
@@ -406,10 +441,12 @@ export function StarBreathing({
                   ),
                 })}
               </motion.div>
-              <span className={cn(
-                "font-medium text-gray-600 dark:text-gray-400",
-                isSmallScreen ? "text-[10px]" : "text-xs"
-              )}>
+              <span
+                className={cn(
+                  "font-medium text-gray-600 dark:text-gray-400",
+                  isSmallScreen ? "text-[10px]" : "text-xs"
+                )}
+              >
                 {currentStepInfo.name}
               </span>
             </div>
@@ -430,36 +467,44 @@ export function StarBreathing({
           transition={{ type: "spring", stiffness: 150, damping: 20, mass: 0.8 }}
         >
           {/* Outer glow */}
-          <div className={cn(
-            "absolute rounded-full -translate-x-1/2 -translate-y-1/2 bg-amber-400/20 blur-sm",
-            isSmallScreen ? "w-8 h-8" : isMobile ? "w-12 h-12" : "w-16 h-16"
-          )} />
-          
+          <div
+            className={cn(
+              "absolute -translate-x-1/2 -translate-y-1/2 rounded-full bg-amber-400/20 blur-sm",
+              isSmallScreen ? "h-8 w-8" : isMobile ? "h-12 w-12" : "h-16 w-16"
+            )}
+          />
+
           {/* Main dot */}
-          <div className={cn(
-            "absolute rounded-full -translate-x-1/2 -translate-y-1/2 bg-gradient-to-r from-amber-500 to-orange-500 shadow-lg border-2 border-white",
-            isSmallScreen ? "w-3 h-3" : "w-4 h-4"
-          )} />
-          
+          <div
+            className={cn(
+              "absolute -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white bg-gradient-to-r from-amber-500 to-orange-500 shadow-lg",
+              isSmallScreen ? "h-3 w-3" : "h-4 w-4"
+            )}
+          />
+
           {/* Inner highlight */}
-          <div className={cn(
-            "absolute rounded-full -translate-x-1/2 -translate-y-1/2 bg-white/80",
-            isSmallScreen ? "w-1.5 h-1.5" : "w-2 h-2"
-          )} />
+          <div
+            className={cn(
+              "absolute -translate-x-1/2 -translate-y-1/2 rounded-full bg-white/80",
+              isSmallScreen ? "h-1.5 w-1.5" : "h-2 w-2"
+            )}
+          />
         </motion.div>
       </div>
 
       {/* Progress Bars - Responsive positioning and sizing */}
-      <div className={cn(
-        "absolute left-1/2 transform -translate-x-1/2",
-        isSmallScreen ? "-bottom-4" : "-bottom-6"
-      )}>
+      <div
+        className={cn(
+          "absolute left-1/2 -translate-x-1/2 transform",
+          isSmallScreen ? "-bottom-4" : "-bottom-6"
+        )}
+      >
         <div className="flex gap-1 sm:gap-2">
           {[0, 1, 2, 3, 4].map((step) => (
             <motion.div
               key={step}
               className={cn(
-                "h-1.5 rounded-full bg-gray-200 dark:bg-gray-700 overflow-hidden",
+                "h-1.5 overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700",
                 isSmallScreen ? "w-5" : isMobile ? "w-7" : "w-9"
               )}
               animate={{
@@ -468,7 +513,7 @@ export function StarBreathing({
               transition={{ duration: 0.2 }}
             >
               <motion.div
-                className="h-full bg-gradient-to-r from-amber-500 to-orange-500 rounded-full"
+                className="h-full rounded-full bg-gradient-to-r from-amber-500 to-orange-500"
                 initial={{ width: 0 }}
                 animate={{
                   width: currentStep === step ? `${progress}%` : "0%",
@@ -482,4 +527,3 @@ export function StarBreathing({
     </div>
   )
 }
-

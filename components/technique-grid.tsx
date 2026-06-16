@@ -3,15 +3,7 @@
 import { useState } from "react"
 import { BreathingExercise } from "@/components/breathing-exercise"
 import { Dialog, DialogContent } from "@/components/ui/dialog"
-import {
-  Square,
-  Hexagon,
-  Triangle,
-  Star,
-  Infinity,
-  Circle,
-  Octagon,
-} from "lucide-react"
+import { Square, Hexagon, Triangle, Star, Infinity, Circle, Octagon } from "lucide-react"
 import { translations } from "@/lib/translations/index"
 import { cn } from "@/lib/utils"
 
@@ -21,8 +13,14 @@ interface TechniqueGridProps {
 
 const techniqueStyles = {
   square: { iconBg: "bg-teal-500/10 text-teal-700 dark:text-teal-400", dot: "bg-teal-500" },
-  hexagon: { iconBg: "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400", dot: "bg-emerald-500" },
-  triangle: { iconBg: "bg-violet-500/10 text-violet-700 dark:text-violet-400", dot: "bg-violet-500" },
+  hexagon: {
+    iconBg: "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400",
+    dot: "bg-emerald-500",
+  },
+  triangle: {
+    iconBg: "bg-violet-500/10 text-violet-700 dark:text-violet-400",
+    dot: "bg-violet-500",
+  },
   star: { iconBg: "bg-amber-500/10 text-amber-700 dark:text-amber-400", dot: "bg-amber-500" },
   infinity: { iconBg: "bg-sky-500/10 text-sky-700 dark:text-sky-400", dot: "bg-sky-500" },
   stop: { iconBg: "bg-slate-500/10 text-slate-600 dark:text-slate-400", dot: "bg-slate-500" },
@@ -131,7 +129,10 @@ export function TechniqueGrid({ language }: TechniqueGridProps) {
         })}
       </div>
 
-      <Dialog open={selectedTechniqueIndex !== null} onOpenChange={() => setSelectedTechniqueIndex(null)}>
+      <Dialog
+        open={selectedTechniqueIndex !== null}
+        onOpenChange={() => setSelectedTechniqueIndex(null)}
+      >
         <DialogContent className="exercise-dialog max-h-[96vh] w-[96vw] !max-w-lg overflow-hidden border-border/50 bg-background p-0 shadow-2xl sm:!max-w-xl md:!max-w-2xl">
           {selectedTechniqueIndex !== null && (
             <BreathingExercise
