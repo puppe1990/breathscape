@@ -95,6 +95,23 @@ export const en = {
         "Complete the star shape with your breath",
       ],
     },
+    pentagon: {
+      name: "Pentagon Breathing",
+      steps: ["Breathe In", "Hold", "Breathe Out", "Hold", "Breathe In"],
+      description: "A five-sided pattern that bridges simple and advanced breathing exercises.",
+      benefits: [
+        "Builds breath awareness step by step",
+        "Balances focus and relaxation",
+        "Ideal step up from triangle or square breathing",
+        "Supports emotional grounding",
+        "Great for mid-length mindfulness sessions",
+      ],
+      howItWorks: [
+        "Follow each side of the pentagon with one breath phase",
+        "Five phases: inhale, hold, exhale, hold, inhale",
+        "Complete the shape to finish one full cycle",
+      ],
+    },
     infinity: {
       name: "Infinity Breathing",
       steps: ["Breathe In", "Breathe Out"],
@@ -269,6 +286,29 @@ export const en = {
             "Great for children's mindfulness practice",
             "Combines visualization with breathing",
             "Can help with anxiety in social situations",
+          ],
+        },
+      },
+      pentagon: {
+        title: "Pentagon Breathing",
+        description:
+          "Pentagon breathing uses a clean five-sided path — one phase per edge — making it a natural progression between shorter and longer breathing patterns.",
+        howItWorks: {
+          title: "How it works:",
+          steps: [
+            "Travel along each side of the pentagon with your breath",
+            "Five phases: inhale, hold, exhale, hold, inhale",
+            "Complete all five sides to finish one cycle",
+          ],
+        },
+        benefits: {
+          title: "Benefits:",
+          items: [
+            "Builds breath awareness gradually",
+            "Balances calm focus with relaxation",
+            "Ideal bridge between beginner and advanced techniques",
+            "Supports emotional grounding",
+            "Perfect for 5–10 minute sessions",
           ],
         },
       },

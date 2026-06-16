@@ -3,7 +3,7 @@
 import { useState } from "react"
 import { BreathingExercise } from "@/components/breathing-exercise"
 import { Dialog, DialogContent } from "@/components/ui/dialog"
-import { Square, Hexagon, Triangle, Star, Infinity, Circle, Octagon } from "lucide-react"
+import { Square, Hexagon, Triangle, Star, Infinity, Circle, Octagon, Pentagon } from "lucide-react"
 import { translations } from "@/lib/translations/index"
 import { cn } from "@/lib/utils"
 
@@ -22,6 +22,10 @@ const techniqueStyles = {
     dot: "bg-violet-500",
   },
   star: { iconBg: "bg-amber-500/10 text-amber-700 dark:text-amber-400", dot: "bg-amber-500" },
+  pentagon: {
+    iconBg: "bg-fuchsia-500/10 text-fuchsia-700 dark:text-fuchsia-400",
+    dot: "bg-fuchsia-500",
+  },
   infinity: { iconBg: "bg-sky-500/10 text-sky-700 dark:text-sky-400", dot: "bg-sky-500" },
   stop: { iconBg: "bg-slate-500/10 text-slate-600 dark:text-slate-400", dot: "bg-slate-500" },
   circle: { iconBg: "bg-rose-500/10 text-rose-700 dark:text-rose-400", dot: "bg-rose-500" },
@@ -61,6 +65,14 @@ export function TechniqueGrid({ language }: TechniqueGridProps) {
       icon: Star,
       textColor: "text-amber-700 dark:text-amber-400",
       steps: t.breathingTechniques.star.steps,
+      duration: 4,
+    },
+    {
+      id: "pentagon",
+      name: t.breathingTechniques.pentagon.name,
+      icon: Pentagon,
+      textColor: "text-fuchsia-700 dark:text-fuchsia-400",
+      steps: t.breathingTechniques.pentagon.steps,
       duration: 4,
     },
     {

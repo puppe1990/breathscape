@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState, useEffect } from "react"
+import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -17,7 +17,7 @@ import { Slider } from "@/components/ui/slider"
 import { Label } from "@/components/ui/label"
 import { translations } from "@/lib/translations/index"
 
-interface HexagonBreathingProps {
+interface PentagonBreathingProps {
   size?: number
   isPlaying: boolean
   currentStep: number
@@ -28,11 +28,11 @@ interface HexagonBreathingProps {
 }
 
 const breathingPresets = {
-  "4-4-4-4-4-4": { name: "Box 6-Step", in1: 4, hold1: 4, out: 4, hold2: 4, in2: 4, hold3: 4 },
-  "5-5-5-5-5-5": { name: "Extended 6-Step", in1: 5, hold1: 5, out: 5, hold2: 5, in2: 5, hold3: 5 },
-  "6-2-6-2-6-2": { name: "Relaxing", in1: 6, hold1: 2, out: 6, hold2: 2, in2: 6, hold3: 2 },
-  "4-7-8-4-4-7": { name: "Sleep Pattern", in1: 4, hold1: 7, out: 8, hold2: 4, in2: 4, hold3: 7 },
-  "3-3-3-3-3-3": { name: "Quick Cycle", in1: 3, hold1: 3, out: 3, hold2: 3, in2: 3, hold3: 3 },
+  "4-4-4-4-4": { name: "Balanced Pentagon", in1: 4, hold1: 4, out: 4, hold2: 4, in2: 4 },
+  "5-5-5-5-5": { name: "Extended Pentagon", in1: 5, hold1: 5, out: 5, hold2: 5, in2: 5 },
+  "6-2-6-2-6": { name: "Relaxing Pentagon", in1: 6, hold1: 2, out: 6, hold2: 2, in2: 6 },
+  "4-7-8-4-4": { name: "Sleep Pentagon", in1: 4, hold1: 7, out: 8, hold2: 4, in2: 4 },
+  "3-3-3-3-3": { name: "Quick Pentagon", in1: 3, hold1: 3, out: 3, hold2: 3, in2: 3 },
 } as const
 
 type PresetKey = keyof typeof breathingPresets
@@ -43,7 +43,6 @@ const stepColors = [
   "#38bdf8", // exhale
   "#fbbf24", // hold 2
   "#2dd4bf", // inhale 2
-  "#a78bfa", // hold 3
 ]
 
 const durationFields = [
@@ -52,10 +51,9 @@ const durationFields = [
   { key: "out" as const, labelKey: "breatheOut", suffix: "", icon: Wind, color: "text-sky-500" },
   { key: "hold2" as const, labelKey: "hold", suffix: " 2", icon: Zap, color: "text-amber-500" },
   { key: "in2" as const, labelKey: "breatheIn", suffix: " 2", icon: Heart, color: "text-teal-500" },
-  { key: "hold3" as const, labelKey: "hold", suffix: " 3", icon: Zap, color: "text-violet-500" },
 ]
 
-export function HexagonBreathing({
+export function PentagonBreathing({
   size = 280,
   isPlaying,
   currentStep,
@@ -63,15 +61,14 @@ export function HexagonBreathing({
   className,
   language,
   onUpdateDurations,
-}: HexagonBreathingProps) {
-  const [selectedPreset, setSelectedPreset] = useState<PresetKey>("4-4-4-4-4-4")
+}: PentagonBreathingProps) {
+  const [selectedPreset, setSelectedPreset] = useState<PresetKey>("4-4-4-4-4")
   const [durations, setDurations] = useState({
     in1: 4,
     hold1: 4,
     out: 4,
     hold2: 4,
     in2: 4,
-    hold3: 4,
   })
   const [adjustedSize, setAdjustedSize] = useState(size)
 
@@ -89,12 +86,12 @@ export function HexagonBreathing({
     return () => window.removeEventListener("resize", checkSize)
   }, [size])
 
-  const actualHexagonSize = Math.max(adjustedSize * 0.72, 120)
+  const actualPentagonSize = Math.max(adjustedSize * 0.72, 120)
   const center = adjustedSize / 2
-  const radius = actualHexagonSize / 2
+  const radius = actualPentagonSize / 2
 
-  const points = Array.from({ length: 6 }).map((_, i) => {
-    const angle = (i * 60 - 30) * (Math.PI / 180)
+  const points = Array.from({ length: 5 }).map((_, i) => {
+    const angle = (i * 72 - 90) * (Math.PI / 180)
     return {
       x: center + radius * Math.cos(angle),
       y: center + radius * Math.sin(angle),
@@ -104,20 +101,20 @@ export function HexagonBreathing({
   const getPosition = () => {
     const percent = progress / 100
     const currentPoint = points[currentStep]
-    const nextPoint = points[(currentStep + 1) % 6]
+    const nextPoint = points[(currentStep + 1) % 5]
     return {
       x: currentPoint.x + (nextPoint.x - currentPoint.x) * percent,
       y: currentPoint.y + (nextPoint.y - currentPoint.y) * percent,
     }
   }
 
-  const hexagonPath =
+  const pentagonPath =
     points.map((point, i) => `${i === 0 ? "M" : "L"} ${point.x} ${point.y}`).join(" ") + " Z"
 
   const getProgressPath = () => {
     const percent = progress / 100
     const currentPoint = points[currentStep]
-    const nextPoint = points[(currentStep + 1) % 6]
+    const nextPoint = points[(currentStep + 1) % 5]
     const currentX = currentPoint.x + (nextPoint.x - currentPoint.x) * percent
     const currentY = currentPoint.y + (nextPoint.y - currentPoint.y) * percent
     return `M ${currentPoint.x} ${currentPoint.y} L ${currentX} ${currentY}`
@@ -126,7 +123,7 @@ export function HexagonBreathing({
   const getCompletedPaths = () =>
     Array.from({ length: currentStep }, (_, i) => {
       const p1 = points[i]
-      const p2 = points[(i + 1) % 6]
+      const p2 = points[(i + 1) % 5]
       return `M ${p1.x} ${p1.y} L ${p2.x} ${p2.y}`
     })
 
@@ -139,7 +136,6 @@ export function HexagonBreathing({
       out: newDurations.out,
       hold2: newDurations.hold2,
       in2: newDurations.in2,
-      hold3: newDurations.hold3,
     })
     onUpdateDurations?.([
       newDurations.in1,
@@ -147,7 +143,6 @@ export function HexagonBreathing({
       newDurations.out,
       newDurations.hold2,
       newDurations.in2,
-      newDurations.hold3,
     ])
   }
 
@@ -160,7 +155,6 @@ export function HexagonBreathing({
       newDurations.out,
       newDurations.hold2,
       newDurations.in2,
-      newDurations.hold3,
     ])
   }
 
@@ -171,7 +165,6 @@ export function HexagonBreathing({
 
   return (
     <div className={cn("relative h-full w-full", className)}>
-      {/* Settings */}
       <div className="absolute right-0 top-0 z-20">
         <Sheet>
           <SheetTrigger asChild>
@@ -185,8 +178,8 @@ export function HexagonBreathing({
           </SheetTrigger>
           <SheetContent>
             <SheetHeader>
-              <SheetTitle>{t.breathingTechniques.hexagon.name}</SheetTitle>
-              <SheetDescription>Customize your 6-step breathing pattern</SheetDescription>
+              <SheetTitle>{t.breathingTechniques.pentagon.name}</SheetTitle>
+              <SheetDescription>Customize your 5-step breathing pattern</SheetDescription>
             </SheetHeader>
 
             <div className="space-y-6 py-6">
@@ -204,8 +197,7 @@ export function HexagonBreathing({
                       <div className="text-center">
                         <div className="font-medium">{preset.name}</div>
                         <div className="text-xs opacity-70">
-                          {preset.in1}-{preset.hold1}-{preset.out}-{preset.hold2}-{preset.in2}-
-                          {preset.hold3}
+                          {preset.in1}-{preset.hold1}-{preset.out}-{preset.hold2}-{preset.in2}
                         </div>
                       </div>
                     </Button>
@@ -238,7 +230,6 @@ export function HexagonBreathing({
         </Sheet>
       </div>
 
-      {/* Ambient glow */}
       <motion.div
         className="pointer-events-none absolute inset-0"
         animate={{ opacity: isPlaying ? 0.35 : 0 }}
@@ -259,19 +250,16 @@ export function HexagonBreathing({
         className="absolute inset-0"
         preserveAspectRatio="xMidYMid meet"
       >
-        {/* Soft fill */}
-        <path d={hexagonPath} fill="hsl(var(--primary) / 0.04)" />
+        <path d={pentagonPath} fill="hsl(var(--primary) / 0.04)" />
 
-        {/* Track */}
         <path
-          d={hexagonPath}
+          d={pentagonPath}
           fill="none"
           stroke="hsl(var(--primary) / 0.18)"
           strokeWidth="2"
           strokeLinejoin="round"
         />
 
-        {/* Completed segments */}
         {getCompletedPaths().map((path, i) => (
           <path
             key={i}
@@ -284,7 +272,6 @@ export function HexagonBreathing({
           />
         ))}
 
-        {/* Active progress */}
         <path
           d={progressPath}
           fill="none"
@@ -294,7 +281,6 @@ export function HexagonBreathing({
           opacity={0.9}
         />
 
-        {/* Vertex markers */}
         {points.map((point, i) => (
           <circle
             key={i}
@@ -307,7 +293,6 @@ export function HexagonBreathing({
         ))}
       </svg>
 
-      {/* Center pulse orb */}
       <div className="absolute inset-0 flex items-center justify-center">
         <motion.div
           className="rounded-full ring-1"
@@ -328,7 +313,6 @@ export function HexagonBreathing({
         />
       </div>
 
-      {/* Moving dot */}
       <motion.div
         className="absolute z-10"
         style={{
@@ -357,22 +341,8 @@ export function HexagonBreathing({
 
 function getStepDuration(
   step: number,
-  durations: {
-    in1: number
-    hold1: number
-    out: number
-    hold2: number
-    in2: number
-    hold3: number
-  }
+  durations: { in1: number; hold1: number; out: number; hold2: number; in2: number }
 ) {
-  const values = [
-    durations.in1,
-    durations.hold1,
-    durations.out,
-    durations.hold2,
-    durations.in2,
-    durations.hold3,
-  ]
+  const values = [durations.in1, durations.hold1, durations.out, durations.hold2, durations.in2]
   return values[step] ?? 4
 }
